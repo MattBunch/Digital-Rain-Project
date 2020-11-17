@@ -2,10 +2,6 @@
 
 This program displays digital rain animation within the window browser, as seen in the film The Matrix (1999). Special thanks to The Coding Train for the inspiration for this project.
 
-## Total lines:
-
-814
-
 ## Built With:
 
 - JavaScript, HTML, CSS
