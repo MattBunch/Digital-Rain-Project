@@ -6,6 +6,12 @@ This program displays digital rain animation within the window browser, as seen 
 
 - JavaScript, HTML, CSS
 
+## Keyboard inputs:
+
+- Arrowkeys: switch directions
+- Spacebar: pause
+- C: clear screen
+
 ## Devlog:
 
 ### 19/08/2020
