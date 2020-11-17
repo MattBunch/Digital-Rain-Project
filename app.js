@@ -801,11 +801,6 @@ function loadMenuOptions() {
 
 // like a main method in java, this function gets executed upon runtime
 function run() {
-  // # original methods
-  // reset();
-  // tempMenu();
-  // openFullscreen();
-  // intervalValid = setInterval(draw, 50);
 
   // set up canvas
   canvasSetup();
