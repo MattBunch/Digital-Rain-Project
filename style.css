@@ -1,0 +1,76 @@
+body {
+  background-color: black;
+  font-family: Lucida Console;
+  font-size: 20px;
+  transition-duration: 0.4s;
+}
+
+#title {
+  position: relative;
+  margin: auto;
+  font-size: 45px;
+}
+
+.menu {
+  position: relative;
+  max-width: 500px;
+  max-height: 500px;
+  margin: auto;
+  padding: 100px 0;
+  text-align: center;
+
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.menu #disco {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  display: inline;
+  
+  border: 10px solid green;
+  border-radius: 4px;
+  outline: none;
+}
+
+.menu select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  
+  position: relative;
+  font-family: Lucida Console;
+  background-color: black;
+
+  text-align: center;
+  display: inline-block;
+  border-radius: 0px;
+  margin: 4px 2px;
+
+}
+
+.button {
+  background-color: black;
+  text-align: center;
+  font-size: 40px;
+  font-family: Lucida Console;
+  transition-duration: 0.4s;
+  display: inline-block;
+  border-radius: 0px;
+  margin: 4px 2px;
+}
+
+#footer {
+  font-size: 7px;
+  text-align: left;
+  position: absolute;
+  bottom: 10px;
+  width: 50%;
+}
+
+#myCanvas {
+  background: black;
+}

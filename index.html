@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="style.css" />
+    <title>Digital Rain Animation</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      href="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Xmatrix.png/300px-Xmatrix.png"
+    />
+  </head>
+  <body onload="selectFunction();">
+    <div class="menu">
+      <label id="title">DIGITAL RAIN ANIMATION</label>
+      <br />
+      <label for="discoOption id" id="discoLabel"
+        >Disco:
+        <input
+          type="checkbox"
+          id="disco"
+          name="discoOption"
+          value="Disco"
+          onload="checkboxFunction()"
+          onclick="checkboxFunction()"
+        />
+      </label>
+      <br />
+      <label for="colors" id="colorsLabel">Choose a color:</label>
+      <select name="colors" id="colors" onchange="selectFunction()">
+        <option value="green">Green</option>
+        <option value="red">Red</option>
+        <option value="yellow">Yellow</option>
+        <option value="blue">Blue</option>
+        <option value="orange">Orange</option>
+        <option value="pink">Pink</option>
+        <option value="cyan">Cyan</option>
+        <option value="random">Random</option>
+      </select>
+      <br />
+      <label for="directions" id="directionsLabel">Choose a direction:</label>
+      <select name="directions" id="directions" onchange="directionFunction()">
+        <option value="south">South</option>
+        <option value="north">North</option>
+        <option value="east">East</option>
+        <option value="west">West</option>
+      </select>
+      <br />
+      <button class="button" id="button" onclick="run()">
+        Start Animation
+      </button>
+
+      <footer id="footer">
+        <p>
+          Author: Matt Bunch<br />
+          <a>2020</a>
+        </p>
+      </footer>
+    </div>
+
+    <canvas id="myCanvas" style="display: none"></canvas>
+
+    <script src="app.js"></script>
+  </body>
+</html>
