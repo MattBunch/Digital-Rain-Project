@@ -8,10 +8,7 @@ This program displays digital rain animation within the window browser, as seen 
 
 ## Built With:
 
-- JavaScript
-- minimal use of HTML
-
-## Setup:
+- JavaScript, HTML, CSS
 
 ## Devlog:
 
@@ -97,26 +94,8 @@ More CSS touches and basic pause functionality added.
 
 Fixed random color button visualization.
 
-to do:
-implement better menu system.
-impleement generateXEast, generateYNorth and generateYSouth if I am repeating these formulas in multiple places
-set screen to full screen?
-make strings fit to the full screen properly.  
-I want to add a shadow effect to my falling digital code or some form of faked perspective somehow to make it look less flat and have some opacity to this.
-Music? find royalty free music somewhere to accompany the final video.
-screen size still isn't true, getting black bars at top of screen and bottom of screen need to find true values somehow.
-
 ## Possible extensions in further versions:
 
-- Pause option.
-- Erase screen.
 - Music.
 - Fullscreen.
-- Fix screen size.
 - All four directions at the same time
-
-// comment:
-// note use window.requestAnimationFrame() instead
-// Forget Oop for JavaScript
-// You can still use the classes as that can be useful, but then just store all letters in an array
-// and iterate through it, increase the Y position by the speed and draw it
