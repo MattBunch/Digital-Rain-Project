@@ -169,8 +169,7 @@ function generateFontSize() {
   return Math.floor(generateRandomNumber(15, 25));
 }
 
-// generate both xSpeed and ySpeed between 0.001 and 9.999,
-// only for south
+// generate both xSpeed and ySpeed between 0.001 and 9.999
 function generateSpeed() {
   return generateRandomNumber(0.001, 9.999);
 }
@@ -330,7 +329,6 @@ class MatrixString {
           ctx.fillStyle = inputArray[1];
         } else {
           // set rest of the string to color
-          // extension? fade out of darker colors
           ctx.fillStyle = inputArray[2];
         }
         ctx.fillText(
@@ -479,15 +477,6 @@ let fromVerticalDirection; // boolean value for setting vertical direction
 // draw direction going south
 // show the characters in animation.
 function draw() {
-  // canvas.width = width;
-  // canvas.height = height;
-  // width = canvas.width;
-  // height = canvas.height;
-
-  // updates the window when moving the screen, but no opacity because fill rect craws over it
-  // ctx.canvas.width = window.innerWidth;
-  // ctx.canvas.height = window.innerHeight;
-
   // draw black background with 0.025 opacity to show the trail
   ctx.font = fontSize + "px 'Consolas', 'Lucida Console'";
   ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
@@ -505,8 +494,6 @@ function draw() {
     if (discoOn) {
       colorChoiceArray[chosenColor] = generateRandomColorArray();
     }
-
-    // some repeating code here because north and south have different dependencies on greater than or less than
 
     if (direction === "south") {
       // reset to top of screen if drop off the canvas at bottom of the screen
@@ -603,37 +590,6 @@ let direction = null;
 let discoOn = null;
 let chosenColor = null;
 
-function tempMenu() {
-  reset();
-  askDisco();
-  if (discoOn == false) {
-    chooseColor();
-  }
-  chooseDirection();
-}
-
-// get disco from user
-function askDisco() {
-  while (discoOn === null) {
-    let answer = window.prompt("Disco?");
-    if (answer.toLowerCase() === "yes") {
-      discoOn = true;
-    } else if (answer.toLowerCase() === "no") {
-      discoOn = false;
-    } else {
-      discoOn = null;
-    }
-  }
-}
-
-// choose color, will need to be redone.
-function chooseColor() {
-  while (chosenColor === null) {
-    let userInput = window.prompt("Enter color: ");
-    chosenColor = matchColorToIndex(userInput.toLowerCase());
-  }
-}
-
 function matchColorToIndex(input) {
   switch (input) {
     case "green":
@@ -651,17 +607,9 @@ function matchColorToIndex(input) {
     case "cyan":
       return 6;
     case "random":
-      // colorChoiceArray[7] = generateRandomColorArray(); // create random color array each time this is called.
       return 7;
     default:
       return null;
-  }
-}
-
-function chooseDirection() {
-  while (direction === null) {
-    direction = window.prompt("Enter direction: ");
-    createMatrixArray(direction);
   }
 }
 
@@ -804,7 +752,6 @@ function loadMenuOptions() {
 
 // like a main method in java, this function gets executed upon runtime
 function run() {
-
   // set up canvas
   canvasSetup();
 
@@ -818,42 +765,6 @@ function run() {
   intervalValid = setInterval(draw, 50);
   animationOn = true;
 }
-
-// FIXME: none of the fullscreen functionality works
-/* Get the documentElement (<html>) to display the page in fullscreen */
-// var elem = document.documentElement;
-
-// /* View in fullscreen */
-// function openFullscreen() {
-//   if (elem.requestFullscreen) {
-//     elem.requestFullscreen();
-//   } else if (elem.mozRequestFullScreen) {
-//     /* Firefox */
-//     elem.mozRequestFullScreen();
-//   } else if (elem.webkitRequestFullscreen) {
-//     /* Chrome, Safari and Opera */
-//     elem.webkitRequestFullscreen();
-//   } else if (elem.msRequestFullscreen) {
-//     /* IE/Edge */
-//     elem.msRequestFullscreen();
-//   }
-// }
-
-// /* Close fullscreen */
-// function closeFullscreen() {
-//   if (document.exitFullscreen) {
-//     document.exitFullscreen();
-//   } else if (document.mozCancelFullScreen) {
-//     /* Firefox */
-//     document.mozCancelFullScreen();
-//   } else if (document.webkitExitFullscreen) {
-//     /* Chrome, Safari and Opera */
-//     document.webkitExitFullscreen();
-//   } else if (document.msExitFullscreen) {
-//     /* IE/Edge */
-//     document.msExitFullscreen();
-//   }
-// }
 
 /* ***********************************************************************
 // 
