@@ -406,11 +406,11 @@ function createMatrixArray(directionMatrix) {
       // matrixString xInput value
       xInput = fontSize * i;
       if (directionMatrix === "south") {
-        yInput = generateYInput(1440, 3000);
+        yInput = generateYNorth();
         xSpeedInput = null;
         ySpeedInput = generateSpeed();
       } else if (directionMatrix === "north") {
-        yInput = generateYInput(-500, 500) + canvas.height * 2;
+        yInput = generateYSouth();
         xSpeedInput = null;
         ySpeedInput = -Math.abs(generateSpeed());
       }
@@ -788,7 +788,12 @@ function showMenu() {
     divsToShow[i].style.display = "block";
   }
 
-  canvas.style.display = "none";
+  menuOnLoad();
+
+  // canvas functionality
+  if ((canvas = document.getElementById("canvas") != null)) {
+    canvas.style.display = "none";
+  }
 }
 
 function hideMenu() {
@@ -810,15 +815,12 @@ function checkboxFunction() {
   if (!checkBox.checked) {
     text.style.display = "inline-block";
     select.style.display = "inline-block";
+
+    recolorMenuOneColor(selectColor);
   } else {
     text.style.display = "none";
     select.style.display = "none";
-  }
 
-  // random colors
-  if (!checkBox.checked) {
-    recolorMenuOneColor(selectColor);
-  } else if (checkBox.checked) {
     recolorMenuRandom();
   }
 }
@@ -831,9 +833,16 @@ function selectFunction() {
   selectColor = matchColorToRGB(userColor.toLowerCase());
 
   let button = document.getElementById("button");
-  button.style.border = "1px solid " + selectColor;
 
-  recolorMenuOneColor(selectColor);
+  let checkBox = document.getElementById("disco");
+
+  if (!checkBox.checked) {
+    recolorMenuOneColor(selectColor);
+    button.style.border = "1px solid " + selectColor;
+  }
+
+  // Store
+  localStorage.setItem("key", selectColor);
 }
 
 // call selectionFunction on page loading
@@ -862,6 +871,19 @@ function recolorMenuRandom() {
   // for directions select boxes
   document.getElementById("directions").style.border =
     borderPrefix + getRandomColor();
+}
+
+function menuOnLoad() {
+  // Retrieve
+  selectColor = localStorage.getItem("key");
+
+  let checkBox = document.getElementById("disco");
+
+  if (checkBox.checked) {
+    checkboxFunction();
+  } else {
+    selectFunction();
+  }
 }
 
 function matchColorToRGB(entryColor) {

@@ -31,10 +31,7 @@ body {
   width: 16px;
   height: 16px;
   display: inline;
-
-  border: 10px solid green;
-  border-radius: 4px;
-  outline: none;
+  background-color: black;
 }
 
 .menu select {
@@ -72,5 +69,6 @@ body {
 }
 
 #myCanvas {
+  display: none;
   background: black;
 }
