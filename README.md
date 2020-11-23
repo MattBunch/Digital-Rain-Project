@@ -29,28 +29,28 @@ Eventually I would like to expand this project to include more user options and 
 
 Today, added multiple colour options. This was pretty straightforward. Added parameter to the `show()` function which takes in the array, the different colour options are stored in an array of arrays called `colorChoiceArray[]` and this array is passed into the `show()` function in `draw()`. When I expand this program to include menus, the `loadColor()` function will work something like as follows:
 
-1. user clicks on a color displayed in the menu.
+1. user clicks on a colour displayed in the menu.
 2. color variable gets loaded into `loadColor()` function as the variable (undecided who type yet).
 3. `loadColor()` returns a number 0-6 into `colorChoiceArray` array. This function will be called in that method.
    Also thinking about having another, darker color so the text fades into the background more, the trail of letters looks rather blocky at the moment.
 
-Included a function that returns an array of random colours and added it to the array of user colours. Wondering if there's a way of generating a spectrum of colours somehow, there's probably a library out there that does that. This, in turn, lead to me leading to develop a disco feature where every line changes, all this took was the insertion of one line of code:
+Included a function that returns an array of random colours and added it to the array of user colours. Wondering if there's a way of generating a spectrum of colours somehow, there's probably a library out there that does that. This, in turn, lead to me leading to develop a disco feature where every line changes color each frame, all this took was the insertion of one line of code:
 
 ```javascript
 colorChoiceArray[7] = generateRandomColorArray();
 ```
 
-I built this to toggle on and off through a boolean value named `discoOn` so I can switch it on and off through that value. Afterwards I changed the structure so that the class has a method called `showDisco()` which generates a new color for every single character, rather than having the entire line be the same color. I wonder if adding color as a field in the `MatrixString` class is worth it in the long term if I think up any more color variations. I want to restructure the framework of this program if I feel it is too convoluted when it comes time to add menus. Initially, when I was creating the class, I did not take color to be a variable because the only color I had planned to add was green, however, with the expansion of color options this leads to some roundabout ways of implementing different colors.
+I built this to toggle on and off through a boolean value named `discoOn`. Afterwards I changed the structure so that the class has a method called `showDisco()` which generates a new color for every single character, rather than having the entire line be the same color. I wonder if adding color as a field in the `MatrixString` class is worth it in the long term if I think up any more color variations. I want to restructure the framework of this program if I feel it is too convoluted when it comes time to add menus. Initially, when I was creating the class, I did not take color to be a variable because the only color I had planned to add was green, however, with the expansion of color options this leads to some roundabout ways of implementing different colors.
 
-Created function for return `yInput` to cut down on repeating the formula in both the array creation and the infintie draw function. This lead into me creating a generate random number within a range function (named `generateRandomNumber()`, takes a min and max and generates a number between these two points) because I was repeating the same exact formula in three different methods and they were all practically the same (`generateWordSizeRand(), generateFontSize(), generateYSpeed()`. I still left these functions in the program so I wouldn't have to edit the values multiple times everytime I called it during creation.
+Created function for return `yInput` to cut down on repeating the formula in both the array creation and the infintie draw function. This led into me creating a generate random number within a range function (named `generateRandomNumber()`, takes a min and max and generates a number between these two points) because I was repeating the same exact formula in three different methods and they were all practically the same (`generateWordSizeRand(), generateFontSize(), generateYSpeed()`. I still left these functions in the program so I wouldn't have to edit the values multiple times everytime I called it during creation.
 
 For a while I was unhappy with the distribution of the y axis for my matrix strings, I felt they fell too close together. I fixed this by setting their start positions to a far larger range than the following ones.
 
-Implemented a temporary menu system with window prompts, in the future, this will be replaced with a user interface that can be faded away in the main menu but I will need to research more HTML/CSS stuff to figure out how to implement that and work on my front end skills. It looks like for getting the text to move left, right and upwards will be a real pain, I don't even know if it can be done diagonally the way I have programmed it.
+Implemented a temporary menu system with window prompts, in the future, this will be replaced with a user interface that can be faded away in the main menu but I will need to research more HTML/CSS stuff to figure out how to implement that and work on my front-end development skills. It looks like for getting the text to move left, right and upwards will be a real pain, I don't even know if it can be done diagonally the way I have programmed it.
 
 ### 23/08/2020
 
-Updated the screen coordinates to be updated every frame within the `show()` method. I still worry about having to repeat this code over and over again. However this lost the opacity effect and wasn't worth it. Currently the program creates the height and size upon the original window size, this isn't a problem if the program had a fixed window size and was running like downloadable executable which only ran in full screen, but for a browser or resizeable screen this becomes a big problem. If you expand the screen size after you start the program, the canvas doesn't update the position. if you include the following lines in the `show()` method:
+Updated the screen coordinates to be updated every frame within the `show()` method. I still worry about having to repeat this code over and over again. However, this lost the opacity effect and wasn't worth it. Currently the program creates the height and size upon the original window size, this isn't a problem if the program had a fixed window size and was running like downloadable executable which only ran in full screen, but for a browser or resizeable screen this becomes a big problem. If you expand the screen size after you start the program, the canvas doesn't update the position. if you include the following lines in the `show()` method:
 
 ```javascript
 canvas.width = window.innerWidth;
@@ -61,7 +61,7 @@ then the program will be able to be scaleable by height (while losing the opacit
 
 Things needed to be updated to introduce new direction up (north):
 
-- Creation of the array needs to be updated to take into account of the different directions and enter different parameters for the starting position (moving south (downwards), the starting position of y will be negative (above the window height base which is 0), while moving north (upwards), the starting position will be positive (below the window height value)). Therefore the createArray function needs to have different conditions based on how it creates the .
+- Creation of the array needs to be updated to take into account of the different directions and enter different parameters for the starting position (moving south (downwards), the starting position of y will be negative (above the window height base which is 0), while moving north (upwards), the starting position will be positive (below the window height value)). Therefore, the createArray function needs to have different conditions based on how it creates the array.
 - Show function will need to have similar conditionals to update the color of the MatrixString.
 
 In conclusion only `y` and `ySpeed` are the variables that need to be altered for the new direction. For implementing horizontal movements, one will need to implement an entirely different method to display that direction.
@@ -108,9 +108,11 @@ Around a couple of weeks ago, I fixed the screen resizing issue by just clearing
 
 Updated `generateYSouth()` and `generateYNorth()` functions within .
 
-Tried implementing css coloring of the disco check but it would break on multiple browsers. I'm pretty sure my select checkboxes might break on other browsers, will need to check. Changed the styling of the canvas from inline to the stylesheet to make my main html page a little cleaner. Fixed some spelling mistake and general readability of this readme file.
+Tried implementing css coloring of the disco check but it would break on multiple browsers. I'm pretty sure my select checkboxes might break on other browsers, will need to check. Changed the styling of the canvas from inline to the stylesheet to make my main html page a little cleaner. Fixed some spelling mistake and general readability of this readme file. In future projects, I will try to make the early devlogs more legible to other readers.
 
-Added `menuOnLoad()` function to be run on start of page. Managed to save the value within `selectFunction()` to the browser's local storage so that the coloring loads properly upon load.
+Added `menuOnLoad()` function to be run on start of page. Managed to save the value within `selectFunction()` to the browser's local storage so that the coloring loads properly.
+
+Added `buttonDiscoChecked()` to the button mouseover functionality for changing the button's border color and button's background color upon mouse over.
 
 ### Possible extensions in further versions:
 

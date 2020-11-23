@@ -206,19 +206,17 @@ function generateXWest() {
 
 function generateYInput(min, max) {
   // calculate height deductor range
-  // (1440, 2000) for creation in array
-  // (1440, 1550) for show()
   let heightDeductor = generateRandomNumber(min, max);
   yInput = Math.floor(Math.random() * height - heightDeductor);
   return yInput;
 }
 
 function generateYNorth() {
-  return generateYInput(400, 500) + canvas.height * 2;
+  return generateYInput(400, 0) + canvas.height * 2;
 }
 
 function generateYSouth() {
-  return generateYInput(canvas.height + 1000, canvas.height + 1500);
+  return generateYInput(canvas.height + 1000, canvas.height + 1800);
 }
 
 /* 
@@ -406,11 +404,11 @@ function createMatrixArray(directionMatrix) {
       // matrixString xInput value
       xInput = fontSize * i;
       if (directionMatrix === "south") {
-        yInput = generateYNorth();
+        yInput = generateYSouth();
         xSpeedInput = null;
         ySpeedInput = generateSpeed();
       } else if (directionMatrix === "north") {
-        yInput = generateYSouth();
+        yInput = generateYNorth();
         xSpeedInput = null;
         ySpeedInput = -Math.abs(generateSpeed());
       }
@@ -856,6 +854,9 @@ function recolorMenuOneColor(inputColor) {
     elems[i].style.color = inputColor;
   }
 
+  // button border color
+  document.getElementById("button").style.border = borderPrefix + selectColor;
+
   // for border select boxes
   document.getElementById("colors").style.border = borderPrefix + inputColor;
   document.getElementById("directions").style.border =
@@ -864,13 +865,23 @@ function recolorMenuOneColor(inputColor) {
 
 function recolorMenuRandom() {
   let elems = document.body.getElementsByTagName("*");
+
   for (let i = 0; i < elems.length; i++) {
     elems[i].style.color = getRandomColor();
   }
 
+  // button border color
+  buttonBorderColorRandom();
+
   // for directions select boxes
   document.getElementById("directions").style.border =
     borderPrefix + getRandomColor();
+}
+
+function buttonBorderColorRandom() {
+  let button = document.getElementById("button");
+
+  button.style.border = borderPrefix + getRandomColor();
 }
 
 function menuOnLoad() {
@@ -911,7 +922,6 @@ function matchColorToRGB(entryColor) {
 }
 
 // hover over button color change
-
 document
   .getElementById("button")
   .addEventListener("mouseover", buttonMouseOver);
@@ -919,14 +929,34 @@ document.getElementById("button").addEventListener("mouseout", buttonMouseOut);
 
 function buttonMouseOver() {
   let button = document.getElementById("button");
-  button.style.background = selectColor;
-  button.style.color = colorBlack;
+  console.log(buttonDiscoChecked());
+  if (buttonDiscoChecked()) {
+    button.style.background = getRandomColor();
+    button.style.color = colorBlack;
+    buttonBorderColorRandom();
+  } else {
+    button.style.background = selectColor;
+    button.style.color = colorBlack;
+  }
 }
 
 function buttonMouseOut() {
   let button = document.getElementById("button");
-  button.style.background = colorBlack;
-  button.style.color = selectColor;
+
+  if (buttonDiscoChecked()) {
+    button.style.background = colorBlack;
+    button.style.color = getRandomColor();
+    buttonBorderColorRandom();
+  } else {
+    button.style.background = colorBlack;
+    button.style.color = selectColor;
+  }
+  // button.style.background = colorBlack;
+  // button.style.color = selectColor;
+}
+
+function buttonDiscoChecked() {
+  return document.getElementById("disco").checked;
 }
 
 function updateRandomColor() {
