@@ -818,6 +818,8 @@ function checkboxFunction() {
 
     recolorMenuOneColor(selectColor);
 
+    buttonBackgroundBlack();
+
     clearInterval(menuInterval);
   } else {
     text.style.display = "none";
@@ -825,8 +827,13 @@ function checkboxFunction() {
 
     recolorMenuRandom();
 
-    menuInterval = setInterval(recolorMenuRandom, 1000);
+    menuInterval = setInterval(discoIntervalFunction, 1000);
   }
+}
+
+function discoIntervalFunction() {
+  recolorMenuRandom();
+  buttonDiscoBackgroundChangeColor();
 }
 
 let selectColor;
@@ -937,8 +944,9 @@ function buttonMouseOver() {
   let button = document.getElementById("button");
   console.log(buttonDiscoChecked());
   if (buttonDiscoChecked()) {
-    button.style.background = getRandomColor();
+    // button.style.background = getRandomColor();
     button.style.color = colorBlack;
+    buttonDiscoBackgroundChangeColor();
     buttonBorderColorRandom();
   } else {
     button.style.background = selectColor;
@@ -957,12 +965,22 @@ function buttonMouseOut() {
     button.style.background = colorBlack;
     button.style.color = selectColor;
   }
-  // button.style.background = colorBlack;
-  // button.style.color = selectColor;
 }
 
 function buttonDiscoChecked() {
   return document.getElementById("disco").checked;
+}
+
+function buttonBackgroundBlack() {
+  let button = document.getElementById("button");
+
+  button.style.background = colorBlack;
+}
+
+function buttonDiscoBackgroundChangeColor() {
+  let button = document.getElementById("button");
+
+  button.style.background = getRandomColor();
 }
 
 function updateRandomColor() {
