@@ -4,6 +4,11 @@ body {
   font-family: Lucida Console;
   font-size: 20px;
   transition-duration: 0.4s;
+
+  -webkit-animation: fadeIn 1.5s ease-in; /* Safari 4+ */
+  -moz-animation: fadeIn 1.5s ease-in; /* Fx 5+ */
+  -o-animation: fadeIn 1.5s ease-in; /* Opera 12+ */
+  animation: fadeIn 1.5s ease-in; /* IE 10+, Fx 29+ */
 }
 
 #title {
@@ -71,4 +76,37 @@ body {
 #myCanvas {
   display: none;
   background: black;
+}
+
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-moz-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-o-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }

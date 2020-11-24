@@ -804,6 +804,8 @@ function hideMenu() {
   canvas.style.display = "block";
 }
 
+let menuInterval;
+
 // for checkbox hiding
 function checkboxFunction() {
   // hide color selectbox
@@ -815,11 +817,15 @@ function checkboxFunction() {
     select.style.display = "inline-block";
 
     recolorMenuOneColor(selectColor);
+
+    clearInterval(menuInterval);
   } else {
     text.style.display = "none";
     select.style.display = "none";
 
     recolorMenuRandom();
+
+    menuInterval = setInterval(recolorMenuRandom, 1000);
   }
 }
 

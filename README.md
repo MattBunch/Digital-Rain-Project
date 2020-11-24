@@ -106,13 +106,19 @@ Fixed random color button visualization.
 
 Around a couple of weeks ago, I fixed the screen resizing issue by just clearing the screen and the array of `MatrixString` objects every time the screen is resized, then refilling the array and start the animation again.
 
-Updated `generateYSouth()` and `generateYNorth()` functions within .
+Updated `generateYSouth()` and `generateYNorth()` functions within array creation function.
 
 Tried implementing css coloring of the disco check but it would break on multiple browsers. I'm pretty sure my select checkboxes might break on other browsers, will need to check. Changed the styling of the canvas from inline to the stylesheet to make my main html page a little cleaner. Fixed some spelling mistake and general readability of this readme file. In future projects, I will try to make the early devlogs more legible to other readers.
 
 Added `menuOnLoad()` function to be run on start of page. Managed to save the value within `selectFunction()` to the browser's local storage so that the coloring loads properly.
 
 Added `buttonDiscoChecked()` to the button mouseover functionality for changing the button's border color and button's background color upon mouse over.
+
+## 24/11/2020
+
+Added fade in effect upon load in the main menu.
+
+Added disco effect in main menu when disco checkbox is checked.
 
 ### Possible extensions in further versions:
 
