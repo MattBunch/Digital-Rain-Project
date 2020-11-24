@@ -825,7 +825,7 @@ function checkboxFunction() {
     text.style.display = "none";
     select.style.display = "none";
 
-    recolorMenuRandom();
+    discoIntervalFunction();
 
     menuInterval = setInterval(discoIntervalFunction, 1000);
   }
