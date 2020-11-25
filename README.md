@@ -120,7 +120,11 @@ Added fade in effect upon load in the main menu.
 
 Added disco effect in main menu when disco checkbox is checked.
 
-### Possible extensions in further versions:
+## 25/11/2020
+
+Fixed menu's disco effect upon reentering the page from the animation page.
+
+# Possible extensions in further versions:
 
 - Music.
 - Fullscreen.

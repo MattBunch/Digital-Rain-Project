@@ -677,6 +677,7 @@ document.getElementById("myCanvas").addEventListener("click", resetToMenu);
 
 function resetToMenu() {
   clearInterval(intervalValid); // stop draw from running in interval
+  clearInterval(menuInterval); // stop menu disco animation if running
   ctx.fillStyle = colorBlack;
   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height); // set background to black
   showMenu();
