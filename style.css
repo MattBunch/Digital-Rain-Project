@@ -68,9 +68,16 @@ body {
 #footer {
   font-size: 7px;
   text-align: left;
-  position: absolute;
   bottom: 10px;
   width: 50%;
+
+  bottom: 0;
+  width: 100%;
+  position: fixed;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  /* text-align: center; */
 }
 
 #myCanvas {

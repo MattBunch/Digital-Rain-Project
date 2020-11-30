@@ -943,7 +943,6 @@ document.getElementById("button").addEventListener("mouseout", buttonMouseOut);
 
 function buttonMouseOver() {
   let button = document.getElementById("button");
-  console.log(buttonDiscoChecked());
   if (buttonDiscoChecked()) {
     // button.style.background = getRandomColor();
     button.style.color = colorBlack;

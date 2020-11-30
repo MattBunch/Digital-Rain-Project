@@ -124,6 +124,10 @@ Added disco effect in main menu when disco checkbox is checked.
 
 Fixed menu's disco effect upon reentering the page from the animation page.
 
+## 30/11/2020
+
+Changed footer position.
+
 # Possible extensions in further versions:
 
 - Music.
