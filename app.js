@@ -232,6 +232,11 @@ function generateYSouth() {
 #################################################################################################
 */
 
+let counter = 0; // counter for determining frame which colors change
+let counterMax = 10; // counter maximum for when counter goes back to 0
+
+let savedColor = getRandomColor();
+
 class MatrixString {
   constructor(x, y, xSpeed, ySpeed) {
     this.word = generateWord(generateWordSizeRand()); // word
@@ -298,7 +303,15 @@ class MatrixString {
   showDiscoVertical() {
     this.word = generateWord(this.word.length);
 
-    ctx.fillStyle = getRandomColor();
+    // if (counter > counterMax) {
+    //   ctx.fillStyle = getRandomColor();
+    //   savedColor = ctx.fillStyle;
+    //   counter = 0;
+    // } else {
+    //   ctx.fillStyle = savedColor;
+    // }
+
+    discoColorCounterCheck();
 
     for (let i = 0; i < this.word.length - 1; i++) {
       ctx.fillText(
@@ -364,7 +377,16 @@ class MatrixString {
   // disco mode horizontal, each letter will be a different color on each frame
   showDiscoHorizontal() {
     this.word = generateWord(this.word.length);
-    ctx.fillStyle = getRandomColor();
+
+    // if (counter > counterMax) {
+    //   ctx.fillStyle = getRandomColor();
+    //   savedColor = ctx.fillStyle;
+    //   counter = 0;
+    // } else {
+    //   ctx.fillStyle = savedColor;
+    // }
+    discoColorCounterCheck();
+
     for (let i = 0; i < this.word.length - 1; i++) {
       ctx.fillText(
         this.word.substring(i, i + 1),
@@ -372,6 +394,16 @@ class MatrixString {
         this.y
       );
     }
+  }
+}
+
+function discoColorCounterCheck() {
+  if (counter > counterMax) {
+    ctx.fillStyle = getRandomColor();
+    savedColor = ctx.fillStyle;
+    counter = 0;
+  } else {
+    ctx.fillStyle = savedColor;
   }
 }
 
@@ -457,6 +489,9 @@ let fromVerticalDirection; // boolean value for setting vertical direction
 // draw direction going south
 // show the characters in animation.
 function draw() {
+  counter++;
+  // console.log(counter);
+
   // draw black background with 0.025 opacity to show the trail
   ctx.font = fontSize + "px 'Consolas', 'Lucida Console'";
   ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
@@ -472,7 +507,8 @@ function draw() {
 
     // disco boolean check, random generates color for every frame
     if (discoOn) {
-      colorChoiceArray[chosenColor] = generateRandomColorArray();
+      let newColor = generateRandomColorArray();
+      colorChoiceArray[chosenColor] = newColor;
     }
 
     if (direction === "south") {
