@@ -233,8 +233,8 @@ function generateYSouth() {
 */
 
 class MatrixString {
-  constructor(word, x, y, xSpeed, ySpeed) {
-    this.word = word; // word
+  constructor(x, y, xSpeed, ySpeed) {
+    this.word = generateWord(generateWordSizeRand()); // word
     this.x = x; // random x float coordinates
     this.y = y; // random y float coordinates
     this.xSpeed = xSpeed; // random x float speed
@@ -413,15 +413,7 @@ function createMatrixArray(directionMatrix) {
         ySpeedInput = -Math.abs(generateSpeed());
       }
       // create new MatrixString object for vertical
-      words.push(
-        new MatrixString(
-          generateWord(generateWordSizeRand()),
-          xInput,
-          yInput,
-          xSpeedInput,
-          ySpeedInput
-        )
-      );
+      words.push(new MatrixString(xInput, yInput, xSpeedInput, ySpeedInput));
     }
     // horizontal
   } else if (directionMatrix === "east" || directionMatrix === "west") {
@@ -437,15 +429,7 @@ function createMatrixArray(directionMatrix) {
         ySpeedInput = null;
       }
       // create new object for horizontal
-      words.push(
-        new MatrixString(
-          generateWord(generateWordSizeRand()),
-          xInput,
-          yInput,
-          xSpeedInput,
-          ySpeedInput
-        )
-      );
+      words.push(new MatrixString(xInput, yInput, xSpeedInput, ySpeedInput));
     }
   }
 }
@@ -855,6 +839,17 @@ function selectFunction() {
   localStorage.setItem("key", selectColor);
 }
 
+// dropdown menu
+// FIXME: consider doing something when hovering over selectbox dropdown menu, do it this way:
+// https://stackoverflow.com/questions/31910038/do-something-when-mouse-hovers-over-each-select-option-in-the-list-javascript
+// below method only works when hovering over the main opton, will have to create own select option
+// if you want to have a dropdown recolor itself
+document
+  .getElementById("directions")
+  .addEventListener("mouseover", function () {
+    // do nothing
+  });
+
 // call selectionFunction on page loading
 
 let borderPrefix = "1px solid ";
@@ -873,6 +868,9 @@ function recolorMenuOneColor(inputColor) {
   document.getElementById("colors").style.border = borderPrefix + inputColor;
   document.getElementById("directions").style.border =
     borderPrefix + inputColor;
+  document.getElementById("directions").style.backgroundColor = colorBlack;
+
+  selectBackgroundColorFunction();
 }
 
 function recolorMenuRandom() {
@@ -888,6 +886,12 @@ function recolorMenuRandom() {
   // for directions select boxes
   document.getElementById("directions").style.border =
     borderPrefix + getRandomColor();
+
+  document.getElementById(
+    "directions"
+  ).style.backgroundColor = getRandomColor();
+
+  selectBackgroundColorFunction();
 }
 
 function buttonBorderColorRandom() {
@@ -895,6 +899,21 @@ function buttonBorderColorRandom() {
 
   button.style.border = borderPrefix + getRandomColor();
 }
+
+function selectBackgroundColorFunction() {
+  let select = document.getElementById("directions");
+  let checkBox = document.getElementById("disco");
+
+  Array.from(select.options).forEach(function (optionElement) {
+    if (checkBox.checked) {
+      optionElement.style.backgroundColor = getRandomColor();
+    } else {
+      optionElement.style.backgroundColor = colorBlack;
+    }
+  });
+}
+
+selectBackgroundColorFunction();
 
 function menuOnLoad() {
   // Retrieve
@@ -943,7 +962,7 @@ function buttonMouseOver() {
   let button = document.getElementById("button");
   if (buttonDiscoChecked()) {
     // button.style.background = getRandomColor();
-    button.style.color = colorBlack;
+    button.style.color = getRandomColor();
     buttonDiscoBackgroundChangeColor();
     buttonBorderColorRandom();
   } else {
@@ -956,8 +975,8 @@ function buttonMouseOut() {
   let button = document.getElementById("button");
 
   if (buttonDiscoChecked()) {
-    button.style.background = colorBlack;
     button.style.color = getRandomColor();
+    buttonDiscoBackgroundChangeColor();
     buttonBorderColorRandom();
   } else {
     button.style.background = colorBlack;
@@ -986,6 +1005,4 @@ function updateRandomColor() {
   selectFunction();
 }
 
-function directionFunction() {
-  // TODO: add something cool upon changing direction
-}
+function directionFunction() {}
