@@ -494,12 +494,6 @@ function draw() {
       destinationPoint = 0;
     }
 
-    // disco boolean check, random generates color for every frame
-    if (discoOn) {
-      let newColor = generateRandomColorArray();
-      colorChoiceArray[chosenColor] = newColor;
-    }
-
     if (direction === "south") {
       // reset to top of screen if drop off the canvas at bottom of the screen
       if (words[i].y > height) {
@@ -628,6 +622,7 @@ function reset() {
   colorChoiceArray[7] = randomColorArray;
   updateRandomColor();
   discoFrameCounter = 0;
+  savedColorArray = null;
 }
 
 /*######################################################################################################
@@ -643,6 +638,8 @@ function reset() {
 
 let intervalValid, animationOn;
 let savedDirection = direction;
+
+let savedColorArray;
 
 document.addEventListener("keydown", function (event) {
   if (event.keyCode == 27) {
@@ -679,6 +676,9 @@ document.addEventListener("keydown", function (event) {
   } else if (event.keyCode == 67) {
     // c key
     clearScreen();
+  } else if (event.keyCode == 68) {
+    // d key
+    toggleDisco();
   }
 });
 
@@ -721,12 +721,20 @@ function clearScreen() {
 }
 
 function pause() {
-  if (animationOn === true) {
+  if (animationOn) {
     clearInterval(intervalValid);
     animationOn = false;
   } else {
     intervalValid = setInterval(draw, 50);
     animationOn = true;
+  }
+}
+
+function toggleDisco() {
+  if (discoOn) {
+    discoOn = false;
+  } else {
+    discoOn = true;
   }
 }
 
@@ -750,8 +758,7 @@ function loadMenuOptions() {
   let userColor = document.getElementById("colors").value;
 
   // color
-  if (discoOn === false)
-    chosenColor = matchColorToIndex(userColor.toLowerCase());
+  chosenColor = matchColorToIndex(userColor.toLowerCase());
 
   // direction
   direction = document.getElementById("directions").value;
