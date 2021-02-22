@@ -232,7 +232,7 @@ function generateYSouth() {
 #################################################################################################
 */
 
-let discoFrameElement = document.getElementById("frameCount");
+const discoFrameElement = document.getElementById("frameCount");
 let discoFrameCounter = 0; // counter for determining frame which colors change
 
 let discoFrameCounterMax = discoFrameElement.value; // counter maximum for when counter goes back to 0
@@ -926,6 +926,7 @@ function recolorMenuRandom() {
   // for directions select boxes
   directionsSelect.style.border = borderPrefix + getRandomColor();
   directionsSelect.style.backgroundColor = getRandomColor();
+  discoFrameElement.style.backgroundColor = getRandomColor();
 
   selectBackgroundColorFunction();
 }
