@@ -760,13 +760,23 @@ function run() {
 // ***********************************************************************
 */
 
+// list of html elements here
+let checkBox = document.getElementById("disco");
+let text = document.getElementById("colorsLabel");
+let select = document.getElementById("colors");
+let directionsSelect = document.getElementById("directions");
+let menuDivs = document.getElementsByClassName("menu");
+let button = document.getElementById("button");
+let elems = document.body.getElementsByTagName("*");
+
+let menuInterval;
+let selectColor;
+
 // show and hide menu
 
 function showMenu() {
-  let divsToShow = document.getElementsByClassName("menu"); // array of HTML elements
-
-  for (let i = 0; i < divsToShow.length; i++) {
-    divsToShow[i].style.display = "block";
+  for (let i = 0; i < menuDivs.length; i++) {
+    menuDivs[i].style.display = "block";
   }
 
   menuOnLoad();
@@ -778,23 +788,16 @@ function showMenu() {
 }
 
 function hideMenu() {
-  let divsToHide = document.getElementsByClassName("menu"); // array of HTML elements
-
-  for (let i = 0; i < divsToHide.length; i++) {
-    divsToHide[i].style.display = "none";
+  for (let i = 0; i < menuDivs.length; i++) {
+    menuDivs[i].style.display = "none";
   }
 
   canvas.style.display = "block";
 }
 
-let menuInterval;
-
 // for checkbox hiding
 function checkboxFunction() {
   // hide color selectbox
-  let checkBox = document.getElementById("disco");
-  let text = document.getElementById("colorsLabel");
-  let select = document.getElementById("colors");
   if (!checkBox.checked) {
     text.style.display = "inline-block";
     select.style.display = "inline-block";
@@ -819,16 +822,10 @@ function discoIntervalFunction() {
   buttonDiscoBackgroundChangeColor();
 }
 
-let selectColor;
-
 // for selectbox coloring
 function selectFunction() {
-  let userColor = document.getElementById("colors").value;
+  let userColor = select.value;
   selectColor = matchColorToRGB(userColor.toLowerCase());
-
-  let button = document.getElementById("button");
-
-  let checkBox = document.getElementById("disco");
 
   if (!checkBox.checked) {
     recolorMenuOneColor(selectColor);
@@ -855,27 +852,22 @@ document
 let borderPrefix = "1px solid ";
 
 function recolorMenuOneColor(inputColor) {
-  let elems = document.body.getElementsByTagName("*");
-
   for (let i = 0; i < elems.length; i++) {
     elems[i].style.color = inputColor;
   }
 
   // button border color
-  document.getElementById("button").style.border = borderPrefix + selectColor;
+  button.style.border = borderPrefix + selectColor;
 
   // for border select boxes
-  document.getElementById("colors").style.border = borderPrefix + inputColor;
-  document.getElementById("directions").style.border =
-    borderPrefix + inputColor;
-  document.getElementById("directions").style.backgroundColor = colorBlack;
+  select.style.border = borderPrefix + inputColor;
+  directionsSelect.style.border = borderPrefix + inputColor;
+  directionsSelect.style.backgroundColor = colorBlack;
 
   selectBackgroundColorFunction();
 }
 
 function recolorMenuRandom() {
-  let elems = document.body.getElementsByTagName("*");
-
   for (let i = 0; i < elems.length; i++) {
     elems[i].style.color = getRandomColor();
   }
@@ -884,27 +876,18 @@ function recolorMenuRandom() {
   buttonBorderColorRandom();
 
   // for directions select boxes
-  document.getElementById("directions").style.border =
-    borderPrefix + getRandomColor();
-
-  document.getElementById(
-    "directions"
-  ).style.backgroundColor = getRandomColor();
+  directionsSelect.style.border = borderPrefix + getRandomColor();
+  directionsSelect.style.backgroundColor = getRandomColor();
 
   selectBackgroundColorFunction();
 }
 
 function buttonBorderColorRandom() {
-  let button = document.getElementById("button");
-
   button.style.border = borderPrefix + getRandomColor();
 }
 
 function selectBackgroundColorFunction() {
-  let select = document.getElementById("directions");
-  let checkBox = document.getElementById("disco");
-
-  Array.from(select.options).forEach(function (optionElement) {
+  Array.from(directionsSelect.options).forEach(function (optionElement) {
     if (checkBox.checked) {
       optionElement.style.backgroundColor = getRandomColor();
     } else {
@@ -918,8 +901,6 @@ selectBackgroundColorFunction();
 function menuOnLoad() {
   // Retrieve
   selectColor = localStorage.getItem("key");
-
-  let checkBox = document.getElementById("disco");
 
   if (checkBox.checked) {
     checkboxFunction();
@@ -953,13 +934,10 @@ function matchColorToRGB(entryColor) {
 }
 
 // hover over button color change
-document
-  .getElementById("button")
-  .addEventListener("mouseover", buttonMouseOver);
-document.getElementById("button").addEventListener("mouseout", buttonMouseOut);
+button.addEventListener("mouseover", buttonMouseOver);
+button.addEventListener("mouseout", buttonMouseOut);
 
 function buttonMouseOver() {
-  let button = document.getElementById("button");
   if (buttonDiscoChecked()) {
     // button.style.background = getRandomColor();
     button.style.color = getRandomColor();
@@ -972,8 +950,6 @@ function buttonMouseOver() {
 }
 
 function buttonMouseOut() {
-  let button = document.getElementById("button");
-
   if (buttonDiscoChecked()) {
     button.style.color = getRandomColor();
     buttonDiscoBackgroundChangeColor();
@@ -989,14 +965,10 @@ function buttonDiscoChecked() {
 }
 
 function buttonBackgroundBlack() {
-  let button = document.getElementById("button");
-
   button.style.background = colorBlack;
 }
 
 function buttonDiscoBackgroundChangeColor() {
-  let button = document.getElementById("button");
-
   button.style.background = getRandomColor();
 }
 
