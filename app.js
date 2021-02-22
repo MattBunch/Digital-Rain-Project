@@ -233,13 +233,13 @@ function generateYSouth() {
 */
 
 class MatrixString {
-  constructor(word, x, y, xSpeed, ySpeed, stringFontSize) {
+  constructor(word, x, y, xSpeed, ySpeed) {
     this.word = word; // word
     this.x = x; // random x float coordinates
     this.y = y; // random y float coordinates
     this.xSpeed = xSpeed; // random x float speed
     this.ySpeed = ySpeed; // random y float speed
-    this.fontSize = stringFontSize; //  random font size
+    this.fontSize = generateFontSize(); //  random font size
   }
 
   // method for displaying text to the screen, default method
@@ -419,8 +419,7 @@ function createMatrixArray(directionMatrix) {
           xInput,
           yInput,
           xSpeedInput,
-          ySpeedInput,
-          generateFontSize()
+          ySpeedInput
         )
       );
     }
@@ -444,8 +443,7 @@ function createMatrixArray(directionMatrix) {
           xInput,
           yInput,
           xSpeedInput,
-          ySpeedInput,
-          generateFontSize()
+          ySpeedInput
         )
       );
     }
