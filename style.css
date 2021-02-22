@@ -85,6 +85,10 @@ body {
   background: black;
 }
 
+.frameCount {
+  display: none;
+}
+
 @-webkit-keyframes fadeIn {
   0% {
     opacity: 0;

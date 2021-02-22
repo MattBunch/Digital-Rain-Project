@@ -232,8 +232,13 @@ function generateYSouth() {
 #################################################################################################
 */
 
-let counter = 0; // counter for determining frame which colors change
-let counterMax = 10; // counter maximum for when counter goes back to 0
+let discoFrameElement = document.getElementById("frameCount");
+let discoFrameCounter = 0; // counter for determining frame which colors change
+
+let discoFrameCounterMax = discoFrameElement.value; // counter maximum for when counter goes back to 0
+if (discoFrameElement.value < 0 || discoFrameElement == null) {
+  discoFrameCounterMax = 10;
+}
 
 let savedColor = getRandomColor();
 
@@ -303,14 +308,6 @@ class MatrixString {
   showDiscoVertical() {
     this.word = generateWord(this.word.length);
 
-    // if (counter > counterMax) {
-    //   ctx.fillStyle = getRandomColor();
-    //   savedColor = ctx.fillStyle;
-    //   counter = 0;
-    // } else {
-    //   ctx.fillStyle = savedColor;
-    // }
-
     discoColorCounterCheck();
 
     for (let i = 0; i < this.word.length - 1; i++) {
@@ -378,13 +375,6 @@ class MatrixString {
   showDiscoHorizontal() {
     this.word = generateWord(this.word.length);
 
-    // if (counter > counterMax) {
-    //   ctx.fillStyle = getRandomColor();
-    //   savedColor = ctx.fillStyle;
-    //   counter = 0;
-    // } else {
-    //   ctx.fillStyle = savedColor;
-    // }
     discoColorCounterCheck();
 
     for (let i = 0; i < this.word.length - 1; i++) {
@@ -398,10 +388,10 @@ class MatrixString {
 }
 
 function discoColorCounterCheck() {
-  if (counter > counterMax) {
+  if (discoFrameCounter > discoFrameCounterMax) {
     ctx.fillStyle = getRandomColor();
     savedColor = ctx.fillStyle;
-    counter = 0;
+    discoFrameCounter = 0;
   } else {
     ctx.fillStyle = savedColor;
   }
@@ -489,8 +479,7 @@ let fromVerticalDirection; // boolean value for setting vertical direction
 // draw direction going south
 // show the characters in animation.
 function draw() {
-  counter++;
-  // console.log(counter);
+  discoFrameCounter++;
 
   // draw black background with 0.025 opacity to show the trail
   ctx.font = fontSize + "px 'Consolas', 'Lucida Console'";
@@ -638,6 +627,7 @@ function reset() {
   randomColorArray = generateRandomColorArray();
   colorChoiceArray[7] = randomColorArray;
   updateRandomColor();
+  discoFrameCounter = 0;
 }
 
 /*######################################################################################################
@@ -683,7 +673,9 @@ document.addEventListener("keydown", function (event) {
     }
   } else if (event.keyCode == 32) {
     // space key
-    pause();
+    if (ctx != null) {
+      pause();
+    }
   } else if (event.keyCode == 67) {
     // c key
     clearScreen();
@@ -779,7 +771,9 @@ function run() {
   hideMenu();
 
   // run the animation
-  intervalValid = setInterval(draw, 50);
+  intervalValid = setInterval(function () {
+    draw();
+  }, 50);
   animationOn = true;
 }
 
@@ -797,13 +791,14 @@ function run() {
 */
 
 // list of html elements here
-let checkBox = document.getElementById("disco");
-let text = document.getElementById("colorsLabel");
-let select = document.getElementById("colors");
-let directionsSelect = document.getElementById("directions");
-let menuDivs = document.getElementsByClassName("menu");
-let button = document.getElementById("button");
-let elems = document.body.getElementsByTagName("*");
+const checkBox = document.getElementById("disco");
+const text = document.getElementById("colorsLabel");
+const select = document.getElementById("colors");
+const directionsSelect = document.getElementById("directions");
+const menuDivs = document.getElementsByClassName("menu");
+const button = document.getElementById("button");
+const elems = document.body.getElementsByTagName("*");
+const frameCountElems = document.getElementsByClassName("frameCount");
 
 let menuInterval;
 let selectColor;
@@ -834,9 +829,13 @@ function hideMenu() {
 // for checkbox hiding
 function checkboxFunction() {
   // hide color selectbox
+  // show disco frame input
   if (!checkBox.checked) {
     text.style.display = "inline-block";
     select.style.display = "inline-block";
+
+    // hide frameCountElems
+    frameCountElemsVisibilityFunction();
 
     recolorMenuOneColor(selectColor);
 
@@ -847,6 +846,9 @@ function checkboxFunction() {
     text.style.display = "none";
     select.style.display = "none";
 
+    // show frameCountElems
+    frameCountElemsVisibilityFunction();
+
     discoIntervalFunction();
 
     menuInterval = setInterval(discoIntervalFunction, 1000);
@@ -856,6 +858,16 @@ function checkboxFunction() {
 function discoIntervalFunction() {
   recolorMenuRandom();
   buttonDiscoBackgroundChangeColor();
+}
+
+function frameCountElemsVisibilityFunction() {
+  for (let i = 0; i < frameCountElems.length; i++) {
+    if (checkBox.checked) {
+      frameCountElems[i].style.display = "inline-block";
+    } else {
+      frameCountElems[i].style.display = "none";
+    }
+  }
 }
 
 // for selectbox coloring
@@ -1011,6 +1023,16 @@ function buttonDiscoBackgroundChangeColor() {
 function updateRandomColor() {
   selectColor = randomColorArray[2];
   selectFunction();
+}
+
+function frameCountFunctionOnChange() {
+  let currentDiscoFrameMax = discoFrameElement.value;
+  localStorage.setItem("frameCountKey", currentDiscoFrameMax);
+  discoFrameCounterMax = currentDiscoFrameMax;
+}
+
+function frameCountFunctionOnLoad() {
+  discoFrameElement.value = localStorage.getItem("frameCountKey");
 }
 
 function directionFunction() {}

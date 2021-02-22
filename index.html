@@ -49,6 +49,24 @@
         <option value="west">West</option>
       </select>
       <br />
+      <div class="frameCount">
+        <label class="frameCount" for="frameCount"
+          >Disco Frame Count (1-100):</label
+        >
+        <input
+          class="frameCount"
+          type="number"
+          id="frameCount"
+          name="frameCount"
+          min="1"
+          max="100"
+          value="1"
+          onload="frameCountFunctionOnLoad()"
+          onchange="frameCountFunctionOnChange()"
+        />
+      </div>
+
+      <br />
       <button class="button" id="button" onclick="run()">
         Start Animation
       </button>
