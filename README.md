@@ -12,11 +12,8 @@ This program displays digital rain animation within the window browser, as seen 
 - Spacebar: pause
 - C: clear screen
 - D: toggle disco
-<<<<<<< HEAD
 - PageUp: Speed up
 - PageDown: Slow down
-=======
->>>>>>> fdbbf6fcde0cbfae56f073ba673b954e3955b06a
 
 # Possible extensions in further versions:
 
