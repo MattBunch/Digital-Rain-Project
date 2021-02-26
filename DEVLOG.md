@@ -127,8 +127,9 @@ Added `buttonDiscoChecked()` to the button mouseover functionality for changing 
 
 ### 25/02/2021
 
-- ToggleDisco added
+- ToggleDisco added.
 
 ### 26/02/2021
 
-- Speedup and Slowdown added
+- Speedup and Slowdown added.
+- North and South starting point generating function fixed to be a wider range to look more spread out.

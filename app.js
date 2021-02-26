@@ -231,16 +231,34 @@ function generateYInput(min, max) {
 }
 
 function generateYNorth() {
-  let output = generateRandomNumber(canvas.height + 800, canvas.height + 1600); // + canvas.height * 2;
-  console.log(output);
+  let minNum = canvas.height + 2;
+  let maxNum = Math.round(
+    canvas.height + canvas.height * 2 + canvas.height * 0.7021
+  );
+  if (iMin < 1) {
+    iMin++;
+    console.log("min: " + minNum);
+    console.log("max: " + maxNum);
+    let difference = maxNum - minNum;
+    console.log("different: " + difference);
+    console.log("canvas.height:" + canvas.height);
+  }
+  let output = generateRandomNumber(minNum, maxNum); // + canvas.height * 2;
+  // console.log(output);
   return output;
 }
 
-// min = 1607
-// max = 2407
 function generateYSouth() {
-  let minNum = 0 - canvas.height;
-  let maxNum = canvas.height * -1 * 2;
+  let minNum = 0 - (canvas.height + canvas.height * 0.3);
+  let maxNum = canvas.height * -1 * 4;
+  if (iMin < 1) {
+    iMin++;
+    console.log("min: " + minNum);
+    console.log("max: " + maxNum);
+    let difference = maxNum - minNum;
+    console.log("different: " + difference);
+    console.log("canvas.height:" + canvas.height);
+  }
   let output = generateRandomNumber(minNum, maxNum);
   console.log(output);
   return output;
