@@ -736,7 +736,11 @@ document.addEventListener("keydown", function (event) {
     clearScreen();
   } else if (event.keyCode == 68) {
     // d key
-    toggleDisco();
+    if (isMenuHidden()) {
+      toggleDisco();
+    } else {
+      toggleDiscoMenu();
+    }
   } else if (event.keyCode == 33) {
     // page up key
     if (ctx != null) {
@@ -833,23 +837,22 @@ function pause() {
 
 function toggleDisco() {
   if (discoOn) {
-    toggleDiscoInput(false);
+    discoOn = false;
+    checkBox.checked = false;
   } else {
-    toggleDiscoInput(true);
+    discoOn = true;
+    checkBox.checked = true;
   }
 }
 
-function toggleDiscoInput(input) {
-  discoOn = input;
-  console.log(discoOn);
-  // FIXME: menu is getting all messed up due to the menuInterval animation!
-  if (!isMenuHidden()) {
-    // checkBox.checked = input;
-    // checkboxFunction(); // menuInterval is getting set twice in this method
-    console.log("Menu is shown");
+function toggleDiscoMenu() {
+  if (checkBox.checked == true) {
+    checkBox.checked = false;
   } else {
-    console.log("Menu is hidden");
+    checkBox.checked = true;
   }
+
+  checkboxFunction();
 }
 
 function speedUp() {
@@ -1005,9 +1008,6 @@ function isMenuHidden() {
 function checkboxFunction() {
   // hide color selectbox
   // show disco frame input
-  if (isMenuHidden()) {
-    return;
-  }
 
   if (!checkBox.checked) {
     text.style.display = "inline-block";
@@ -1130,11 +1130,15 @@ function menuOnLoad() {
   // Retrieve
   selectColor = localStorage.getItem("key");
 
-  if (checkBox.checked) {
-    checkboxFunction();
-  } else {
-    selectFunction();
-  }
+  // if (checkBox.checked) {
+  //   checkboxFunction();
+  // } else {
+  //   selectFunction();
+  // }
+
+  checkboxFunction();
+
+  selectFunction();
 }
 
 function matchColorToRGB(entryColor) {
