@@ -205,19 +205,46 @@ function generateXWest() {
   return generateRandomNumber(800, 2000) * -1;
 }
 
+let iMin = 0;
+let iMax = 0;
+let iYInput = 0;
+
 function generateYInput(min, max) {
   // calculate height deductor range
+  if (iMin < 1) {
+    iMin++;
+    console.log("min: " + min);
+    console.log("canvas.height:" + canvas.height);
+  }
+  if (iMax < 1) {
+    iMax++;
+    console.log("max: " + max);
+  }
+
   let heightDeductor = generateRandomNumber(min, max);
   yInput = Math.floor(Math.random() * height - heightDeductor);
+  if (iYInput < 1) {
+    iYInput++;
+    console.log("heightDeductor: " + heightDeductor);
+  }
   return yInput;
 }
 
 function generateYNorth() {
-  return generateYInput(400, 0) + canvas.height * 2;
+  let output = generateRandomNumber(canvas.height + 800, canvas.height + 1600); // + canvas.height * 2;
+  console.log(output);
+  return output;
 }
 
+// min = 1607
+// max = 2407
 function generateYSouth() {
-  return generateYInput(canvas.height + 1000, canvas.height + 1800);
+  let minNum = 0 - canvas.height;
+  let maxNum = canvas.height * -1 * 2;
+  let output = generateRandomNumber(minNum, maxNum);
+  console.log(output);
+  return output;
+  // return generateYInput(canvas.height + 1000, canvas.height + 1800); // former: (canvas.height + 1000, canvas.height + 1800);
 }
 
 /* 
@@ -625,6 +652,9 @@ function reset() {
   discoFrameCounter = 0;
   intervalSpeed = defaultSpeed;
   currentSpeedLevel = speedLevels[middle];
+  iMax = 0;
+  iMin = 0;
+  iYInput = 0;
 }
 
 /*######################################################################################################
