@@ -123,7 +123,6 @@ let colorChoiceArray = [
   pinkArray,
   cyanArray,
   randomColorArray,
-  // generateRandomColorArray(),
 ];
 
 function getRandomColor() {
@@ -158,6 +157,8 @@ function generateRandomNumber(min, max) {
   let number = Math.random() * (rangeMax - rangeMin) + rangeMin; // generate random size between min and max
   return number;
 }
+
+// TODO: word size and font size should scale to size of screen
 
 // generate random size of word between 20 and 48
 function generateWordSizeRand() {
@@ -622,7 +623,8 @@ function reset() {
   colorChoiceArray[7] = randomColorArray;
   updateRandomColor();
   discoFrameCounter = 0;
-  savedColorArray = null;
+  intervalSpeed = defaultSpeed;
+  currentSpeedLevel = speedLevels[middle];
 }
 
 /*######################################################################################################
@@ -639,7 +641,12 @@ function reset() {
 let intervalValid, animationOn;
 let savedDirection = direction;
 
-let savedColorArray;
+let defaultSpeed = 50;
+let intervalSpeed = defaultSpeed;
+let amountOfSpeedLevels = 7;
+let speedLevels = Array.from(Array(amountOfSpeedLevels).keys());
+let middle = speedLevels[Math.round((speedLevels.length - 1) / 2)];
+let currentSpeedLevel = speedLevels[middle];
 
 document.addEventListener("keydown", function (event) {
   if (event.keyCode == 27) {
@@ -679,6 +686,15 @@ document.addEventListener("keydown", function (event) {
   } else if (event.keyCode == 68) {
     // d key
     toggleDisco();
+  } else if (event.keyCode == 33) {
+    // page up key
+    if (ctx != null) {
+      speedUp();
+    }
+  } else if (event.keyCode == 34) {
+    if (ctx != null) {
+      slowDown();
+    }
   }
 });
 
@@ -709,7 +725,7 @@ function clearScreen() {
 
       // if east
       case "east":
-        words[i].x = generateXEast(); //generateRandomNumber(canvas.width, canvas.width + 500); // generateXEast(); // new x placement
+        words[i].x = generateXEast();
         break;
 
       // if west
@@ -725,7 +741,7 @@ function pause() {
     clearInterval(intervalValid);
     animationOn = false;
   } else {
-    intervalValid = setInterval(draw, 50);
+    intervalValid = setInterval(draw, intervalSpeed);
     animationOn = true;
   }
 }
@@ -736,6 +752,40 @@ function toggleDisco() {
   } else {
     discoOn = true;
   }
+}
+
+function speedUp() {
+  if (currentSpeedLevel === speedLevels[speedLevels.length - 1]) {
+    return;
+  }
+
+  if (currentSpeedLevel < speedLevels[speedLevels.length - 1]) {
+    currentSpeedLevel++;
+    clearInterval(intervalValid);
+    intervalSpeed = getIncreasedIntervalSpeed(intervalSpeed);
+    intervalValid = setInterval(draw, intervalSpeed);
+  }
+}
+
+function slowDown() {
+  if (currentSpeedLevel === speedLevels[0]) {
+    return;
+  }
+
+  if (currentSpeedLevel > speedLevels[0]) {
+    currentSpeedLevel--;
+    clearInterval(intervalValid);
+    intervalSpeed = getDecreasedIntervalSpeed(intervalSpeed);
+    intervalValid = setInterval(draw, intervalSpeed);
+  }
+}
+
+function getIncreasedIntervalSpeed(input) {
+  return input / 2;
+}
+
+function getDecreasedIntervalSpeed(input) {
+  return input * 2;
 }
 
 window.addEventListener("resize", windowResized);
@@ -774,13 +824,13 @@ function run() {
   // read html values
   loadMenuOptions();
 
-  // hideMenu();
+  // hide the main html menu
   hideMenu();
 
   // run the animation
   intervalValid = setInterval(function () {
     draw();
-  }, 50);
+  }, intervalSpeed);
   animationOn = true;
 }
 
@@ -811,7 +861,6 @@ let menuInterval;
 let selectColor;
 
 // show and hide menu
-
 function showMenu() {
   for (let i = 0; i < menuDivs.length; i++) {
     menuDivs[i].style.display = "block";

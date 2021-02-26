@@ -124,3 +124,11 @@ Added `buttonDiscoChecked()` to the button mouseover functionality for changing 
 - Random color selected during disco animation in menu.
 - HTML elements made global to cut down on useless variable declarations in almost every html formatting-related function.
 - Counter added to stop disco function from being so rapid causing epilepsy. Could add disco speed in the menu? Possible future addition to add right here.
+
+### 25/02/2021
+
+- ToggleDisco added
+
+### 26/02/2021
+
+- Speedup and Slowdown added

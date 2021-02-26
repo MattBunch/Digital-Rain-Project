@@ -11,9 +11,11 @@ This program displays digital rain animation within the window browser, as seen 
 - Arrowkeys: switch directions
 - Spacebar: pause
 - C: clear screen
+- D: toggle disco
+- PageUp: Speed up
+- PageDown: Slow down
 
 # Possible extensions in further versions:
 
 - Music.
-- Fullscreen.
-- All four directions at the same time
+- All four directions at the same time.
