@@ -205,38 +205,15 @@ function generateXWest() {
   return generateRandomNumber(800, 2000) * -1;
 }
 
-let iMin = 0;
-let iMax = 0;
-let iYInput = 0;
-
-function generateYInput(min, max) {
-  // calculate height deductor range
-  if (iMin < 1) {
-    iMin++;
-    // console.log("min: " + min);
-    // console.log("canvas.height:" + canvas.height);
-  }
-  if (iMax < 1) {
-    iMax++;
-    // console.log("max: " + max);
-  }
-
-  let heightDeductor = generateRandomNumber(min, max);
-  yInput = Math.floor(Math.random() * height - heightDeductor);
-  if (iYInput < 1) {
-    iYInput++;
-    // console.log("heightDeductor: " + heightDeductor);
-  }
-  return yInput;
-}
+let iCounter = 0;
 
 function generateYNorth() {
   let minNum = canvas.height + 2;
   let maxNum = Math.round(
     canvas.height + canvas.height * 2 + canvas.height * 0.7021
   );
-  if (iMin < 1) {
-    iMin++;
+  if (iCounter < 1) {
+    iCounter++;
     // console.log("min: " + minNum);
     // console.log("max: " + maxNum);
     // let difference = maxNum - minNum;
@@ -251,8 +228,8 @@ function generateYNorth() {
 function generateYSouth() {
   let minNum = 0 - (canvas.height + canvas.height * 0.3);
   let maxNum = canvas.height * -1 * 4;
-  if (iMin < 1) {
-    iMin++;
+  if (iCounter < 1) {
+    iCounter++;
     // console.log("min: " + minNum);
     // console.log("max: " + maxNum);
     // let difference = maxNum - minNum;
@@ -667,9 +644,7 @@ function reset() {
   discoFrameCounter = 0;
   intervalSpeed = defaultSpeed;
   currentSpeedLevel = speedLevels[middle];
-  iMax = 0;
-  iMin = 0;
-  iYInput = 0;
+  iCounter = 0;
 }
 
 function resetRandomColor() {
