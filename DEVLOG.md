@@ -133,3 +133,6 @@ Added `buttonDiscoChecked()` to the button mouseover functionality for changing 
 
 - Speedup and Slowdown added.
 - North and South starting point generating function fixed to be a wider range to look more spread out.
+- Change color keycodes added for further functionality.
+- Event.KeyCode is deprecated. Should look at replacing this with a newer method.
+- Tried implementing disco toggle with keycode but glitches out if disco is toggled, then pressed during animation and go back to main menu, causes `menuInterval` to play twice.

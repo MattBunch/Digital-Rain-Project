@@ -213,19 +213,19 @@ function generateYInput(min, max) {
   // calculate height deductor range
   if (iMin < 1) {
     iMin++;
-    console.log("min: " + min);
-    console.log("canvas.height:" + canvas.height);
+    // console.log("min: " + min);
+    // console.log("canvas.height:" + canvas.height);
   }
   if (iMax < 1) {
     iMax++;
-    console.log("max: " + max);
+    // console.log("max: " + max);
   }
 
   let heightDeductor = generateRandomNumber(min, max);
   yInput = Math.floor(Math.random() * height - heightDeductor);
   if (iYInput < 1) {
     iYInput++;
-    console.log("heightDeductor: " + heightDeductor);
+    // console.log("heightDeductor: " + heightDeductor);
   }
   return yInput;
 }
@@ -237,11 +237,11 @@ function generateYNorth() {
   );
   if (iMin < 1) {
     iMin++;
-    console.log("min: " + minNum);
-    console.log("max: " + maxNum);
-    let difference = maxNum - minNum;
-    console.log("different: " + difference);
-    console.log("canvas.height:" + canvas.height);
+    // console.log("min: " + minNum);
+    // console.log("max: " + maxNum);
+    // let difference = maxNum - minNum;
+    // console.log("different: " + difference);
+    // console.log("canvas.height:" + canvas.height);
   }
   let output = generateRandomNumber(minNum, maxNum); // + canvas.height * 2;
   // console.log(output);
@@ -253,16 +253,15 @@ function generateYSouth() {
   let maxNum = canvas.height * -1 * 4;
   if (iMin < 1) {
     iMin++;
-    console.log("min: " + minNum);
-    console.log("max: " + maxNum);
-    let difference = maxNum - minNum;
-    console.log("different: " + difference);
-    console.log("canvas.height:" + canvas.height);
+    // console.log("min: " + minNum);
+    // console.log("max: " + maxNum);
+    // let difference = maxNum - minNum;
+    // console.log("different: " + difference);
+    // console.log("canvas.height:" + canvas.height);
   }
   let output = generateRandomNumber(minNum, maxNum);
-  console.log(output);
+  // console.log(output);
   return output;
-  // return generateYInput(canvas.height + 1000, canvas.height + 1800); // former: (canvas.height + 1000, canvas.height + 1800);
 }
 
 /* 
@@ -664,15 +663,19 @@ function reset() {
   direction = null;
   discoOn = null;
   chosenColor = null;
-  randomColorArray = generateRandomColorArray();
-  colorChoiceArray[7] = randomColorArray;
-  updateRandomColor();
+  resetRandomColor();
   discoFrameCounter = 0;
   intervalSpeed = defaultSpeed;
   currentSpeedLevel = speedLevels[middle];
   iMax = 0;
   iMin = 0;
   iYInput = 0;
+}
+
+function resetRandomColor() {
+  randomColorArray = generateRandomColorArray();
+  colorChoiceArray[7] = randomColorArray;
+  updateRandomColor();
 }
 
 /*######################################################################################################
@@ -740,9 +743,43 @@ document.addEventListener("keydown", function (event) {
       speedUp();
     }
   } else if (event.keyCode == 34) {
+    // page down key
     if (ctx != null) {
       slowDown();
     }
+  } else if (event.keyCode == 49) {
+    // 1 key
+    // green
+    numkeyFunction("green");
+  } else if (event.keyCode == 50) {
+    // 2 key
+    // red
+    numkeyFunction("red");
+  } else if (event.keyCode == 51) {
+    // 3 key
+    // yellow
+    numkeyFunction("yellow");
+  } else if (event.keyCode == 52) {
+    // 4 key
+    // blue
+    numkeyFunction("blue");
+  } else if (event.keyCode == 53) {
+    // 5 key
+    // orange
+    numkeyFunction("orange");
+  } else if (event.keyCode == 54) {
+    // 6 key
+    // pink
+    numkeyFunction("pink");
+  } else if (event.keyCode == 55) {
+    // 7 key
+    // cyan
+    numkeyFunction("cyan");
+  } else if (event.keyCode == 56) {
+    // 8 key
+    // random
+    resetRandomColor();
+    numkeyFunction("random");
   }
 });
 
@@ -796,9 +833,22 @@ function pause() {
 
 function toggleDisco() {
   if (discoOn) {
-    discoOn = false;
+    toggleDiscoInput(false);
   } else {
-    discoOn = true;
+    toggleDiscoInput(true);
+  }
+}
+
+function toggleDiscoInput(input) {
+  discoOn = input;
+  console.log(discoOn);
+  // FIXME: menu is getting all messed up due to the menuInterval animation!
+  if (!isMenuHidden()) {
+    // checkBox.checked = input;
+    // checkboxFunction(); // menuInterval is getting set twice in this method
+    console.log("Menu is shown");
+  } else {
+    console.log("Menu is hidden");
   }
 }
 
@@ -834,6 +884,15 @@ function getIncreasedIntervalSpeed(input) {
 
 function getDecreasedIntervalSpeed(input) {
   return input * 2;
+}
+
+function numkeyFunction(input) {
+  updateSelectBox(input);
+  switchColor(input);
+}
+
+function switchColor(input) {
+  chosenColor = matchColorToIndex(input.toLowerCase());
 }
 
 window.addEventListener("resize", windowResized);
@@ -928,12 +987,28 @@ function hideMenu() {
   }
 
   canvas.style.display = "block";
+
+  clearInterval(menuInterval);
+}
+
+function isMenuHidden() {
+  let output = false;
+  for (let i = 0; i < menuDivs.length; i++) {
+    if (menuDivs[i].style.display === "none") {
+      output = true;
+    }
+  }
+  return output;
 }
 
 // for checkbox hiding
 function checkboxFunction() {
   // hide color selectbox
   // show disco frame input
+  if (isMenuHidden()) {
+    return;
+  }
+
   if (!checkBox.checked) {
     text.style.display = "inline-block";
     select.style.display = "inline-block";
@@ -1138,6 +1213,11 @@ function frameCountFunctionOnChange() {
 
 function frameCountFunctionOnLoad() {
   discoFrameElement.value = localStorage.getItem("frameCountKey");
+}
+
+function updateSelectBox(input) {
+  select.value = input;
+  selectFunction();
 }
 
 function directionFunction() {}

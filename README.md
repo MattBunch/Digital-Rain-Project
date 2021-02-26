@@ -8,12 +8,20 @@ This program displays digital rain animation within the window browser, as seen 
 
 ## Keyboard inputs:
 
-- Arrowkeys: switch directions
-- Spacebar: pause
-- C: clear screen
-- D: toggle disco
+- Arrowkeys: Switch directions
+- Spacebar: Pause
+- C: Clear screen
+- D: Toggle disco
 - PageUp: Speed up
 - PageDown: Slow down
+- 1: Change colour to green
+- 2: Change colour to red
+- 3: Change colour to yellow
+- 4: Change colour to blue
+- 5: Change colour to orange
+- 6: Change colour to pink
+- 7: Change colour to cyan
+- 8: Change colour to random
 
 # Possible extensions in further versions:
 
