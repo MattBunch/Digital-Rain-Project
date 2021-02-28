@@ -150,6 +150,9 @@ function generateRandomColorArray() {
 ##################################################################################################
 */
 
+let x = "x";
+let y = "y";
+
 // generate random number between a range, used in multiple functions
 function generateRandomNumber(min, max) {
   let rangeMin = min;
@@ -198,7 +201,6 @@ function generateWord(wordSize) {
 // get new x coordinates for east and west
 function generateXEast() {
   return generateRandomNumber(canvas.width, canvas.width + 1200);
-  // return generateRandomNumber(canvas.width, canvas.width + 1500);
 }
 
 function generateXWest() {
@@ -217,41 +219,25 @@ function generateYNorth() {
     maxNum = doubleInt(maxNum);
   }
 
-  // debugging
-  if (iCounter < 1) {
-    iCounter++;
-    // console.log("min: " + minNum);
-    // console.log("max: " + maxNum);
-    // let difference = maxNum - minNum;
-    // console.log("difference: " + difference);
-    // console.log("canvas.height:" + canvas.height);
-  }
-  let output = generateRandomNumber(minNum, maxNum); // + canvas.height * 2;
-  // console.log(output);
+  let output = generateRandomNumber(minNum, maxNum);
+
+  // debugStartingPosition(minNum, maxNum, y, "north", output);
+
   return output;
 }
 
 function generateYSouth(word, fontSize) {
-  let minNum = 0 - word.length * fontSize; //  (canvas.height + canvas.height * 0.3);
+  let minNum = 0 - word.length * fontSize;
   let maxNum = canvas.height * -1 * 4;
-
-  console.log(minNum);
 
   if (isCanvasLarge()) {
     maxNum = doubleInt(maxNum);
   }
 
-  // debugging
-  if (iCounter < 1) {
-    iCounter++;
-    // console.log("min: " + minNum);
-    // console.log("max: " + maxNum);
-    // let difference = maxNum - minNum;
-    // console.log("difference: " + difference);
-    // console.log("canvas.height:" + canvas.height);
-  }
   let output = generateRandomNumber(minNum, maxNum);
-  // console.log(output);
+
+  // debugStartingPosition(minNum, maxNum, y, "south", output);
+
   return output;
 }
 
@@ -261,6 +247,20 @@ function isCanvasLarge() {
 
 function doubleInt(input) {
   return input * 2;
+}
+
+function debugStartingPosition(minNum, maxNum, xOry, directionInput, output) {
+  if (iCounter < 1) {
+    iCounter++;
+    console.log("min: " + minNum);
+    console.log("max: " + maxNum);
+    let difference = maxNum - minNum;
+    console.log("difference: " + difference);
+    console.log("canvas.height:" + canvas.height);
+  }
+  console.log(
+    "starting " + xOry + " " + directionInput + " position:" + output
+  );
 }
 
 /* 
@@ -468,8 +468,6 @@ function createMatrixArray(directionMatrix) {
       xInput = fontSize * i;
       newWord = generateWord(generateWordSizeRand());
       newFontSize = generateFontSize();
-      // console.log(newWord);
-      // console.log(newFontSize);
 
       if (directionMatrix === "south") {
         yInput = generateYSouth(newWord, newFontSize);
@@ -564,7 +562,7 @@ function draw() {
         words[i].ySpeed = generateSpeed(); // new speed
         words[i].word = generateWord(generateWordSizeRand()); // generate new random word with random size
         words[i].fontSize = generateFontSize(); // new font size
-        words[i].y = generateYSouth(words[i].word, words[i].fontSize); //generateYInput(canvas.height + 1000, canvas.height + 1500); // resets height 1440 1550
+        words[i].y = generateYSouth(words[i].word, words[i].fontSize);
       } else {
         words[i].y = words[i].y + fontSize + words[i].ySpeed;
         ctx.font = words[i].fontSize + "px 'Consolas', 'Lucida Console'";
@@ -582,7 +580,7 @@ function draw() {
       }
     } else if (direction === "east") {
       if (words[i].x < 0 - canvas.width) {
-        words[i].x = generateXEast(); // generateRandomNumber(canvas.width, canvas.width + 500); new x placement
+        words[i].x = generateXEast();
         words[i].xSpeed = generateSpeed(); // new speed
         words[i].word = generateWord(generateWordSizeRand()); // generate new random word with random size
         words[i].fontSize = generateFontSize(); // new font size
