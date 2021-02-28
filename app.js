@@ -231,9 +231,11 @@ function generateYNorth() {
   return output;
 }
 
-function generateYSouth() {
-  let minNum = 0 - (canvas.height + canvas.height * 0.3);
+function generateYSouth(word, fontSize) {
+  let minNum = 0 - word.length * fontSize; //  (canvas.height + canvas.height * 0.3);
   let maxNum = canvas.height * -1 * 4;
+
+  console.log(minNum);
 
   if (isCanvasLarge()) {
     maxNum = doubleInt(maxNum);
@@ -470,7 +472,7 @@ function createMatrixArray(directionMatrix) {
       // console.log(newFontSize);
 
       if (directionMatrix === "south") {
-        yInput = generateYSouth();
+        yInput = generateYSouth(newWord, newFontSize);
         xSpeedInput = null;
         ySpeedInput = generateSpeed();
       } else if (directionMatrix === "north") {
@@ -559,10 +561,10 @@ function draw() {
     if (direction === "south") {
       // reset to top of screen if drop off the canvas at bottom of the screen
       if (words[i].y > height) {
-        words[i].y = generateYSouth(); //generateYInput(canvas.height + 1000, canvas.height + 1500); // resets height 1440 1550
         words[i].ySpeed = generateSpeed(); // new speed
         words[i].word = generateWord(generateWordSizeRand()); // generate new random word with random size
         words[i].fontSize = generateFontSize(); // new font size
+        words[i].y = generateYSouth(words[i].word, words[i].fontSize); //generateYInput(canvas.height + 1000, canvas.height + 1500); // resets height 1440 1550
       } else {
         words[i].y = words[i].y + fontSize + words[i].ySpeed;
         ctx.font = words[i].fontSize + "px 'Consolas', 'Lucida Console'";
@@ -819,7 +821,7 @@ function clearScreen() {
     switch (direction) {
       // if south
       case "south":
-        words[i].y = generateYSouth();
+        words[i].y = generateYSouth(words[i].word, words[i].fontSize);
         break;
 
       // if north
