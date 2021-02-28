@@ -140,3 +140,4 @@ Added `buttonDiscoChecked()` to the button mouseover functionality for changing 
 ### 28/02/2021
 
 - Check for screen size added to vertical directions.
+- New branch added to experiment with calculating the height of the string and generating a starting point from there.

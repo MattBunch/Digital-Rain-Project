@@ -214,48 +214,40 @@ function generateYNorth() {
   );
 
   if (isCanvasLarge()) {
-    maxNum = multiplyByOneAndAHalf(maxNum);
+    maxNum = doubleInt(maxNum);
   }
 
   // debugging
-  // if (iCounter < 1) {
-  //   iCounter++;
-  //   console.log("min: " + minNum);
-  //   console.log("max: " + maxNum);
-  //   let difference = maxNum - minNum;
-  //   console.log("difference: " + difference);
-  //   console.log("canvas.height:" + canvas.height);
-  // }
+  if (iCounter < 1) {
+    iCounter++;
+    // console.log("min: " + minNum);
+    // console.log("max: " + maxNum);
+    // let difference = maxNum - minNum;
+    // console.log("difference: " + difference);
+    // console.log("canvas.height:" + canvas.height);
+  }
   let output = generateRandomNumber(minNum, maxNum); // + canvas.height * 2;
   // console.log(output);
   return output;
 }
-
-/** TODO: calculate minNum by subtracting the height of the string
- *  height = word.size
- *
- *  let minNum = 0 - word.size * fontSize?
- *
- *  Will require me to redo the declaration of matrix array
- */
 
 function generateYSouth() {
   let minNum = 0 - (canvas.height + canvas.height * 0.3);
   let maxNum = canvas.height * -1 * 4;
 
   if (isCanvasLarge()) {
-    maxNum = multiplyByOneAndAHalf(maxNum);
+    maxNum = doubleInt(maxNum);
   }
 
   // debugging
-  // if (iCounter < 1) {
-  //   iCounter++;
-  //   console.log("min: " + minNum);
-  //   console.log("max: " + maxNum);
-  //   let difference = maxNum - minNum;
-  //   console.log("difference: " + difference);
-  //   console.log("canvas.height:" + canvas.height);
-  // }
+  if (iCounter < 1) {
+    iCounter++;
+    // console.log("min: " + minNum);
+    // console.log("max: " + maxNum);
+    // let difference = maxNum - minNum;
+    // console.log("difference: " + difference);
+    // console.log("canvas.height:" + canvas.height);
+  }
   let output = generateRandomNumber(minNum, maxNum);
   // console.log(output);
   return output;
@@ -265,8 +257,8 @@ function isCanvasLarge() {
   return canvas.height > 1000;
 }
 
-function multiplyByOneAndAHalf(input) {
-  return input * 1.5;
+function doubleInt(input) {
+  return input * 2;
 }
 
 /* 
@@ -293,13 +285,13 @@ if (discoFrameElement.value < 0 || discoFrameElement == null) {
 let savedColor = getRandomColor();
 
 class MatrixString {
-  constructor(x, y, xSpeed, ySpeed) {
-    this.word = generateWord(generateWordSizeRand()); // word
+  constructor(word, x, y, xSpeed, ySpeed, fontSize) {
+    this.word = word; // word
     this.x = x; // random x float coordinates
     this.y = y; // random y float coordinates
     this.xSpeed = xSpeed; // random x float speed
     this.ySpeed = ySpeed; // random y float speed
-    this.fontSize = generateFontSize(); //  random font size
+    this.fontSize = fontSize; //  random font size
   }
 
   // method for displaying text to the screen, default method
@@ -463,11 +455,7 @@ function discoColorCounterCheck() {
 // declare array of words to hold
 let words = new Array();
 
-let xInput;
-let yInput;
-let xSpeedInput;
-let ySpeedInput;
-let newSouthWord;
+let xInput, yInput, xSpeedInput, ySpeedInput, newWord, newFontSize;
 
 function createMatrixArray(directionMatrix) {
   // vertical
@@ -476,8 +464,10 @@ function createMatrixArray(directionMatrix) {
     for (let i = 0; i < columns; i++) {
       // matrixString xInput value
       xInput = fontSize * i;
-      newSouthWord = generateWord(generateWordSizeRand());
-      console.log(newSouthWord + ", size: " + newSouthWord.length);
+      newWord = generateWord(generateWordSizeRand());
+      newFontSize = generateFontSize();
+      // console.log(newWord);
+      // console.log(newFontSize);
 
       if (directionMatrix === "south") {
         yInput = generateYSouth();
@@ -489,7 +479,16 @@ function createMatrixArray(directionMatrix) {
         ySpeedInput = -Math.abs(generateSpeed());
       }
       // create new MatrixString object for vertical
-      words.push(new MatrixString(xInput, yInput, xSpeedInput, ySpeedInput));
+      words.push(
+        new MatrixString(
+          newWord,
+          xInput,
+          yInput,
+          xSpeedInput,
+          ySpeedInput,
+          newFontSize
+        )
+      );
     }
     // horizontal
   } else if (directionMatrix === "east" || directionMatrix === "west") {
@@ -505,7 +504,16 @@ function createMatrixArray(directionMatrix) {
         ySpeedInput = null;
       }
       // create new object for horizontal
-      words.push(new MatrixString(xInput, yInput, xSpeedInput, ySpeedInput));
+      words.push(
+        new MatrixString(
+          generateWord(generateWordSizeRand()),
+          xInput,
+          yInput,
+          xSpeedInput,
+          ySpeedInput,
+          generateFontSize()
+        )
+      );
     }
   }
 }
@@ -551,10 +559,10 @@ function draw() {
     if (direction === "south") {
       // reset to top of screen if drop off the canvas at bottom of the screen
       if (words[i].y > height) {
+        words[i].y = generateYSouth(); //generateYInput(canvas.height + 1000, canvas.height + 1500); // resets height 1440 1550
         words[i].ySpeed = generateSpeed(); // new speed
         words[i].word = generateWord(generateWordSizeRand()); // generate new random word with random size
         words[i].fontSize = generateFontSize(); // new font size
-        words[i].y = generateYSouth(); //generateYInput(canvas.height + 1000, canvas.height + 1500); // resets height 1440 1550
       } else {
         words[i].y = words[i].y + fontSize + words[i].ySpeed;
         ctx.font = words[i].fontSize + "px 'Consolas', 'Lucida Console'";
