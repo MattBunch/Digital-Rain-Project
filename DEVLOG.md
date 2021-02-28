@@ -136,3 +136,7 @@ Added `buttonDiscoChecked()` to the button mouseover functionality for changing 
 - Change color keycodes added for further functionality.
 - Event.KeyCode is deprecated. Should look at replacing this with a newer method.
 - Disco toggle added to menu.
+
+### 28/02/2021
+
+- Check for screen size added to vertical directions.
