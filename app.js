@@ -29,13 +29,14 @@
  */
 
 let columns, rows, fontSize, width, height, canvas, ctx;
+let defaultFontSize = 20;
 
 function canvasSetup() {
   width = window.innerWidth;
   height = window.innerHeight;
   canvas = document.getElementById("myCanvas"); // canvas object
   ctx = canvas.getContext("2d"); // context object
-  fontSize = 20;
+  fontSize = defaultFontSize;
   ctx.font = fontSize + "px 'Consolas', 'Lucida Console'";
   ctx.fillStyle = "#00FF41";
 
@@ -170,7 +171,7 @@ function generateWordSizeRand() {
 
 // generate font size number between 15 and 25
 function generateFontSize() {
-  return Math.floor(generateRandomNumber(15, 25));
+  return Math.floor(generateRandomNumber(fontSize - 5, fontSize + 5));
 }
 
 // generate both xSpeed and ySpeed between 0.001 and 9.999
@@ -685,6 +686,7 @@ function reset() {
   intervalSpeed = defaultSpeed;
   currentSpeedLevel = speedLevels[middle];
   iCounter = 0;
+  defaultFontSize = 20;
 }
 
 function resetRandomColor() {
@@ -799,6 +801,10 @@ document.addEventListener("keydown", function (event) {
     // random
     resetRandomColor();
     numkeyFunction("random");
+  } else if (event.key == "w") {
+    controlFontSize(true);
+  } else if (event.key == "s") {
+    controlFontSize(false);
   }
 });
 
@@ -911,6 +917,32 @@ function numkeyFunction(input) {
 
 function switchColor(input) {
   chosenColor = matchColorToIndex(input.toLowerCase());
+}
+
+function controlFontSize(increase) {
+  if (increase & (defaultFontSize < 65)) defaultFontSize++;
+  else if (!increase & (defaultFontSize > 1)) defaultFontSize--;
+  else return;
+
+  fontSize = defaultFontSize;
+
+  printFontSizeDebugInfo();
+
+  for (let i = 0; i < words.length; i++) {
+    let x = words[i].fontSize;
+    if (increase) {
+      x++;
+    } else {
+      x--;
+    }
+    words[i].fontSize = x;
+  }
+}
+
+function printFontSizeDebugInfo() {
+  console.log("defaultFontSize: " + defaultFontSize);
+
+  console.log("fontSize: " + fontSize);
 }
 
 window.addEventListener("resize", windowResized);

@@ -141,3 +141,7 @@ Added `buttonDiscoChecked()` to the button mouseover functionality for changing 
 
 - Check for screen size added to vertical directions.
 - New branch added to experiment with calculating the height of the string and generating a starting point from there.
+
+### 13/03/2021
+
+- Change fontsize added with "a" and "s" keys.
