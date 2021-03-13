@@ -145,3 +145,4 @@ Added `buttonDiscoChecked()` to the button mouseover functionality for changing 
 ### 13/03/2021
 
 - Change fontsize added with "a" and "s" keys.
+- Deprecated KeyCodes replaced.

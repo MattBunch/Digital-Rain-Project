@@ -717,87 +717,70 @@ let middle = speedLevels[Math.round((speedLevels.length - 1) / 2)];
 let currentSpeedLevel = speedLevels[middle];
 
 document.addEventListener("keydown", function (event) {
-  if (event.keyCode == 27) {
+  if (event.key == "Escape") {
     resetToMenu();
-  } else if (event.keyCode == 37) {
-    // left arrowkey
+  } else if (event.key == "ArrowLeft") {
     // check direction is not going west ("left")
     if (direction != "west") {
       direction = "west";
     }
-  } else if (event.keyCode == 38) {
-    // up arrowkey
+  } else if (event.key == "ArrowUp") {
     // check direction is not going north ("up")
     if (direction != "north") {
       direction = "north";
     }
-  } else if (event.keyCode == 39) {
-    // right arrowkey
+  } else if (event.key == "ArrowRight") {
     // check direction is not going east ("right")
     if (direction != "east") {
       direction = "east";
     }
-  } else if (event.keyCode == 40) {
-    // down arrowkey
+  } else if (event.key == "ArrowDown") {
     // check direction is not going south ("down")
     if (direction != "south") {
       direction = "south";
     }
-  } else if (event.keyCode == 32) {
-    // space key
+  } else if (event.key == " ") {
     if (ctx != null) {
       pause();
     }
-  } else if (event.keyCode == 67) {
-    // c key
+  } else if (event.key == "c") {
     clearScreen();
-  } else if (event.keyCode == 68) {
-    // d key
+  } else if (event.key == "d") {
     if (isMenuHidden()) {
       toggleDisco();
     } else {
       toggleDiscoMenu();
     }
-  } else if (event.keyCode == 33) {
-    // page up key
+  } else if (event.key == "PageUp") {
     if (ctx != null) {
       speedUp();
     }
-  } else if (event.keyCode == 34) {
-    // page down key
+  } else if (event.key == "PageDown") {
     if (ctx != null) {
       slowDown();
     }
-  } else if (event.keyCode == 49) {
-    // 1 key
+  } else if (event.key == "1") {
     // green
     numkeyFunction("green");
-  } else if (event.keyCode == 50) {
-    // 2 key
+  } else if (event.key == "2") {
     // red
     numkeyFunction("red");
-  } else if (event.keyCode == 51) {
-    // 3 key
+  } else if (event.key == "3") {
     // yellow
     numkeyFunction("yellow");
-  } else if (event.keyCode == 52) {
-    // 4 key
+  } else if (event.key == "4") {
     // blue
     numkeyFunction("blue");
-  } else if (event.keyCode == 53) {
-    // 5 key
+  } else if (event.key == "5") {
     // orange
     numkeyFunction("orange");
-  } else if (event.keyCode == 54) {
-    // 6 key
+  } else if (event.key == "6") {
     // pink
     numkeyFunction("pink");
-  } else if (event.keyCode == 55) {
-    // 7 key
+  } else if (event.key == "7") {
     // cyan
     numkeyFunction("cyan");
-  } else if (event.keyCode == 56) {
-    // 8 key
+  } else if (event.key == "8") {
     // random
     resetRandomColor();
     numkeyFunction("random");
@@ -925,8 +908,6 @@ function controlFontSize(increase) {
   else return;
 
   fontSize = defaultFontSize;
-
-  printFontSizeDebugInfo();
 
   for (let i = 0; i < words.length; i++) {
     let x = words[i].fontSize;
