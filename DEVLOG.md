@@ -149,4 +149,6 @@ Added `buttonDiscoChecked()` to the button mouseover functionality for changing 
 
 ### 15/03/2021
 
-- Starting position generator functions editted for North and South
+- Starting position generator functions editted for North and South.
+- Debug info editted, average calculator added.
+- generateXEast fixed, west direction adjusted for taking in word size and font size parameters but still requires some calculations.

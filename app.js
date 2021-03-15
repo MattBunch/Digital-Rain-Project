@@ -214,16 +214,13 @@ function generateXEast() {
   // return generateRandomNumber(canvas.width, canvas.width + 1200);
 }
 
-// TODO: change this function is be similar to generateYSouth with word and fontSize as parameters
-function generateXWest() {
-  let minNum = -800;
-  let maxNum = -2000;
+// TODO: fix the output
+function generateXWest(word, fontSize) {
+  let minNum = 0 - (word.length * fontSize + 20);
+  let maxNum = canvas.width * -1 * 2;
 
-  // let minNum = 0 - word.length * fontSize;
-  // let maxNum = canvas.width * -1 * 4;
-
-  return generateStartingPointInput(minNum, maxNum);
-  // return generateRandomNumber(800, 2000) * -1;
+  // return generateStartingPointInput(minNum, maxNum);
+  return generateRandomNumber(800, 2000) * -1;
 }
 
 function generateYNorth() {
@@ -261,11 +258,16 @@ function debugStartingPosition(minNum, maxNum, output) {
     let difference = maxNum - minNum;
     console.log("difference: " + difference);
     console.log("canvas.height: " + canvas.height);
+    console.log("canvas.width: " + canvas.width);
     console.log("starting position: " + output);
   } else {
-    let average = calculateAverageStartingPosition(words, horizontal);
-    console.log("average starting position: " + average);
+    // printAverage();
   }
+}
+
+function printAverage() {
+  let average = calculateAverageStartingPosition(words, horizontal);
+  console.log("average starting position: " + average);
 }
 
 function calculateAverageStartingPosition(inputArray, direction) {
@@ -511,12 +513,14 @@ function createMatrixArray(directionMatrix) {
   } else if (directionMatrix === "east" || directionMatrix === "west") {
     for (let i = 0; i < rows; i++) {
       yInput = fontSize * i;
+      newWord = generateWord(generateWordSizeRand());
+      newFontSize = generateFontSize();
       if (directionMatrix === "east") {
         xInput = generateXEast(); // goal: negative / moving from left of the screen to right / need to generate this later
         xSpeedInput = generateSpeed(); // positive / updating position to the right
         ySpeedInput = null;
       } else if (directionMatrix === "west") {
-        xInput = generateXWest(); // goal: positive / moving from the right of the screen to the left
+        xInput = generateXWest(newWord, newFontSize); // goal: positive / moving from the right of the screen to the left
         xSpeedInput = -Math.abs(generateSpeed()); // negative / updating position to the left
         ySpeedInput = null;
       }
@@ -607,10 +611,10 @@ function draw() {
       }
     } else if (direction === "west") {
       if (words[i].x > canvas.width) {
-        words[i].x = generateXWest(); // new x placement
         words[i].xSpeed = -Math.abs(generateSpeed()); // new speed
         words[i].word = generateWord(generateWordSizeRand()); // generate new random word with random size
         words[i].fontSize = generateFontSize(); // new font size
+        words[i].x = generateXWest(words[i].word, words[i].fontSize); // new x placement
       } else {
         words[i].x = words[i].x + fontSize + words[i].xSpeed;
         ctx.font = words[i].fontSize + "px 'Consolas', 'Lucida Console'";
@@ -841,7 +845,7 @@ function clearScreen() {
 
       // if west
       case "west":
-        words[i].x = generateXWest();
+        words[i].x = generateXWest(words[i].word, words[i].fontSize);
         break;
     }
   }
