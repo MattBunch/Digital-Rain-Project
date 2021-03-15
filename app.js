@@ -37,6 +37,7 @@ function canvasSetup() {
   canvas = document.getElementById("myCanvas"); // canvas object
   ctx = canvas.getContext("2d"); // context object
   fontSize = defaultFontSize;
+  resetStringSizes();
   ctx.font = fontSize + "px 'Consolas', 'Lucida Console'";
   ctx.fillStyle = "#00FF41";
 
@@ -168,6 +169,11 @@ const DEFAULT_STRING_SIZE_MAX = 48;
 let stringSizeMin = DEFAULT_STRING_SIZE_MIN;
 let stringSizeMax = DEFAULT_STRING_SIZE_MAX;
 
+function resetStringSizes() {
+  stringSizeMin = DEFAULT_STRING_SIZE_MIN;
+  stringSizeMax = DEFAULT_STRING_SIZE_MAX;
+}
+
 // generate random size of word between 20 and 48
 function generateWordSizeRand() {
   return Math.floor(generateRandomNumber(stringSizeMin, stringSizeMax));
@@ -183,13 +189,12 @@ function generateSpeed() {
   return generateRandomNumber(0.001, 9.999);
 }
 
+// string of the alphabet
 const alphabet =
   "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ｦｧｨｩｪｫｬｭｮｯｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ";
 
 // function to generate a random word based on this string.
 function generateWord(wordSize) {
-  // string of the alphabet
-
   // word declaration as empty
   let word = "";
 
@@ -713,8 +718,7 @@ function reset() {
   currentSpeedLevel = speedLevels[middle];
   iCounter = 0;
   defaultFontSize = 20;
-  stringSizeMin = DEFAULT_STRING_SIZE_MIN;
-  stringSizeMax = DEFAULT_STRING_SIZE_MAX;
+  resetStringSizes();
 }
 
 function resetRandomColor() {
