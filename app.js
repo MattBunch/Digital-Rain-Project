@@ -151,6 +151,8 @@ function generateRandomColorArray() {
 ##################################################################################################
 */
 
+let iCounter = 0;
+
 // generate random number between a range, used in multiple functions
 function generateRandomNumber(min, max) {
   let rangeMin = min;
@@ -192,21 +194,6 @@ function generateWord(wordSize) {
   return word;
 }
 
-// TODO: change these coordinates to be relative to
-// canvas.width for east and west
-// canvas.height for north and south
-
-// get new x coordinates for east and west
-function generateXEast() {
-  return generateRandomNumber(canvas.width, canvas.width + 1200);
-}
-
-function generateXWest() {
-  return generateRandomNumber(800, 2000) * -1;
-}
-
-let iCounter = 0;
-
 function generateStartingPointInput(inputMin, inputMax) {
   if (isCanvasLarge()) {
     inputMax = doubleInt(inputMax);
@@ -214,9 +201,29 @@ function generateStartingPointInput(inputMin, inputMax) {
 
   let output = generateRandomNumber(inputMin, inputMax);
 
-  debugStartingPosition(inputMin, inputMax, output);
+  // debugStartingPosition(inputMin, inputMax, output);
 
   return output;
+}
+
+function generateXEast() {
+  let minNum = canvas.width;
+  let maxNum = canvas.width + 1200;
+
+  return generateStartingPointInput(minNum, maxNum);
+  // return generateRandomNumber(canvas.width, canvas.width + 1200);
+}
+
+// TODO: change this function is be similar to generateYSouth with word and fontSize as parameters
+function generateXWest() {
+  let minNum = -800;
+  let maxNum = -2000;
+
+  // let minNum = 0 - word.length * fontSize;
+  // let maxNum = canvas.width * -1 * 4;
+
+  return generateStartingPointInput(minNum, maxNum);
+  // return generateRandomNumber(800, 2000) * -1;
 }
 
 function generateYNorth() {
@@ -256,7 +263,7 @@ function debugStartingPosition(minNum, maxNum, output) {
     console.log("canvas.height: " + canvas.height);
     console.log("starting position: " + output);
   } else {
-    let average = calculateAverageStartingPosition(words, vertical);
+    let average = calculateAverageStartingPosition(words, horizontal);
     console.log("average starting position: " + average);
   }
 }
