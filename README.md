@@ -12,6 +12,10 @@ This program displays digital rain animation within the window browser, as seen 
 - Spacebar: Pause
 - C: Clear screen
 - D: Toggle disco
+- W: Increase font size
+- S: Decrease font size
+- Q: Increase string length
+- A: Decrease string length
 - PageUp: Speed up
 - PageDown: Slow down
 - 1: Change colour to green

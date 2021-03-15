@@ -163,9 +163,14 @@ function generateRandomNumber(min, max) {
 
 // TODO: word size and font size should scale to size of screen
 
+const DEFAULT_STRING_SIZE_MIN = 20;
+const DEFAULT_STRING_SIZE_MAX = 48;
+let stringSizeMin = DEFAULT_STRING_SIZE_MIN;
+let stringSizeMax = DEFAULT_STRING_SIZE_MAX;
+
 // generate random size of word between 20 and 48
 function generateWordSizeRand() {
-  return Math.floor(generateRandomNumber(20, 48));
+  return Math.floor(generateRandomNumber(stringSizeMin, stringSizeMax));
 }
 
 // generate font size number between 15 and 25
@@ -178,11 +183,12 @@ function generateSpeed() {
   return generateRandomNumber(0.001, 9.999);
 }
 
+const alphabet =
+  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ｦｧｨｩｪｫｬｭｮｯｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ";
+
 // function to generate a random word based on this string.
 function generateWord(wordSize) {
   // string of the alphabet
-  let alphabet =
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ｦｧｨｩｪｫｬｭｮｯｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ";
 
   // word declaration as empty
   let word = "";
@@ -527,12 +533,12 @@ function createMatrixArray(directionMatrix) {
       // create new object for horizontal
       words.push(
         new MatrixString(
-          generateWord(generateWordSizeRand()),
+          newWord,
           xInput,
           yInput,
           xSpeedInput,
           ySpeedInput,
-          generateFontSize()
+          newFontSize
         )
       );
     }
@@ -707,6 +713,8 @@ function reset() {
   currentSpeedLevel = speedLevels[middle];
   iCounter = 0;
   defaultFontSize = 20;
+  stringSizeMin = DEFAULT_STRING_SIZE_MIN;
+  stringSizeMax = DEFAULT_STRING_SIZE_MAX;
 }
 
 function resetRandomColor() {
@@ -768,11 +776,7 @@ document.addEventListener("keydown", function (event) {
   } else if (event.key == "c") {
     clearScreen();
   } else if (event.key == "d") {
-    if (isMenuHidden()) {
-      toggleDisco();
-    } else {
-      toggleDiscoMenu();
-    }
+    discoControl();
   } else if (event.key == "PageUp") {
     if (ctx != null) {
       speedUp();
@@ -810,6 +814,10 @@ document.addEventListener("keydown", function (event) {
     controlFontSize(true);
   } else if (event.key == "s") {
     controlFontSize(false);
+  } else if (event.key == "q") {
+    controlStringSize(true);
+  } else if (event.key == "a") {
+    controlStringSize(false);
   }
 });
 
@@ -859,6 +867,11 @@ function pause() {
     intervalValid = setInterval(draw, intervalSpeed);
     animationOn = true;
   }
+}
+
+function discoControl() {
+  if (isMenuHidden()) toggleDisco();
+  else toggleDiscoMenu();
 }
 
 function toggleDisco() {
@@ -946,6 +959,37 @@ function printFontSizeDebugInfo() {
   console.log("defaultFontSize: " + defaultFontSize);
 
   console.log("fontSize: " + fontSize);
+}
+
+function controlStringSize(increase) {
+  if (increase & (stringSizeMax < 150)) {
+    stringSizeMin++;
+    stringSizeMax++;
+
+    // increase the length of each word in array.
+    for (let i = 0; i < words.length; i++) {
+      let randomChar = getRandomChar();
+      words[i].word = words[i].word.concat(randomChar);
+    }
+  } else if (!increase & (stringSizeMin > 1)) {
+    stringSizeMin--;
+    stringSizeMax--;
+
+    // decrease the length of each word in array.
+    for (let i = 0; i < words.length; i++) {
+      words[i].word = words[i].word.slice(0, -1);
+      // console.log(words[i].word.length);
+    }
+  } else return;
+}
+
+function getRandomChar() {
+  return alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+}
+
+function printStringSizeDebugInfo() {
+  console.log("stringSizeMin: " + stringSizeMin);
+  console.log("stringSizeMax: " + stringSizeMax);
 }
 
 window.addEventListener("resize", windowResized);
