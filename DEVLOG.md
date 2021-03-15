@@ -146,3 +146,7 @@ Added `buttonDiscoChecked()` to the button mouseover functionality for changing 
 
 - Change fontsize added with "a" and "s" keys.
 - Deprecated KeyCodes replaced.
+
+### 15/03/2021
+
+- Starting position generator functions editted for North and South

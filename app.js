@@ -151,9 +151,6 @@ function generateRandomColorArray() {
 ##################################################################################################
 */
 
-let x = "x";
-let y = "y";
-
 // generate random number between a range, used in multiple functions
 function generateRandomNumber(min, max) {
   let rangeMin = min;
@@ -210,36 +207,32 @@ function generateXWest() {
 
 let iCounter = 0;
 
+function generateStartingPointInput(inputMin, inputMax) {
+  if (isCanvasLarge()) {
+    inputMax = doubleInt(inputMax);
+  }
+
+  let output = generateRandomNumber(inputMin, inputMax);
+
+  debugStartingPosition(inputMin, inputMax, output);
+
+  return output;
+}
+
 function generateYNorth() {
   let minNum = canvas.height + 2;
   let maxNum = Math.round(
     canvas.height + canvas.height * 2 + canvas.height * 0.7021
   );
 
-  if (isCanvasLarge()) {
-    maxNum = doubleInt(maxNum);
-  }
-
-  let output = generateRandomNumber(minNum, maxNum);
-
-  // debugStartingPosition(minNum, maxNum, y, "north", output);
-
-  return output;
+  return generateStartingPointInput(minNum, maxNum);
 }
 
 function generateYSouth(word, fontSize) {
   let minNum = 0 - word.length * fontSize;
   let maxNum = canvas.height * -1 * 4;
 
-  if (isCanvasLarge()) {
-    maxNum = doubleInt(maxNum);
-  }
-
-  let output = generateRandomNumber(minNum, maxNum);
-
-  // debugStartingPosition(minNum, maxNum, y, "south", output);
-
-  return output;
+  return generateStartingPointInput(minNum, maxNum);
 }
 
 function isCanvasLarge() {
@@ -250,18 +243,34 @@ function doubleInt(input) {
   return input * 2;
 }
 
-function debugStartingPosition(minNum, maxNum, xOry, directionInput, output) {
+const vertical = "vertical";
+const horizontal = "horizontal";
+
+function debugStartingPosition(minNum, maxNum, output) {
   if (iCounter < 1) {
     iCounter++;
     console.log("min: " + minNum);
     console.log("max: " + maxNum);
     let difference = maxNum - minNum;
     console.log("difference: " + difference);
-    console.log("canvas.height:" + canvas.height);
+    console.log("canvas.height: " + canvas.height);
+    console.log("starting position: " + output);
+  } else {
+    let average = calculateAverageStartingPosition(words, vertical);
+    console.log("average starting position: " + average);
   }
-  console.log(
-    "starting " + xOry + " " + directionInput + " position:" + output
-  );
+}
+
+function calculateAverageStartingPosition(inputArray, direction) {
+  let total = 0;
+  let counter = 0;
+  for (let i = 0; i < inputArray.length; i++) {
+    if (direction === vertical) total += inputArray[i].y;
+    else if (direction === horizontal) total += inputArray[i].x;
+    counter++;
+  }
+
+  return total / counter;
 }
 
 /* 
@@ -717,6 +726,8 @@ let middle = speedLevels[Math.round((speedLevels.length - 1) / 2)];
 let currentSpeedLevel = speedLevels[middle];
 
 document.addEventListener("keydown", function (event) {
+  iCounter = 0;
+
   if (event.key == "Escape") {
     resetToMenu();
   } else if (event.key == "ArrowLeft") {
