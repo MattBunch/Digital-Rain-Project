@@ -1,6 +1,6 @@
 # Digital Rain Project
 
-This program displays digital rain animation within the window browser, as seen in the film The Matrix (1999) or Ghost in the Shell (1995). Special thanks to The Coding Train for the inspiration for this project.
+This program displays a digital rain animation within the window browser, as seen in the film The Matrix (1999) or Ghost in the Shell (1995). The user can customize the animation through the menu and through keyboard inputs. Special thanks to The Coding Train for the inspiration for this project.
 
 ## Built With:
 
@@ -27,7 +27,15 @@ This program displays digital rain animation within the window browser, as seen 
 - 7: Change colour to cyan
 - 8: Change colour to random
 
-# Possible extensions in further versions:
+## Possible extensions in further versions:
 
 - Music.
 - All four directions at the same time.
+- Colour wheel selector.
+
+## Misc
+
+The core of this program was written while I was learning JS, mostly completed on 18/08/20 and 19/08/20. 
+
+I had completed another Digital Rain animation program in Java previously, which serves as a prototype of this current program. Here is a video of the original Java project:
+https://files.catbox.moe/prmcql.mp4
