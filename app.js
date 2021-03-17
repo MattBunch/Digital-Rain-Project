@@ -200,9 +200,13 @@ function generateWord(wordSize) {
 
   // get random letter from the alphabet and add it to the word
   for (let i = 0; i < wordSize; i++) {
-    word += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+    word += getRandomChar(); //alphabet.charAt(Math.floor(Math.random() * alphabet.length));
   }
   return word;
+}
+
+function getRandomChar() {
+  return alphabet.charAt(Math.floor(Math.random() * alphabet.length));
 }
 
 function generateStartingPointInput(inputMin, inputMax) {
@@ -222,16 +226,14 @@ function generateXEast() {
   let maxNum = canvas.width + 1200;
 
   return generateStartingPointInput(minNum, maxNum);
-  // return generateRandomNumber(canvas.width, canvas.width + 1200);
 }
 
 // TODO: fix the output
-function generateXWest(word, fontSize) {
-  let minNum = 0 - (word.length * fontSize + 20);
-  let maxNum = canvas.width * -1 * 2;
+function generateXWest(word, inputFontSize) {
+  let minNum = 0 - (word.length * inputFontSize + 20);
+  let maxNum = canvas.width * -1 * 1.5;
 
-  // return generateStartingPointInput(minNum, maxNum);
-  return generateRandomNumber(800, 2000) * -1;
+  return generateStartingPointInput(minNum, maxNum);
 }
 
 function generateYNorth() {
@@ -243,8 +245,8 @@ function generateYNorth() {
   return generateStartingPointInput(minNum, maxNum);
 }
 
-function generateYSouth(word, fontSize) {
-  let minNum = 0 - word.length * fontSize;
+function generateYSouth(word, inputFontSize) {
+  let minNum = 0 - word.length * inputFontSize;
   let maxNum = canvas.height * -1 * 4;
 
   return generateStartingPointInput(minNum, maxNum);
@@ -281,12 +283,12 @@ function printAverage() {
   console.log("average starting position: " + average);
 }
 
-function calculateAverageStartingPosition(inputArray, direction) {
+function calculateAverageStartingPosition(inputArray, inputDirection) {
   let total = 0;
   let counter = 0;
   for (let i = 0; i < inputArray.length; i++) {
-    if (direction === vertical) total += inputArray[i].y;
-    else if (direction === horizontal) total += inputArray[i].x;
+    if (inputDirection === vertical) total += inputArray[i].y;
+    else if (inputDirection === horizontal) total += inputArray[i].x;
     counter++;
   }
 
@@ -317,13 +319,13 @@ if (discoFrameElement.value < 0 || discoFrameElement == null) {
 let savedColor = getRandomColor();
 
 class MatrixString {
-  constructor(word, x, y, xSpeed, ySpeed, fontSize) {
+  constructor(word, x, y, xSpeed, ySpeed, inputFontSize) {
     this.word = word; // word
     this.x = x; // random x float coordinates
     this.y = y; // random y float coordinates
     this.xSpeed = xSpeed; // random x float speed
     this.ySpeed = ySpeed; // random y float speed
-    this.fontSize = fontSize; //  random font size
+    this.fontSize = inputFontSize; //  random font size
   }
 
   // method for displaying text to the screen, default method
@@ -714,7 +716,7 @@ function reset() {
   chosenColor = null;
   resetRandomColor();
   discoFrameCounter = 0;
-  intervalSpeed = defaultSpeed;
+  intervalSpeed = DEFAULT_SPEED;
   currentSpeedLevel = speedLevels[middle];
   iCounter = 0;
   defaultFontSize = 20;
@@ -741,9 +743,9 @@ function resetRandomColor() {
 let intervalValid, animationOn;
 let savedDirection = direction;
 
-let defaultSpeed = 50;
-let intervalSpeed = defaultSpeed;
-let amountOfSpeedLevels = 7;
+const DEFAULT_SPEED = 50;
+const amountOfSpeedLevels = 7;
+let intervalSpeed = DEFAULT_SPEED;
 let speedLevels = Array.from(Array(amountOfSpeedLevels).keys());
 let middle = speedLevels[Math.round((speedLevels.length - 1) / 2)];
 let currentSpeedLevel = speedLevels[middle];
@@ -751,6 +753,7 @@ let currentSpeedLevel = speedLevels[middle];
 document.addEventListener("keydown", function (event) {
   iCounter = 0;
 
+  // TODO: convert to switch case for more efficient speeds
   if (event.key == "Escape") {
     resetToMenu();
   } else if (event.key == "ArrowLeft") {
@@ -783,11 +786,11 @@ document.addEventListener("keydown", function (event) {
     discoControl();
   } else if (event.key == "PageUp") {
     if (ctx != null) {
-      speedUp();
+      speedController(true);
     }
   } else if (event.key == "PageDown") {
     if (ctx != null) {
-      slowDown();
+      speedController(false);
     }
   } else if (event.key == "1") {
     // green
@@ -898,30 +901,31 @@ function toggleDiscoMenu() {
   checkboxFunction();
 }
 
-function speedUp() {
-  if (currentSpeedLevel === speedLevels[speedLevels.length - 1]) {
+function speedController(increase) {
+  // check if current speed level is at 0 or 7
+  if (currentSpeedLevel === speedLevels[0] && !increase) return;
+  if (currentSpeedLevel === speedLevels[speedLevels.length - 1] && increase)
     return;
-  }
 
-  if (currentSpeedLevel < speedLevels[speedLevels.length - 1]) {
+  // increase or decrease speed level
+  if (increase) {
     currentSpeedLevel++;
-    clearInterval(intervalValid);
-    intervalSpeed = getIncreasedIntervalSpeed(intervalSpeed);
-    intervalValid = setInterval(draw, intervalSpeed);
-  }
-}
-
-function slowDown() {
-  if (currentSpeedLevel === speedLevels[0]) {
-    return;
-  }
-
-  if (currentSpeedLevel > speedLevels[0]) {
+  } else if (!increase) {
     currentSpeedLevel--;
-    clearInterval(intervalValid);
-    intervalSpeed = getDecreasedIntervalSpeed(intervalSpeed);
-    intervalValid = setInterval(draw, intervalSpeed);
   }
+
+  // clear the interval
+  clearInterval(intervalValid);
+
+  // increase or decrease interval speed
+  if (increase) {
+    intervalSpeed = getIncreasedIntervalSpeed(intervalSpeed);
+  } else if (!increase) {
+    intervalSpeed = getDecreasedIntervalSpeed(intervalSpeed);
+  }
+
+  // restart the interval
+  intervalValid = setInterval(draw, intervalSpeed);
 }
 
 function getIncreasedIntervalSpeed(input) {
@@ -982,13 +986,8 @@ function controlStringSize(increase) {
     // decrease the length of each word in array.
     for (let i = 0; i < words.length; i++) {
       words[i].word = words[i].word.slice(0, -1);
-      // console.log(words[i].word.length);
     }
   } else return;
-}
-
-function getRandomChar() {
-  return alphabet.charAt(Math.floor(Math.random() * alphabet.length));
 }
 
 function printStringSizeDebugInfo() {

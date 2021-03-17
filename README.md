@@ -26,6 +26,7 @@ This program displays a digital rain animation within the window browser, as see
 - 6: Change colour to pink
 - 7: Change colour to cyan
 - 8: Change colour to random
+- Escape: Quit to menu
 
 ## Possible extensions in further versions:
 
