@@ -2,7 +2,7 @@
 
 ### 19/08/2020
 
-This core of this program was written while I was learning JS with a few days experience coming from a background in Java, mostly completed on 18/08/20 and 19/08/20.
+The core of this program was written while I was learning JS with a few days experience coming from a background in Java, mostly completed on 18/08/20 and 19/08/20.
 I took a project I had written in Java and converted it into JS, this is why the program is very OOP-orientated with the `MatrixString` class, rather than drawing strings in a functional programming style. I even had the `MatrixString` class written like a Java class with getters and setters. This really created complication because I forgot to add the brackets to the get methods in my `show()` function within the matrixString objects and it wasn't animating for a long time.
 
 I am also unhappy with the method of drawing the animation with the `SetInterval()` method, if I was going to redo this project I would use `requestAnimationFrame()`.
@@ -153,3 +153,8 @@ Added `buttonDiscoChecked()` to the button mouseover functionality for changing 
 - Debug info editted, average calculator added.
 - generateXEast fixed, west direction adjusted for taking in word size and font size parameters but still requires some calculations.
 - Change string length added with "q" and "a" keys.
+
+### 18/03/2021
+
+- Switched to switch case for key presses
+- More elaborate switch direction keys: resets arrow when switching to a different angle.

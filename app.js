@@ -754,77 +754,84 @@ document.addEventListener("keydown", function (event) {
   iCounter = 0;
 
   // TODO: convert to switch case for more efficient speeds
-  if (event.key == "Escape") {
-    resetToMenu();
-  } else if (event.key == "ArrowLeft") {
-    // check direction is not going west ("left")
-    if (direction != "west") {
-      direction = "west";
-    }
-  } else if (event.key == "ArrowUp") {
-    // check direction is not going north ("up")
-    if (direction != "north") {
-      direction = "north";
-    }
-  } else if (event.key == "ArrowRight") {
-    // check direction is not going east ("right")
-    if (direction != "east") {
-      direction = "east";
-    }
-  } else if (event.key == "ArrowDown") {
-    // check direction is not going south ("down")
-    if (direction != "south") {
-      direction = "south";
-    }
-  } else if (event.key == " ") {
-    if (ctx != null) {
-      pause();
-    }
-  } else if (event.key == "c") {
-    clearScreen();
-  } else if (event.key == "d") {
-    discoControl();
-  } else if (event.key == "PageUp") {
-    if (ctx != null) {
-      speedController(true);
-    }
-  } else if (event.key == "PageDown") {
-    if (ctx != null) {
-      speedController(false);
-    }
-  } else if (event.key == "1") {
-    // green
-    numkeyFunction("green");
-  } else if (event.key == "2") {
-    // red
-    numkeyFunction("red");
-  } else if (event.key == "3") {
-    // yellow
-    numkeyFunction("yellow");
-  } else if (event.key == "4") {
-    // blue
-    numkeyFunction("blue");
-  } else if (event.key == "5") {
-    // orange
-    numkeyFunction("orange");
-  } else if (event.key == "6") {
-    // pink
-    numkeyFunction("pink");
-  } else if (event.key == "7") {
-    // cyan
-    numkeyFunction("cyan");
-  } else if (event.key == "8") {
-    // random
-    resetRandomColor();
-    numkeyFunction("random");
-  } else if (event.key == "w") {
-    controlFontSize(true);
-  } else if (event.key == "s") {
-    controlFontSize(false);
-  } else if (event.key == "q") {
-    controlStringSize(true);
-  } else if (event.key == "a") {
-    controlStringSize(false);
+  switch (event.key) {
+    case "Escape":
+      resetToMenu();
+      break;
+    case "ArrowLeft":
+      arrowDirectionControl("west", "east");
+      break;
+    case "ArrowUp":
+      arrowDirectionControl("north", "south");
+      break;
+    case "ArrowRight":
+      arrowDirectionControl("east", "west");
+      break;
+    case "ArrowDown":
+      arrowDirectionControl("south", "north");
+      break;
+    case " ":
+      if (ctx != null) {
+        pause();
+      }
+      break;
+    case "c":
+      clearScreen();
+      break;
+    case "d":
+      discoControl();
+      break;
+    case "PageUp":
+      if (ctx != null) {
+        speedController(true);
+      }
+      break;
+    case "PageDown":
+      if (ctx != null) {
+        speedController(false);
+      }
+      break;
+    case "1":
+      numkeyFunction("green");
+      break;
+    case "2":
+      numkeyFunction("red");
+      break;
+    case "3":
+      numkeyFunction("yellow");
+      break;
+    case "4":
+      numkeyFunction("blue");
+      break;
+    case "5":
+      numkeyFunction("orange");
+      break;
+    case "6":
+      numkeyFunction("pink");
+      break;
+    case "7":
+      numkeyFunction("cyan");
+      break;
+    case "8":
+      resetRandomColor();
+      numkeyFunction("random");
+      break;
+    case "w":
+      controlFontSize(true);
+      break;
+    case "s":
+      controlFontSize(false);
+      break;
+    case "q":
+      controlStringSize(true);
+      break;
+    case "a":
+      controlStringSize(false);
+      break;
+    case "r":
+      break;
+    case "f":
+      break;
   }
 });
 
@@ -838,6 +845,16 @@ function resetToMenu() {
   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height); // set background to black
   showMenu();
   reset(); // reset variables and array to create
+}
+
+function arrowDirectionControl(newDirection, oppositeDirection) {
+  if (direction != newDirection) {
+    if (direction === oppositeDirection) direction = newDirection;
+    else {
+      direction = newDirection;
+      resetWordsArray();
+    }
+  }
 }
 
 function clearScreen() {
@@ -995,9 +1012,15 @@ function printStringSizeDebugInfo() {
   console.log("stringSizeMax: " + stringSizeMax);
 }
 
-window.addEventListener("resize", windowResized);
+// function discoIntervalSpeedControl(increase){
+//   if (discoOn){
 
-function windowResized() {
+//   }
+// }
+
+window.addEventListener("resize", resetWordsArray);
+
+function resetWordsArray() {
   clearScreen();
 
   words = [];
