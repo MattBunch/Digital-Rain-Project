@@ -156,5 +156,6 @@ Added `buttonDiscoChecked()` to the button mouseover functionality for changing 
 
 ### 18/03/2021
 
-- Switched to switch case for key presses
+- Switched to switch case for key presses.
 - More elaborate switch direction keys: resets arrow when switching to a different angle.
+- Disco speed keyboard input added.

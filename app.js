@@ -575,7 +575,7 @@ let fromVerticalDirection; // boolean value for setting vertical direction
 // draw direction going south
 // show the characters in animation.
 function draw() {
-  discoFrameCounter++;
+  if (discoOn) discoFrameCounter++;
 
   // draw black background with 0.025 opacity to show the trail
   ctx.font = fontSize + "px 'Consolas', 'Lucida Console'";
@@ -829,8 +829,10 @@ document.addEventListener("keydown", function (event) {
       controlStringSize(false);
       break;
     case "r":
+      discoIntervalSpeedControl(true);
       break;
     case "f":
+      discoIntervalSpeedControl(false);
       break;
   }
 });
@@ -1012,11 +1014,20 @@ function printStringSizeDebugInfo() {
   console.log("stringSizeMax: " + stringSizeMax);
 }
 
-// function discoIntervalSpeedControl(increase){
-//   if (discoOn){
+const DISCO_FRAME_COUNTER_DEFAULT_MAX = 100;
+const DISCO_FRAME_COUNTER_DEFAULT_MIN = 1;
 
-//   }
-// }
+function discoIntervalSpeedControl(increase) {
+  if (discoOn) {
+    let canIncrease =
+      increase && discoFrameCounterMax < DISCO_FRAME_COUNTER_DEFAULT_MAX;
+    let canDecrease =
+      !increase && discoFrameCounterMax > DISCO_FRAME_COUNTER_DEFAULT_MIN;
+
+    if (canIncrease) discoFrameCounterMax++;
+    else if (canDecrease) discoFrameCounterMax--;
+  }
+}
 
 window.addEventListener("resize", resetWordsArray);
 
