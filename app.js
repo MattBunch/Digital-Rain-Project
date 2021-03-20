@@ -763,30 +763,25 @@ function drawAlternative() {
   });
 }
 
-function reallyTallScreen() {
+function isReallyTallScreen() {
   return canvas.height > 2000;
 }
 
-function smallFontSize() {
+function isSmallFontSize() {
   return alternativeFontSize < 14;
 }
 
-function reallySmallFontSize() {
-  return alternativeFontSize < 6;
-}
-
-function bigFontSize() {
+function isBigFontSize() {
   return alternativeFontSize > 40;
 }
 
 function getNewWordSize() {
   let output = 80;
 
-  if (reallyTallScreen() || smallFontSize()) output = doubleInt(output) * 1.5;
+  if (isReallyTallScreen() || isSmallFontSize())
+    output = doubleInt(output) * 1.5;
 
-  if (reallySmallFontSize()) output = doubleInt(output) * 2;
-
-  if (bigFontSize()) output = output / 2;
+  if (isBigFontSize()) output = output / 2;
 
   return output;
 }
@@ -820,7 +815,7 @@ function moveSquareUp() {
 }
 
 function moveSquareRight() {
-  if (x1 > 0) {
+  if (x1 > 0 + alternativeFontSize) {
     x1 = x1 - alternativeFontSize;
     x2 = x2 - alternativeFontSize;
   }
@@ -1527,7 +1522,6 @@ button2.addEventListener("mouseout", function () {
 });
 
 function buttonMouseOver(input) {
-  console.log("Button " + input + " mouse over");
   if (buttonDiscoChecked()) {
     for (let i = 0; i < buttons.length; i++) {
       buttons[i].style.color = getRandomColor();
@@ -1547,8 +1541,6 @@ function buttonMouseOver(input) {
 }
 
 function buttonMouseOut(input) {
-  console.log("Button " + input + " mouse out");
-
   if (buttonDiscoChecked()) {
     button.style.color = getRandomColor();
     buttonDiscoBackgroundChangeColor();
