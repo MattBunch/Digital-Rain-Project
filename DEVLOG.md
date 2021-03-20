@@ -162,4 +162,7 @@ Added `buttonDiscoChecked()` to the button mouseover functionality for changing 
 
 ### 20/03/2021
 
+- Lots accomplished today:
 - Square Mode added.
+- Hanging Letter mode added to Square Mode.
+- Switching between Rapid Switching and slower switching added to both modes.

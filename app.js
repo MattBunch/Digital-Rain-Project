@@ -166,6 +166,10 @@ function coinToss() {
   return Math.random() < 0.5;
 }
 
+function onePercentChance() {
+  return Math.random() < 0.01;
+}
+
 const DEFAULT_STRING_SIZE_MIN = 20;
 const DEFAULT_STRING_SIZE_MAX = 48;
 let stringSizeMin = DEFAULT_STRING_SIZE_MIN;
@@ -340,10 +344,13 @@ class MatrixString {
   // method for displaying text to the screen, default method
   showVertical(inputColorArray) {
     // for changing the string to a different string with the same size every frame
-    // this.word = generateWord(this.word.length);
+    if (rapidWordChange) this.word = generateWord(this.word.length);
 
     if (direction === "south") {
       for (let i = 0; i < this.word.length - 1; i++) {
+        let letter = this.word.substring(i, i + 1);
+        if (onePercentChance() && !rapidWordChange) letter = getRandomChar();
+
         if (i == this.word.length - 2) {
           // set first letter color to white
           ctx.fillStyle = colorWhite;
@@ -358,14 +365,14 @@ class MatrixString {
           // extension? fade out of darker colors
           ctx.fillStyle = inputColorArray[2];
         }
-        ctx.fillText(
-          this.word.substring(i, i + 1),
-          this.x,
-          this.y + i * this.fontSize
-        );
+        ctx.fillText(letter, this.x, this.y + i * this.fontSize);
       }
     } else if (direction === "north") {
       for (let i = 0; i < this.word.length; i++) {
+        let letter = this.word.substring(i, i + 1);
+
+        if (onePercentChance() && !rapidWordChange) letter = getRandomChar();
+
         if (i == 0) {
           // set first letter color to white
           ctx.fillStyle = colorWhite;
@@ -380,37 +387,37 @@ class MatrixString {
           // extension? fade out of darker colors
           ctx.fillStyle = inputColorArray[2];
         }
-        ctx.fillText(
-          this.word.substring(i, i + 1),
-          this.x,
-          this.y + i * this.fontSize
-        );
+        ctx.fillText(letter, this.x, this.y + i * this.fontSize);
       }
     }
   }
 
   // disco mode vertical, each letter will be a different color on each frame
   showDiscoVertical() {
-    // this.word = generateWord(this.word.length);
+    if (rapidWordChange) this.word = generateWord(this.word.length);
 
     discoColorCounterCheck();
 
     for (let i = 0; i < this.word.length - 1; i++) {
-      ctx.fillText(
-        this.word.substring(i, i + 1),
-        this.x,
-        this.y + i * this.fontSize
-      );
+      let letter = this.word.substring(i, i + 1);
+      if (onePercentChance() && !rapidWordChange) letter = getRandomChar();
+
+      ctx.fillText(letter, this.x, this.y + i * this.fontSize);
     }
   }
 
   // for horizontal movements (east and west)
   showHorizontal(inputColorArray) {
     // for changing the string to a different string with the same size every frame
-    // this.word = generateWord(this.word.length);
+    if (rapidWordChange) this.word = generateWord(this.word.length);
     // east
     if (direction === "east") {
       for (let i = 0; i < this.word.length - 1; i++) {
+        let letter = this.word.substring(i, i + 1);
+        if (onePercentChance() && !rapidWordChange) {
+          letter = getRandomChar();
+        }
+
         if (i == 0) {
           // set first letter color to white
           ctx.fillStyle = colorWhite;
@@ -424,15 +431,21 @@ class MatrixString {
           // set rest of the string to color
           ctx.fillStyle = inputColorArray[2];
         }
+
         ctx.fillText(
           // reversal of above text for moving horizontal
-          this.word.substring(i, i + 1),
+          letter,
           this.x + i * this.fontSize,
           this.y
         );
       }
     } else if (direction === "west") {
       for (let i = 0; i < this.word.length - 1; i++) {
+        let letter = this.word.substring(i, i + 1);
+        if (onePercentChance() && !rapidWordChange) {
+          letter = getRandomChar();
+        }
+
         if (i == this.word.length - 2) {
           // set first letter color to white
           ctx.fillStyle = colorWhite;
@@ -448,7 +461,7 @@ class MatrixString {
         }
         ctx.fillText(
           // reversal of above text for moving horizontal
-          this.word.substring(i, i + 1),
+          letter,
           this.x + i * this.fontSize,
           this.y
         );
@@ -458,26 +471,28 @@ class MatrixString {
 
   // disco mode horizontal, each letter will be a different color on each frame
   showDiscoHorizontal() {
-    // this.word = generateWord(this.word.length);
+    if (rapidWordChange) this.word = generateWord(this.word.length);
 
     discoColorCounterCheck();
 
     for (let i = 0; i < this.word.length - 1; i++) {
-      ctx.fillText(
-        this.word.substring(i, i + 1),
-        this.x + i * this.fontSize,
-        this.y
-      );
+      let letter = this.word.substring(i, i + 1);
+      if (onePercentChance() && !rapidWordChange) {
+        letter = getRandomChar();
+      }
+      ctx.fillText(letter, this.x + i * this.fontSize, this.y);
     }
   }
 
   showAlternative(inputColorArray) {
-    // this.word = generateWord(this.word.length);
+    if (rapidWordChange) this.word = generateWord(this.word.length);
 
     for (let i = 0; i < this.word.length - 1; i++) {
       let letter = this.word.substring(i, i + 1);
       let xCoordinate = this.x;
       let yCoordinate = this.y + i * this.fontSize;
+
+      if (onePercentChance() && !rapidWordChange) letter = getRandomChar();
 
       let primaryColorCondition =
         xCoordinate < x1 ||
@@ -526,6 +541,8 @@ function discoColorCounterCheck() {
   }
 }
 
+// FIXME: alternative fade condition only returns on default alternative font size
+// find  way of calculating correct return through multiple different
 function returnAlternativeFadeCondition(inputNum, xCoordinate, yCoordinate) {
   let coordinateNum = 0;
   switch (inputNum) {
@@ -797,10 +814,10 @@ let squareCounter = 0;
 let randomSquareCoordinates = returnRandomSquareCoordinates();
 
 let squareAnimationOn;
-let x1 = 250;
-let x2 = 500;
-let y1 = 250;
-let y2 = 500;
+let x1 = 250; //350
+let x2 = 500; //650
+let y1 = 250; //350
+let y2 = 500; // 650
 
 let newWordSize;
 
@@ -1126,13 +1143,11 @@ document.addEventListener("keydown", function (event) {
       break;
     case "t":
       rapidWordChangeControl();
-      console.log("rapidWordChange: " + rapidWordChange);
-      console.log("hangingWords: " + hangingWords);
       break;
     case "g":
-      hangingWordsControl();
-      console.log("rapidWordChange: " + rapidWordChange);
-      console.log("hangingWords: " + hangingWords);
+      if (squareAnimationOn) {
+        hangingWordsControl();
+      }
       break;
   }
 });
@@ -1366,6 +1381,8 @@ function resetWordsArray() {
   canvasSetup();
 
   createMatrixArray(direction);
+
+  if (!hangingWords) giveEachWordNewWord();
 }
 
 // get menu information
