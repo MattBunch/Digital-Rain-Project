@@ -476,7 +476,11 @@ class MatrixString {
         yCoordinate > y2;
 
       if (alternativeColorCondition) {
-        ctx.fillStyle = inputColorArray[2];
+        if (discoOn) {
+          discoColorCounterCheck();
+        } else {
+          ctx.fillStyle = inputColorArray[2];
+        }
       } else {
         ctx.fillStyle = colorWhite;
       }
@@ -716,7 +720,7 @@ function drawSolidRect() {
  */
 
 const whiteColorArray = [colorWhite, colorWhite, colorWhite];
-const alternativeFontSize = 20;
+let alternativeFontSize = 20;
 
 let squareCounter = 0;
 let randomSquareCoordinates = returnRandomSquareCoordinates();
@@ -728,6 +732,8 @@ let y1 = 250;
 let y2 = 500;
 
 function drawAlternative() {
+  if (discoOn) discoFrameCounter++;
+
   squareCounter++;
   drawSolidRect();
   ctx.fillStyle = colorWhite;
@@ -871,6 +877,7 @@ function reset() {
   iCounter = 0;
   defaultFontSize = 20;
   resetStringSizes();
+  alternativeFontSize = 20;
 }
 
 function resetRandomColor() {
@@ -1131,9 +1138,13 @@ function switchColor(input) {
 }
 
 function controlFontSize(increase) {
-  if (increase & (defaultFontSize < 65)) defaultFontSize++;
-  else if (!increase & (defaultFontSize > 1)) defaultFontSize--;
-  else return;
+  if (increase & (defaultFontSize < 65)) {
+    defaultFontSize++;
+    alternativeFontSize++;
+  } else if (!increase & (defaultFontSize > 1)) {
+    defaultFontSize--;
+    alternativeFontSize--;
+  } else return;
 
   fontSize = defaultFontSize;
 
@@ -1146,6 +1157,8 @@ function controlFontSize(increase) {
     }
     words[i].fontSize = x;
   }
+
+  // resetWordsArray();
 }
 
 function printFontSizeDebugInfo() {
