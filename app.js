@@ -782,6 +782,33 @@ function returnRandomSquareCoordinates() {
   }
 }
 
+function moveSquareLeft() {
+  if (x2 < canvas.width - alternativeFontSize) {
+    x1 = x1 + alternativeFontSize;
+    x2 = x2 + alternativeFontSize;
+  }
+}
+
+function moveSquareUp() {
+  if (y1 > 0 + alternativeFontSize) {
+    y1 = y1 - alternativeFontSize;
+    y2 = y2 - alternativeFontSize;
+  }
+}
+
+function moveSquareRight() {
+  if (x1 > 0) {
+    x1 = x1 - alternativeFontSize;
+    x2 = x2 - alternativeFontSize;
+  }
+}
+
+function moveSquareDown() {
+  if (y2 < canvas.height - alternativeFontSize) {
+    y1 = y1 + alternativeFontSize;
+    y2 = y2 + alternativeFontSize;
+  }
+}
 /*###########################################################################################
   __  __                     _____           _   _             
  |  \/  |                   / ____|         | | (_)            
@@ -877,110 +904,102 @@ document.addEventListener("keydown", function (event) {
   iCounter = 0;
 
   // TODO: convert to switch case for more efficient speeds
-  if (squareAnimationOn) {
-    switch (event.key) {
-      case "Escape":
-        resetToMenu();
-        break;
-      case "ArrowLeft":
-        x1 = x1 + alternativeFontSize;
-        x2 = x2 + alternativeFontSize;
-        break;
-      case "ArrowUp":
-        y1 = y1 - alternativeFontSize;
-        y2 = y2 - alternativeFontSize;
-        break;
-      case "ArrowRight":
-        x1 = x1 - alternativeFontSize;
-        x2 = x2 - alternativeFontSize;
-        break;
-      case "ArrowDown":
-        y1 = y1 + alternativeFontSize;
-        y2 = y2 + alternativeFontSize;
-        break;
-    }
-  } else {
-    switch (event.key) {
-      case "Escape":
-        resetToMenu();
-        break;
-      case "ArrowLeft":
+  switch (event.key) {
+    case "Escape":
+      resetToMenu();
+      break;
+    case "ArrowLeft":
+      if (!squareAnimationOn) {
         arrowDirectionControl("west", "east");
-        break;
-      case "ArrowUp":
+      } else {
+        moveSquareLeft();
+      }
+      break;
+    case "ArrowUp":
+      if (!squareAnimationOn) {
         arrowDirectionControl("north", "south");
-        break;
-      case "ArrowRight":
+      } else {
+        moveSquareUp();
+      }
+      break;
+    case "ArrowRight":
+      if (!squareAnimationOn) {
         arrowDirectionControl("east", "west");
-        break;
-      case "ArrowDown":
+      } else {
+        moveSquareRight();
+      }
+      break;
+    case "ArrowDown":
+      if (!squareAnimationOn) {
         arrowDirectionControl("south", "north");
-        break;
-      case " ":
-        if (ctx != null) {
-          pause();
-        }
-        break;
-      case "c":
-        clearScreen();
-        break;
-      case "d":
-        discoControl();
-        break;
-      case "PageUp":
-        if (ctx != null) {
-          speedController(true);
-        }
-        break;
-      case "PageDown":
-        if (ctx != null) {
-          speedController(false);
-        }
-        break;
-      case "1":
-        numkeyFunction("green");
-        break;
-      case "2":
-        numkeyFunction("red");
-        break;
-      case "3":
-        numkeyFunction("yellow");
-        break;
-      case "4":
-        numkeyFunction("blue");
-        break;
-      case "5":
-        numkeyFunction("orange");
-        break;
-      case "6":
-        numkeyFunction("pink");
-        break;
-      case "7":
-        numkeyFunction("cyan");
-        break;
-      case "8":
-        resetRandomColor();
-        numkeyFunction("random");
-        break;
-      case "w":
-        controlFontSize(true);
-        break;
-      case "s":
-        controlFontSize(false);
-        break;
-      case "q":
-        controlStringSize(true);
-        break;
-      case "a":
-        controlStringSize(false);
-        break;
-      case "r":
-        discoIntervalSpeedControl(true);
-        break;
-      case "f":
-        discoIntervalSpeedControl(false);
-        break;
-    }
+      } else {
+        moveSquareDown();
+      }
+      break;
+    case " ":
+      if (ctx != null) {
+        pause();
+      }
+      break;
+    case "c":
+      clearScreen();
+      break;
+    case "d":
+      discoControl();
+      break;
+    case "PageUp":
+      if (ctx != null) {
+        speedController(true);
+      }
+      break;
+    case "PageDown":
+      if (ctx != null) {
+        speedController(false);
+      }
+      break;
+    case "1":
+      numkeyFunction("green");
+      break;
+    case "2":
+      numkeyFunction("red");
+      break;
+    case "3":
+      numkeyFunction("yellow");
+      break;
+    case "4":
+      numkeyFunction("blue");
+      break;
+    case "5":
+      numkeyFunction("orange");
+      break;
+    case "6":
+      numkeyFunction("pink");
+      break;
+    case "7":
+      numkeyFunction("cyan");
+      break;
+    case "8":
+      resetRandomColor();
+      numkeyFunction("random");
+      break;
+    case "w":
+      controlFontSize(true);
+      break;
+    case "s":
+      controlFontSize(false);
+      break;
+    case "q":
+      controlStringSize(true);
+      break;
+    case "a":
+      controlStringSize(false);
+      break;
+    case "r":
+      discoIntervalSpeedControl(true);
+      break;
+    case "f":
+      discoIntervalSpeedControl(false);
+      break;
   }
 });
 
@@ -1216,9 +1235,6 @@ function run(original) {
   hideMenu();
 
   squareAnimationOn = !original;
-
-  console.log("original: " + original);
-  console.log("squareAnimationOn: " + squareAnimationOn);
 
   // run the animation
   intervalValid = setInterval(function () {
