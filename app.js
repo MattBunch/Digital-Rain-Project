@@ -462,14 +462,31 @@ class MatrixString {
     }
   }
 
-  showAlternative() {
+  showAlternative(x1, x2, y1, y2) {
     this.word = generateWord(this.word.length);
     for (let i = 0; i < this.word.length - 1; i++) {
-      ctx.fillText(
-        this.word.substring(i, i + 1),
-        this.x,
-        this.y + i * this.fontSize
-      );
+      let letter = this.word.substring(i, i + 1);
+      let xCoordinate = this.x;
+      let yCoordinate = this.y + i * this.fontSize;
+
+      // let x1 = 250;
+      // let x2 = 500;
+      // let y1 = 250;
+      // let y2 = 500;
+
+      let alternativeColorCondition =
+        xCoordinate < x1 ||
+        xCoordinate > x2 ||
+        yCoordinate < y1 ||
+        yCoordinate > y2;
+
+      if (alternativeColorCondition) {
+        ctx.fillStyle = colorWhite;
+      } else {
+        ctx.fillStyle = colorMatrixGreen;
+      }
+
+      ctx.fillText(letter, xCoordinate, yCoordinate);
     }
   }
 }
@@ -483,6 +500,16 @@ function discoColorCounterCheck() {
     ctx.fillStyle = savedColor;
   }
 }
+
+class IndividualLetterCoordinates {
+  constructor(originalWordArray, xCoordinates, yCoordinates) {
+    this.originalWordArray = originalWordArray;
+    this.xCoordinates = xCoordinates;
+    this.yCoordinates = yCoordinates;
+  }
+}
+
+let letterCoordinates = new Array();
 
 /*
 ##################################################################################################
@@ -678,7 +705,7 @@ function drawSolidRect() {
   ctx.fillRect(0, 0, width, height);
 }
 
-/**
+/**###########################################################################################
  * 
 
            _ _                        _   _             _____                      ____  
@@ -690,30 +717,38 @@ function drawSolidRect() {
                                                                                   \_\/_/ 
                                                                                          
 
+ ###########################################################################################
  */
 
 const whiteColorArray = [colorWhite, colorWhite, colorWhite];
+const alternativeFontSize = 20;
 
 function drawAlternative() {
   drawSolidRect();
-  ctx.font = "20px Arial";
+  // drawOpaqueRect();
+  ctx.font = alternativeFontSize + "px Arial";
   ctx.fillStyle = colorWhite;
 
-  ctx.font = fontSize + "px 'Consolas', 'Lucida Console'";
+  // ctx.font = fontSize + "px 'Consolas', 'Lucida Console'";
 
-  createMatrixArray("show");
+  // no direction input, very important
+  // alternative method: input "south" as direction and empty array after forEach loop
+  createMatrixArray();
 
   let newWordSize = getNewWordSize();
+  let randomSquareCoordinates = returnRandomSquareCoordinates();
+  console.log(randomSquareCoordinates);
+  let x1 = randomSquareCoordinates[0];
+  let x2 = randomSquareCoordinates[1];
+  let y1 = randomSquareCoordinates[2];
+  let y2 = randomSquareCoordinates[3];
 
   words.forEach(function (arrayWord) {
     arrayWord.y = 0;
+    arrayWord.fontSize = alternativeFontSize;
     arrayWord.word = generateWord(newWordSize);
-    arrayWord.showAlternative();
+    arrayWord.showAlternative(x1, x2, y1, y2);
   });
-
-  console.log(words.length);
-
-  console.log("drawAlternative running!");
 }
 function reallyTallScreen() {
   return canvas.height > 2000;
@@ -725,6 +760,20 @@ function getNewWordSize() {
   if (reallyTallScreen()) output = doubleInt(output);
 
   return output;
+}
+
+function returnRandomSquareCoordinates() {
+  let num = Math.floor(generateRandomNumber(0, 4));
+  switch (num) {
+    case 0:
+      return [250, 500, 250, 500];
+    case 1:
+      return [500, 750, 500, 750];
+    case 2:
+      return [750, 1000, 750, 1000];
+    case 3:
+      return [1000, 1250, 1000, 1250];
+  }
 }
 
 /*###########################################################################################
