@@ -1019,7 +1019,8 @@ function reset() {
 function resetRandomColor() {
   randomColorArray = generateRandomColorArray();
   colorChoiceArray[7] = randomColorArray;
-  updateRandomColor();
+  updateRandomColorForTheMenu();
+  console.log("resetRandomColor called");
 }
 
 /*######################################################################################################
@@ -1740,7 +1741,7 @@ function buttonBorderColorSelectedColor() {
   }
 }
 
-function updateRandomColor() {
+function updateRandomColorForTheMenu() {
   selectColor = randomColorArray[2];
   selectFunction();
 }
