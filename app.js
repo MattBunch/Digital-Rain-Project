@@ -1020,7 +1020,6 @@ function resetRandomColor() {
   randomColorArray = generateRandomColorArray();
   colorChoiceArray[7] = randomColorArray;
   updateRandomColorForTheMenu();
-  console.log("resetRandomColor called");
 }
 
 /*######################################################################################################
@@ -1149,10 +1148,13 @@ document.addEventListener("keydown", function (event) {
     case "t":
       rapidWordChangeControl();
       break;
-    case "g":
+    case "h":
       if (squareAnimationOn) {
         hangingWordsControl();
       }
+      break;
+    case "m":
+      if (ctx != undefined) switchMode();
       break;
   }
 });
@@ -1374,6 +1376,16 @@ function hangingWordsControl() {
   }
 }
 
+function switchMode() {
+  let original;
+  if (squareAnimationOn) original = true;
+  else original = false;
+
+  resetToMenu();
+
+  run(original);
+}
+
 window.addEventListener("resize", resetWordsArray);
 
 function resetWordsArray() {
@@ -1418,6 +1430,8 @@ function run(original) {
   squareAnimationOn = !original;
 
   newWordSize = getNewWordSize();
+
+  if (squareAnimationOn) giveEachWordNewWord();
 
   // run the animation
   intervalValid = setInterval(function () {

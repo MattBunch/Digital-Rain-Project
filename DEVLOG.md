@@ -167,3 +167,7 @@ Added `buttonDiscoChecked()` to the button mouseover functionality for changing 
 - Hanging Letter mode added to Square Mode.
 - Switching between Rapid Switching and slower switching added to both modes.
 - Fading borders of white square in Square Mode only work consistently for default alternative font size, will need serious overhaul to work for other font sizes.
+
+### 21/03/2021
+
+- Switch Mode button added.

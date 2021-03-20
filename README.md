@@ -20,7 +20,8 @@ This program displays a digital rain animation within the window browser, as see
 - A: Decrease string length
 - R: Increase disco speed
 - F: Decrease disco speed
-- T: Toggle rapid word change
+- H: Toggle rapid word change
+- M: Switch between modes
 - PageUp: Speed up
 - PageDown: Slow down
 - 1: Change colour to green
