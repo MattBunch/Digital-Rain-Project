@@ -723,9 +723,12 @@ function drawSolidRect() {
 const whiteColorArray = [colorWhite, colorWhite, colorWhite];
 const alternativeFontSize = 20;
 
+let squareCounter = 0;
+let randomSquareCoordinates = returnRandomSquareCoordinates();
+
 function drawAlternative() {
+  squareCounter++;
   drawSolidRect();
-  // drawOpaqueRect();
   ctx.font = alternativeFontSize + "px Arial";
   ctx.fillStyle = colorWhite;
 
@@ -736,8 +739,10 @@ function drawAlternative() {
   createMatrixArray();
 
   let newWordSize = getNewWordSize();
-  let randomSquareCoordinates = returnRandomSquareCoordinates();
-  console.log(randomSquareCoordinates);
+  if (squareCounter > 50) {
+    randomSquareCoordinates = returnRandomSquareCoordinates();
+    squareCounter = 0;
+  }
   let x1 = randomSquareCoordinates[0];
   let x2 = randomSquareCoordinates[1];
   let y1 = randomSquareCoordinates[2];
