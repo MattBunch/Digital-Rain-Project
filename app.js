@@ -162,8 +162,6 @@ function generateRandomNumber(min, max) {
   return number;
 }
 
-// TODO: word size and font size should scale to size of screen
-
 const DEFAULT_STRING_SIZE_MIN = 20;
 const DEFAULT_STRING_SIZE_MAX = 48;
 let stringSizeMin = DEFAULT_STRING_SIZE_MIN;
@@ -200,13 +198,17 @@ function generateWord(wordSize) {
 
   // get random letter from the alphabet and add it to the word
   for (let i = 0; i < wordSize; i++) {
-    word += getRandomChar(); //alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+    word += getRandomChar();
   }
   return word;
 }
 
 function getRandomChar() {
   return alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+}
+
+function generateWordChangeTurnoverNumber() {
+  return Math.floor(generateRandomNumber(1, 10));
 }
 
 function generateStartingPointInput(inputMin, inputMax) {
@@ -317,12 +319,6 @@ if (discoFrameElement.value < 0 || discoFrameElement == null) {
   discoFrameCounterTurnoverPoint = 10;
 }
 
-// word change counters
-
-let wordChangeCounter = 0;
-const DEFAULT_WORD_CHANGE_NUM = 1;
-let wordChangeCounterTurnoverPoint = DEFAULT_WORD_CHANGE_NUM;
-
 let savedColor = getRandomColor();
 
 class MatrixString {
@@ -333,12 +329,14 @@ class MatrixString {
     this.xSpeed = xSpeed; // random x float speed
     this.ySpeed = ySpeed; // random y float speed
     this.fontSize = inputFontSize; //  random font size
+    this.wordChangeCounter = 0;
+    this.wordChangeCounterTurnoverPoint = generateWordChangeTurnoverNumber();
   }
 
   // method for displaying text to the screen, default method
   showVertical(inputColorArray) {
     // for changing the string to a different string with the same size every frame
-    this.word = generateWord(this.word.length);
+    // this.word = generateWord(this.word.length);
 
     if (direction === "south") {
       for (let i = 0; i < this.word.length - 1; i++) {
@@ -389,7 +387,7 @@ class MatrixString {
 
   // disco mode vertical, each letter will be a different color on each frame
   showDiscoVertical() {
-    this.word = generateWord(this.word.length);
+    // this.word = generateWord(this.word.length);
 
     discoColorCounterCheck();
 
@@ -405,7 +403,7 @@ class MatrixString {
   // for horizontal movements (east and west)
   showHorizontal(inputColorArray) {
     // for changing the string to a different string with the same size every frame
-    this.word = generateWord(this.word.length);
+    // this.word = generateWord(this.word.length);
     // east
     if (direction === "east") {
       for (let i = 0; i < this.word.length - 1; i++) {
@@ -456,7 +454,7 @@ class MatrixString {
 
   // disco mode horizontal, each letter will be a different color on each frame
   showDiscoHorizontal() {
-    this.word = generateWord(this.word.length);
+    // this.word = generateWord(this.word.length);
 
     discoColorCounterCheck();
 
@@ -470,7 +468,8 @@ class MatrixString {
   }
 
   showAlternative(inputColorArray) {
-    this.word = generateWord(this.word.length);
+    // this.word = generateWord(this.word.length);
+
     for (let i = 0; i < this.word.length - 1; i++) {
       let letter = this.word.substring(i, i + 1);
       let xCoordinate = this.x;
@@ -521,10 +520,6 @@ function discoColorCounterCheck() {
   } else {
     ctx.fillStyle = savedColor;
   }
-}
-
-function wordChangeCounterCheck() {
-  return wordChangeCounter > wordChangeCounterTurnoverPoint;
 }
 
 function returnAlternativeFadeCondition(inputNum, xCoordinate, yCoordinate) {
@@ -666,16 +661,26 @@ let fromVerticalDirection; // boolean value for setting vertical direction
 function draw() {
   if (discoOn) discoFrameCounter++;
 
-  wordChangeCounter++;
-
   // draw black background with 0.025 opacity to show the trail
   ctx.font = fontSize + "px 'Consolas', 'Lucida Console'";
   drawOpaqueRect();
 
-  // draw strings falling vertically
+  // draw strings
   for (let i = 0; i < words.length; i++) {
-    // TODO: everytime word is drawn, increment the word's individual wordChangeTurnoverNumber
+    // TODO: toggle this on and off with a keypress
     // these get reset upon reseting as well.
+
+    changeWordCheck(words[i]);
+
+    // words[i].wordChangeCounter++;
+    // if (words[i].wordChangeCounter > words[i].wordChangeCounterTurnoverPoint) {
+    //   let newWord2 = generateWord(words[i].word.length);
+    //   words[i].word = newWord2;
+    //   words[i].wordChangeCounter = 0;
+    //   words[
+    //     i
+    //   ].wordChangeCounterTurnoverPoint = generateWordChangeTurnoverNumber();
+    // }
 
     if (direction === "south") {
       destinationPoint = height; // destination point: below the screen
@@ -752,6 +757,19 @@ function draw() {
   }
 }
 
+function changeWordCheck(inputWordObject) {
+  inputWordObject.wordChangeCounter++;
+  if (
+    inputWordObject.wordChangeCounter >
+    inputWordObject.wordChangeCounterTurnoverPoint
+  ) {
+    let newWord2 = generateWord(inputWordObject.word.length);
+    inputWordObject.word = newWord2;
+    inputWordObject.wordChangeCounter = 0;
+    inputWordObject.wordChangeCounterTurnoverPoint = generateWordChangeTurnoverNumber();
+  }
+}
+
 function drawOpaqueRect() {
   ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
   ctx.fillRect(0, 0, width, height);
@@ -791,8 +809,6 @@ let y2 = 500;
 
 function drawAlternative() {
   if (discoOn) discoFrameCounter++;
-
-  wordChangeCounter++;
 
   squareCounter++;
   drawSolidRect();
@@ -982,7 +998,6 @@ let currentSpeedLevel = speedLevels[middle];
 document.addEventListener("keydown", function (event) {
   iCounter = 0;
 
-  // TODO: convert to switch case for more efficient speeds
   switch (event.key) {
     case "Escape":
       resetToMenu();
