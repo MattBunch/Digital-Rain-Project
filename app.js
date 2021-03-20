@@ -462,17 +462,12 @@ class MatrixString {
     }
   }
 
-  showAlternative(x1, x2, y1, y2) {
+  showAlternative(inputColorArray) {
     this.word = generateWord(this.word.length);
     for (let i = 0; i < this.word.length - 1; i++) {
       let letter = this.word.substring(i, i + 1);
       let xCoordinate = this.x;
       let yCoordinate = this.y + i * this.fontSize;
-
-      // let x1 = 250;
-      // let x2 = 500;
-      // let y1 = 250;
-      // let y2 = 500;
 
       let alternativeColorCondition =
         xCoordinate < x1 ||
@@ -481,9 +476,9 @@ class MatrixString {
         yCoordinate > y2;
 
       if (alternativeColorCondition) {
-        ctx.fillStyle = colorWhite;
+        ctx.fillStyle = inputColorArray[2];
       } else {
-        ctx.fillStyle = colorMatrixGreen;
+        ctx.fillStyle = colorWhite;
       }
 
       ctx.fillText(letter, xCoordinate, yCoordinate);
@@ -726,6 +721,12 @@ const alternativeFontSize = 20;
 let squareCounter = 0;
 let randomSquareCoordinates = returnRandomSquareCoordinates();
 
+let squareAnimationOn;
+let x1 = 250;
+let x2 = 500;
+let y1 = 250;
+let y2 = 500;
+
 function drawAlternative() {
   squareCounter++;
   drawSolidRect();
@@ -743,16 +744,16 @@ function drawAlternative() {
     randomSquareCoordinates = returnRandomSquareCoordinates();
     squareCounter = 0;
   }
-  let x1 = randomSquareCoordinates[0];
-  let x2 = randomSquareCoordinates[1];
-  let y1 = randomSquareCoordinates[2];
-  let y2 = randomSquareCoordinates[3];
+  // let x1 = randomSquareCoordinates[0];
+  // let x2 = randomSquareCoordinates[1];
+  // let y1 = randomSquareCoordinates[2];
+  // let y2 = randomSquareCoordinates[3];
 
   words.forEach(function (arrayWord) {
     arrayWord.y = 0;
     arrayWord.fontSize = alternativeFontSize;
     arrayWord.word = generateWord(newWordSize);
-    arrayWord.showAlternative(x1, x2, y1, y2);
+    arrayWord.showAlternative(colorChoiceArray[chosenColor]);
   });
 }
 function reallyTallScreen() {
@@ -876,86 +877,106 @@ document.addEventListener("keydown", function (event) {
   iCounter = 0;
 
   // TODO: convert to switch case for more efficient speeds
-  switch (event.key) {
-    case "Escape":
-      resetToMenu();
-      break;
-    case "ArrowLeft":
-      arrowDirectionControl("west", "east");
-      break;
-    case "ArrowUp":
-      arrowDirectionControl("north", "south");
-      break;
-    case "ArrowRight":
-      arrowDirectionControl("east", "west");
-      break;
-    case "ArrowDown":
-      arrowDirectionControl("south", "north");
-      break;
-    case " ":
-      if (ctx != null) {
-        pause();
-      }
-      break;
-    case "c":
-      clearScreen();
-      break;
-    case "d":
-      discoControl();
-      break;
-    case "PageUp":
-      if (ctx != null) {
-        speedController(true);
-      }
-      break;
-    case "PageDown":
-      if (ctx != null) {
-        speedController(false);
-      }
-      break;
-    case "1":
-      numkeyFunction("green");
-      break;
-    case "2":
-      numkeyFunction("red");
-      break;
-    case "3":
-      numkeyFunction("yellow");
-      break;
-    case "4":
-      numkeyFunction("blue");
-      break;
-    case "5":
-      numkeyFunction("orange");
-      break;
-    case "6":
-      numkeyFunction("pink");
-      break;
-    case "7":
-      numkeyFunction("cyan");
-      break;
-    case "8":
-      resetRandomColor();
-      numkeyFunction("random");
-      break;
-    case "w":
-      controlFontSize(true);
-      break;
-    case "s":
-      controlFontSize(false);
-      break;
-    case "q":
-      controlStringSize(true);
-      break;
-    case "a":
-      controlStringSize(false);
-      break;
-    case "r":
-      discoIntervalSpeedControl(true);
-      break;
-    case "f":
-      discoIntervalSpeedControl(false);
-      break;
+  if (squareAnimationOn) {
+    switch (event.key) {
+      case "Escape":
+        resetToMenu();
+        break;
+      case "ArrowLeft":
+        console.log("left");
+        break;
+      case "ArrowUp":
+        console.log("up");
+        break;
+      case "ArrowRight":
+        console.log("right");
+        break;
+      case "ArrowDown":
+        console.log("down");
+        break;
+    }
+  } else {
+    switch (event.key) {
+      case "Escape":
+        resetToMenu();
+        break;
+      case "ArrowLeft":
+        arrowDirectionControl("west", "east");
+        break;
+      case "ArrowUp":
+        arrowDirectionControl("north", "south");
+        break;
+      case "ArrowRight":
+        arrowDirectionControl("east", "west");
+        break;
+      case "ArrowDown":
+        arrowDirectionControl("south", "north");
+        break;
+      case " ":
+        if (ctx != null) {
+          pause();
+        }
+        break;
+      case "c":
+        clearScreen();
+        break;
+      case "d":
+        discoControl();
+        break;
+      case "PageUp":
+        if (ctx != null) {
+          speedController(true);
+        }
+        break;
+      case "PageDown":
+        if (ctx != null) {
+          speedController(false);
+        }
+        break;
+      case "1":
+        numkeyFunction("green");
+        break;
+      case "2":
+        numkeyFunction("red");
+        break;
+      case "3":
+        numkeyFunction("yellow");
+        break;
+      case "4":
+        numkeyFunction("blue");
+        break;
+      case "5":
+        numkeyFunction("orange");
+        break;
+      case "6":
+        numkeyFunction("pink");
+        break;
+      case "7":
+        numkeyFunction("cyan");
+        break;
+      case "8":
+        resetRandomColor();
+        numkeyFunction("random");
+        break;
+      case "w":
+        controlFontSize(true);
+        break;
+      case "s":
+        controlFontSize(false);
+        break;
+      case "q":
+        controlStringSize(true);
+        break;
+      case "a":
+        controlStringSize(false);
+        break;
+      case "r":
+        discoIntervalSpeedControl(true);
+        break;
+      case "f":
+        discoIntervalSpeedControl(false);
+        break;
+    }
   }
 });
 
@@ -1189,6 +1210,11 @@ function run(original) {
 
   // hide the main html menu
   hideMenu();
+
+  squareAnimationOn = !original;
+
+  console.log("original: " + original);
+  console.log("squareAnimationOn: " + squareAnimationOn);
 
   // run the animation
   intervalValid = setInterval(function () {
