@@ -162,6 +162,10 @@ function generateRandomNumber(min, max) {
   return number;
 }
 
+function coinToss() {
+  return Math.random() < 0.5;
+}
+
 const DEFAULT_STRING_SIZE_MIN = 20;
 const DEFAULT_STRING_SIZE_MAX = 48;
 let stringSizeMin = DEFAULT_STRING_SIZE_MIN;
@@ -798,11 +802,13 @@ let x2 = 500;
 let y1 = 250;
 let y2 = 500;
 
+let newWordSize;
+
 function drawAlternative() {
   if (discoOn) discoFrameCounter++;
 
   squareCounter++;
-  drawSolidRect();
+  drawOpaqueRect();
   ctx.fillStyle = colorWhite;
 
   ctx.font = alternativeFontSize + "px Arial";
@@ -812,23 +818,41 @@ function drawAlternative() {
   // alternative method: input "south" as direction and empty array after forEach loop
   createMatrixArray();
 
-  let newWordSize = getNewWordSize();
   if (squareCounter > 50) {
     randomSquareCoordinates = returnRandomSquareCoordinates();
     squareCounter = 0;
   }
 
-  words.forEach(function (arrayWord) {
-    if (arrayWord.word.length < getNewWordSize()) {
-      arrayWord.word = generateWord(newWordSize);
+  newWordSize = getNewWordSize();
+
+  words.forEach(function (arrayItem) {
+    arrayItem.y = 0;
+    arrayItem.fontSize = alternativeFontSize;
+
+    // true
+    // true
+    if (hangingWords && rapidWordChange) {
+      arrayItem.word = generateWord(arrayItem.word.length);
+    }
+    // true
+    // false
+    else if (hangingWords && !rapidWordChange) {
+      changeWordCheck(arrayItem, arrayItem.word.length);
     }
 
-    arrayWord.y = 0;
-    arrayWord.fontSize = alternativeFontSize;
-    changeWordCheck(arrayWord, newWordSize);
-    // console.log(arrayWord.wordChangeCounter);
-    // arrayWord.word = generateWord(newWordSize);
-    arrayWord.showAlternative(colorChoiceArray[chosenColor]);
+    // false
+    // true
+    else if (!hangingWords && rapidWordChange) {
+      arrayItem.word = generateWord(newWordSize);
+    }
+
+    // false
+    // false
+    else if (!hangingWords && !rapidWordChange) {
+      changeWordCheck(arrayItem, newWordSize);
+    }
+
+    arrayItem.showAlternative(colorChoiceArray[chosenColor]);
   });
 }
 
@@ -896,6 +920,15 @@ function moveSquareDown() {
     y2 = y2 + alternativeFontSize;
   }
 }
+
+function giveEachWordNewWord() {
+  words.forEach(function (arrayWord) {
+    if (hangingWords) {
+      arrayWord.word = generateWord(generateWordSizeRand());
+    } else arrayWord.word = generateWord(newWordSize);
+  });
+}
+
 /*###########################################################################################
   __  __                     _____           _   _             
  |  \/  |                   / ____|         | | (_)            
@@ -987,6 +1020,10 @@ let intervalSpeed = DEFAULT_SPEED;
 let speedLevels = Array.from(Array(amountOfSpeedLevels).keys());
 let middle = speedLevels[Math.round((speedLevels.length - 1) / 2)];
 let currentSpeedLevel = speedLevels[middle];
+
+let rapidWordChange = true;
+let hangingWords = false;
+let hangingWordsCounter = 0;
 
 document.addEventListener("keydown", function (event) {
   iCounter = 0;
@@ -1086,6 +1123,16 @@ document.addEventListener("keydown", function (event) {
       break;
     case "f":
       discoIntervalSpeedControl(false);
+      break;
+    case "t":
+      rapidWordChangeControl();
+      console.log("rapidWordChange: " + rapidWordChange);
+      console.log("hangingWords: " + hangingWords);
+      break;
+    case "g":
+      hangingWordsControl();
+      console.log("rapidWordChange: " + rapidWordChange);
+      console.log("hangingWords: " + hangingWords);
       break;
   }
 });
@@ -1292,6 +1339,23 @@ function discoIntervalSpeedControl(increase) {
   }
 }
 
+function rapidWordChangeControl() {
+  if (rapidWordChange) rapidWordChange = false;
+  else rapidWordChange = true;
+}
+
+function hangingWordsControl() {
+  if (hangingWords) {
+    hangingWords = false;
+    giveEachWordNewWord();
+    hangingWordsCounter = 0;
+  } else {
+    hangingWords = true;
+    giveEachWordNewWord();
+    hangingWordsCounter = 1;
+  }
+}
+
 window.addEventListener("resize", resetWordsArray);
 
 function resetWordsArray() {
@@ -1332,6 +1396,8 @@ function run(original) {
   hideMenu();
 
   squareAnimationOn = !original;
+
+  newWordSize = getNewWordSize();
 
   // run the animation
   intervalValid = setInterval(function () {
