@@ -782,8 +782,6 @@ function bigFontSize() {
 function getNewWordSize() {
   let output = 80;
 
-  console.log(alternativeFontSize);
-
   if (reallyTallScreen() || smallFontSize()) output = doubleInt(output) * 1.5;
 
   if (reallySmallFontSize()) output = doubleInt(output) * 2;
@@ -1301,6 +1299,7 @@ const select = document.getElementById("colors");
 const directionsSelect = document.getElementById("directions");
 const menuDivs = document.getElementsByClassName("menu");
 const button = document.getElementById("button");
+const button2 = document.getElementById("button2");
 const buttons = document.getElementsByClassName("button");
 const elems = document.body.getElementsByTagName("*");
 const frameCountElems = document.getElementsByClassName("frameCount");
@@ -1451,16 +1450,6 @@ function recolorMenuRandom() {
   selectBackgroundColorFunction();
 }
 
-// TODO: edit this to accomodate multiple buttons
-function buttonBorderColorRandom() {
-  button.style.border = borderPrefix + getRandomColor();
-}
-
-// TODO: edit this to accomodate multiple buttons
-function buttonBorderColorSelectedColor() {
-  button.style.border = borderPrefix + selectColor;
-}
-
 function selectBackgroundColorFunction() {
   Array.from(directionsSelect.options).forEach(function (optionElement) {
     if (checkBox.checked) {
@@ -1521,36 +1510,57 @@ function matchColorToRGB(entryColor) {
       buttonMouseOver(button); // TODO: edit buttonMouseOver and buttonMouseOut to take button as a parameter
     });
  */
-button.addEventListener("mouseover", buttonMouseOver);
-button.addEventListener("mouseout", buttonMouseOut);
+button.addEventListener("mouseover", function () {
+  buttonMouseOver(1);
+});
 
-function buttonMouseOver() {
+button.addEventListener("mouseout", function () {
+  buttonMouseOut(1);
+});
+
+button2.addEventListener("mouseover", function () {
+  buttonMouseOver(2);
+});
+
+button2.addEventListener("mouseout", function () {
+  buttonMouseOut(2);
+});
+
+function buttonMouseOver(input) {
+  console.log("Button " + input + " mouse over");
   if (buttonDiscoChecked()) {
-    // button.style.background = getRandomColor();
-    button.style.color = getRandomColor();
-
     for (let i = 0; i < buttons.length; i++) {
-      buttons[i].style.background = selectColor;
       buttons[i].style.color = getRandomColor();
     }
     buttonDiscoBackgroundChangeColor();
     buttonBorderColorRandom();
   } else {
-    for (let i = 0; i < buttons.length; i++) {
-      buttons[i].style.background = selectColor;
-      buttons[i].style.color = colorBlack;
+    if (input == 1) {
+      console.log("hey");
+      button.style.color = colorBlack;
+      button.style.background = selectColor;
+    } else if (input == 2) {
+      button2.style.color = colorBlack;
+      button2.style.background = selectColor;
     }
   }
 }
 
-function buttonMouseOut() {
+function buttonMouseOut(input) {
+  console.log("Button " + input + " mouse out");
+
   if (buttonDiscoChecked()) {
     button.style.color = getRandomColor();
     buttonDiscoBackgroundChangeColor();
     buttonBorderColorRandom();
   } else {
-    button.style.background = colorBlack;
-    button.style.color = selectColor;
+    if (input === 1) {
+      button.style.color = selectColor;
+      button.style.background = colorBlack;
+    } else if (input === 2) {
+      button2.style.background = colorBlack;
+      button2.style.color = selectColor;
+    }
   }
 }
 
@@ -1565,7 +1575,23 @@ function buttonBackgroundBlack() {
 }
 
 function buttonDiscoBackgroundChangeColor() {
-  button.style.background = getRandomColor();
+  for (let i = 0; i < buttons.length; i++) {
+    buttons[i].style.background = getRandomColor();
+  }
+}
+
+// TODO: edit this to accomodate multiple buttons
+function buttonBorderColorRandom() {
+  for (let i = 0; i < buttons.length; i++) {
+    buttons[i].style.border = borderPrefix + getRandomColor();
+  }
+}
+
+// TODO: edit this to accomodate multiple buttons
+function buttonBorderColorSelectedColor() {
+  for (let i = 0; i < buttons.length; i++) {
+    buttons[i].style.border = borderPrefix + selectColor;
+  }
 }
 
 function updateRandomColor() {
