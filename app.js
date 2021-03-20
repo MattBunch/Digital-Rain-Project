@@ -338,8 +338,7 @@ class MatrixString {
   // method for displaying text to the screen, default method
   showVertical(inputColorArray) {
     // for changing the string to a different string with the same size every frame
-    // this.word = generateWord(this.word.length);
-    wordChangeCounterCheck(this);
+    this.word = generateWord(this.word.length);
 
     if (direction === "south") {
       for (let i = 0; i < this.word.length - 1; i++) {
@@ -471,8 +470,7 @@ class MatrixString {
   }
 
   showAlternative(inputColorArray) {
-    // this.word = generateWord(this.word.length);
-    wordChangeCounterCheck(this);
+    this.word = generateWord(this.word.length);
     for (let i = 0; i < this.word.length - 1; i++) {
       let letter = this.word.substring(i, i + 1);
       let xCoordinate = this.x;
@@ -525,13 +523,8 @@ function discoColorCounterCheck() {
   }
 }
 
-function wordChangeCounterCheck(inputMatrixStringObject) {
-  if (wordChangeCounter > wordChangeCounterTurnoverPoint) {
-    inputMatrixStringObject.word = generateWord(
-      inputMatrixStringObject.word.length
-    );
-    wordChangeCounter = 0;
-  }
+function wordChangeCounterCheck() {
+  return wordChangeCounter > wordChangeCounterTurnoverPoint;
 }
 
 function returnAlternativeFadeCondition(inputNum, xCoordinate, yCoordinate) {
@@ -674,14 +667,16 @@ function draw() {
   if (discoOn) discoFrameCounter++;
 
   wordChangeCounter++;
-  console.log(wordChangeCounter);
 
   // draw black background with 0.025 opacity to show the trail
   ctx.font = fontSize + "px 'Consolas', 'Lucida Console'";
   drawOpaqueRect();
 
-  // draw strings falling from top to bottom
+  // draw strings falling vertically
   for (let i = 0; i < words.length; i++) {
+    // TODO: everytime word is drawn, increment the word's individual wordChangeTurnoverNumber
+    // these get reset upon reseting as well.
+
     if (direction === "south") {
       destinationPoint = height; // destination point: below the screen
     } else if (direction === "north") {
