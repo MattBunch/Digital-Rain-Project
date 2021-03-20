@@ -469,15 +469,31 @@ class MatrixString {
       let xCoordinate = this.x;
       let yCoordinate = this.y + i * this.fontSize;
 
-      let alternativeColorCondition =
+      let primaryColorCondition =
         xCoordinate < x1 ||
         xCoordinate > x2 ||
         yCoordinate < y1 ||
         yCoordinate > y2;
 
-      if (alternativeColorCondition) {
+      let alternativeFade1Condition = returnAlternativeFadeCondition(
+        0,
+        xCoordinate,
+        yCoordinate
+      );
+
+      let alternativeFade2Condition = returnAlternativeFadeCondition(
+        1,
+        xCoordinate,
+        yCoordinate
+      );
+
+      if (primaryColorCondition) {
         if (discoOn) {
           discoColorCounterCheck();
+        } else if (alternativeFade1Condition) {
+          ctx.fillStyle = inputColorArray[0];
+        } else if (alternativeFade2Condition) {
+          ctx.fillStyle = inputColorArray[1];
         } else {
           ctx.fillStyle = inputColorArray[2];
         }
@@ -490,6 +506,8 @@ class MatrixString {
   }
 }
 
+let conCount = 0;
+
 function discoColorCounterCheck() {
   if (discoFrameCounter > discoFrameCounterMax) {
     ctx.fillStyle = getRandomColor();
@@ -500,15 +518,34 @@ function discoColorCounterCheck() {
   }
 }
 
-class IndividualLetterCoordinates {
-  constructor(originalWordArray, xCoordinates, yCoordinates) {
-    this.originalWordArray = originalWordArray;
-    this.xCoordinates = xCoordinates;
-    this.yCoordinates = yCoordinates;
+function returnAlternativeFadeCondition(inputNum, xCoordinate, yCoordinate) {
+  let coordinateNum = 0;
+  switch (inputNum) {
+    case 0:
+      coordinateNum = alternativeFontSize;
+      break;
+    case 1:
+      coordinateNum = alternativeFontSize * 2;
   }
-}
 
-let letterCoordinates = new Array();
+  let xPos1 = x1 - coordinateNum + 10;
+
+  let con1 = xCoordinate == xPos1 && !(yCoordinate < y1 || yCoordinate > y2);
+
+  let con2 =
+    xCoordinate == x2 + coordinateNum &&
+    !(yCoordinate < y1 || yCoordinate > y2);
+
+  let yPos1 = y1 - coordinateNum + 10;
+
+  let con3 = yCoordinate == yPos1 && !(xCoordinate < x1 || xCoordinate > x2);
+
+  let con4 =
+    yCoordinate == y2 + coordinateNum &&
+    !(xCoordinate < x1 || xCoordinate > x2);
+
+  return con1 || con2 || con3 || con4;
+}
 
 /*
 ##################################################################################################
@@ -1530,7 +1567,6 @@ function buttonMouseOver(input) {
     buttonBorderColorRandom();
   } else {
     if (input == 1) {
-      console.log("hey");
       button.style.color = colorBlack;
       button.style.background = selectColor;
     } else if (input == 2) {
