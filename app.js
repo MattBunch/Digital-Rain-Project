@@ -670,17 +670,7 @@ function draw() {
     // TODO: toggle this on and off with a keypress
     // these get reset upon reseting as well.
 
-    changeWordCheck(words[i]);
-
-    // words[i].wordChangeCounter++;
-    // if (words[i].wordChangeCounter > words[i].wordChangeCounterTurnoverPoint) {
-    //   let newWord2 = generateWord(words[i].word.length);
-    //   words[i].word = newWord2;
-    //   words[i].wordChangeCounter = 0;
-    //   words[
-    //     i
-    //   ].wordChangeCounterTurnoverPoint = generateWordChangeTurnoverNumber();
-    // }
+    changeWordCheck(words[i], words[i].word.length);
 
     if (direction === "south") {
       destinationPoint = height; // destination point: below the screen
@@ -757,14 +747,15 @@ function draw() {
   }
 }
 
-function changeWordCheck(inputWordObject) {
+function changeWordCheck(inputWordObject, inputSize) {
   inputWordObject.wordChangeCounter++;
-  if (
+  let changeOverCondition =
     inputWordObject.wordChangeCounter >
-    inputWordObject.wordChangeCounterTurnoverPoint
-  ) {
-    let newWord2 = generateWord(inputWordObject.word.length);
-    inputWordObject.word = newWord2;
+    inputWordObject.wordChangeCounterTurnoverPoint;
+
+  if (changeOverCondition) {
+    let replacementWord = generateWord(inputSize);
+    inputWordObject.word = replacementWord;
     inputWordObject.wordChangeCounter = 0;
     inputWordObject.wordChangeCounterTurnoverPoint = generateWordChangeTurnoverNumber();
   }
@@ -826,15 +817,17 @@ function drawAlternative() {
     randomSquareCoordinates = returnRandomSquareCoordinates();
     squareCounter = 0;
   }
-  // let x1 = randomSquareCoordinates[0];
-  // let x2 = randomSquareCoordinates[1];
-  // let y1 = randomSquareCoordinates[2];
-  // let y2 = randomSquareCoordinates[3];
 
   words.forEach(function (arrayWord) {
+    if (arrayWord.word.length < getNewWordSize()) {
+      arrayWord.word = generateWord(newWordSize);
+    }
+
     arrayWord.y = 0;
     arrayWord.fontSize = alternativeFontSize;
-    arrayWord.word = generateWord(newWordSize);
+    changeWordCheck(arrayWord, newWordSize);
+    // console.log(arrayWord.wordChangeCounter);
+    // arrayWord.word = generateWord(newWordSize);
     arrayWord.showAlternative(colorChoiceArray[chosenColor]);
   });
 }
