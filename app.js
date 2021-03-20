@@ -730,9 +730,9 @@ let y2 = 500;
 function drawAlternative() {
   squareCounter++;
   drawSolidRect();
-  ctx.font = alternativeFontSize + "px Arial";
   ctx.fillStyle = colorWhite;
 
+  ctx.font = alternativeFontSize + "px Arial";
   // ctx.font = fontSize + "px 'Consolas', 'Lucida Console'";
 
   // no direction input, very important
@@ -883,16 +883,20 @@ document.addEventListener("keydown", function (event) {
         resetToMenu();
         break;
       case "ArrowLeft":
-        console.log("left");
+        x1 = x1 + alternativeFontSize;
+        x2 = x2 + alternativeFontSize;
         break;
       case "ArrowUp":
-        console.log("up");
+        y1 = y1 - alternativeFontSize;
+        y2 = y2 - alternativeFontSize;
         break;
       case "ArrowRight":
-        console.log("right");
+        x1 = x1 - alternativeFontSize;
+        x2 = x2 - alternativeFontSize;
         break;
       case "ArrowDown":
-        console.log("down");
+        y1 = y1 + alternativeFontSize;
+        y2 = y2 + alternativeFontSize;
         break;
     }
   } else {
