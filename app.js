@@ -762,14 +762,33 @@ function drawAlternative() {
     arrayWord.showAlternative(colorChoiceArray[chosenColor]);
   });
 }
+
 function reallyTallScreen() {
   return canvas.height > 2000;
+}
+
+function smallFontSize() {
+  return alternativeFontSize < 14;
+}
+
+function reallySmallFontSize() {
+  return alternativeFontSize < 6;
+}
+
+function bigFontSize() {
+  return alternativeFontSize > 40;
 }
 
 function getNewWordSize() {
   let output = 80;
 
-  if (reallyTallScreen()) output = doubleInt(output);
+  console.log(alternativeFontSize);
+
+  if (reallyTallScreen() || smallFontSize()) output = doubleInt(output) * 1.5;
+
+  if (reallySmallFontSize()) output = doubleInt(output) * 2;
+
+  if (bigFontSize()) output = output / 2;
 
   return output;
 }
@@ -955,12 +974,12 @@ document.addEventListener("keydown", function (event) {
       discoControl();
       break;
     case "PageUp":
-      if (ctx != null) {
+      if (ctx != null && !squareAnimationOn) {
         speedController(true);
       }
       break;
     case "PageDown":
-      if (ctx != null) {
+      if (ctx != null && !squareAnimationOn) {
         speedController(false);
       }
       break;
@@ -1143,7 +1162,9 @@ function controlFontSize(increase) {
     alternativeFontSize++;
   } else if (!increase & (defaultFontSize > 1)) {
     defaultFontSize--;
-    alternativeFontSize--;
+    if (alternativeFontSize > 12) {
+      alternativeFontSize--;
+    }
   } else return;
 
   fontSize = defaultFontSize;
