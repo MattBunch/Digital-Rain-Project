@@ -72,15 +72,15 @@ const colorBlack = "#000000"; // black
 
 // Green:
 const colorMatrixGreen = "#00ff41"; // matrix green
-const color95White5Green = "#e6ffec"; // color 95% white, 5% matrix green
-const color70White30Green = "#66ff8c"; // color 70% white, 30% matrix green
-const greenArray = [color95White5Green, color70White30Green, colorMatrixGreen];
+const color90White10Green = "#ccffd9"; // color 95% white, 5% matrix green
+const color70White30Green = "#80ff9f"; // color 70% white, 30% matrix green
+const greenArray = [color90White10Green, color70White30Green, colorMatrixGreen];
 
 // Red:
-const color95White5Red = "#ffe6e6"; // color 95% white, 5% red
+const color90White10Red = "#ffcccc"; // color 95% white, 5% red
 const color70White30Red = "#ff6666"; // color 70% white, 30% red
 const colorRed = "#e60000"; // red
-const redArray = [color95White5Red, color70White30Red, colorRed];
+const redArray = [color90White10Red, color70White30Red, colorRed];
 
 // Yellow:
 const color95White5Yellow = "#ffffe6"; // color 95% white, 5% yellow
@@ -523,7 +523,11 @@ class MatrixString {
           ctx.fillStyle = inputColorArray[2];
         }
       } else {
-        ctx.fillStyle = colorWhite;
+        if (discoOn) {
+          ctx.fillStyle = getRandomColor();
+        } else {
+          ctx.fillStyle = colorWhite;
+        }
       }
 
       ctx.fillText(letter, xCoordinate, yCoordinate);
@@ -825,6 +829,7 @@ function drawAlternative() {
   if (discoOn) discoFrameCounter++;
 
   squareCounter++;
+
   drawOpaqueRect();
   ctx.fillStyle = colorWhite;
 
@@ -1038,9 +1043,8 @@ let speedLevels = Array.from(Array(amountOfSpeedLevels).keys());
 let middle = speedLevels[Math.round((speedLevels.length - 1) / 2)];
 let currentSpeedLevel = speedLevels[middle];
 
-let rapidWordChange = true;
-let hangingWords = false;
-let hangingWordsCounter = 0;
+let rapidWordChange = false;
+let hangingWords = true;
 
 document.addEventListener("keydown", function (event) {
   iCounter = 0;
@@ -1363,11 +1367,9 @@ function hangingWordsControl() {
   if (hangingWords) {
     hangingWords = false;
     giveEachWordNewWord();
-    hangingWordsCounter = 0;
   } else {
     hangingWords = true;
     giveEachWordNewWord();
-    hangingWordsCounter = 1;
   }
 }
 
