@@ -1179,7 +1179,7 @@ function controlFontSize(increase) {
     words[i].fontSize = x;
   }
 
-  // resetWordsArray();
+  if (squareAnimationOn) resetWordsArray();
 }
 
 function printFontSizeDebugInfo() {
@@ -1301,6 +1301,7 @@ const select = document.getElementById("colors");
 const directionsSelect = document.getElementById("directions");
 const menuDivs = document.getElementsByClassName("menu");
 const button = document.getElementById("button");
+const buttons = document.getElementsByClassName("button");
 const elems = document.body.getElementsByTagName("*");
 const frameCountElems = document.getElementsByClassName("frameCount");
 
@@ -1423,7 +1424,8 @@ function recolorMenuOneColor(inputColor) {
   }
 
   // button border color
-  button.style.border = borderPrefix + selectColor;
+  // TODO: edit this to accomodate multiple butttons
+  buttonBorderColorSelectedColor();
 
   // for border select boxes
   select.style.border = borderPrefix + inputColor;
@@ -1449,8 +1451,14 @@ function recolorMenuRandom() {
   selectBackgroundColorFunction();
 }
 
+// TODO: edit this to accomodate multiple buttons
 function buttonBorderColorRandom() {
   button.style.border = borderPrefix + getRandomColor();
+}
+
+// TODO: edit this to accomodate multiple buttons
+function buttonBorderColorSelectedColor() {
+  button.style.border = borderPrefix + selectColor;
 }
 
 function selectBackgroundColorFunction() {
@@ -1520,11 +1528,18 @@ function buttonMouseOver() {
   if (buttonDiscoChecked()) {
     // button.style.background = getRandomColor();
     button.style.color = getRandomColor();
+
+    for (let i = 0; i < buttons.length; i++) {
+      buttons[i].style.background = selectColor;
+      buttons[i].style.color = getRandomColor();
+    }
     buttonDiscoBackgroundChangeColor();
     buttonBorderColorRandom();
   } else {
-    button.style.background = selectColor;
-    button.style.color = colorBlack;
+    for (let i = 0; i < buttons.length; i++) {
+      buttons[i].style.background = selectColor;
+      buttons[i].style.color = colorBlack;
+    }
   }
 }
 
@@ -1544,7 +1559,9 @@ function buttonDiscoChecked() {
 }
 
 function buttonBackgroundBlack() {
-  button.style.background = colorBlack;
+  for (let i = 0; i < buttons.length; i++) {
+    buttons[i].style.background = colorBlack;
+  }
 }
 
 function buttonDiscoBackgroundChangeColor() {
