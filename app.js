@@ -329,6 +329,13 @@ if (discoFrameElement.value < 0 || discoFrameElement == null) {
 
 let savedColor = getRandomColor();
 
+class CoordinateObject {
+  constructor(xCoordinate, yCoordinate) {
+    this.xCoordinate = xCoordinate;
+    this.yCoordinate = yCoordinate;
+  }
+}
+
 class MatrixString {
   constructor(word, x, y, xSpeed, ySpeed, inputFontSize) {
     this.word = word; // word
@@ -339,6 +346,7 @@ class MatrixString {
     this.fontSize = inputFontSize; //  random font size
     this.wordChangeCounter = 0;
     this.wordChangeCounterTurnoverPoint = generateWordChangeTurnoverNumber();
+    this.XYCoordinates = this.generateXYCoordinates();
   }
 
   // method for displaying text to the screen, default method
@@ -390,6 +398,7 @@ class MatrixString {
         ctx.fillText(letter, this.x, this.y + i * this.fontSize);
       }
     }
+    this.XYCoordinates = this.generateXYCoordinates();
   }
 
   // disco mode vertical, each letter will be a different color on each frame
@@ -404,6 +413,8 @@ class MatrixString {
 
       ctx.fillText(letter, this.x, this.y + i * this.fontSize);
     }
+
+    this.XYCoordinates = this.generateXYCoordinates();
   }
 
   // for horizontal movements (east and west)
@@ -467,6 +478,8 @@ class MatrixString {
         );
       }
     }
+
+    this.XYCoordinates = this.generateXYCoordinates();
   }
 
   // disco mode horizontal, each letter will be a different color on each frame
@@ -482,6 +495,8 @@ class MatrixString {
       }
       ctx.fillText(letter, this.x + i * this.fontSize, this.y);
     }
+
+    this.XYCoordinates = this.generateXYCoordinates();
   }
 
   showAlternative(inputColorArray) {
@@ -531,7 +546,21 @@ class MatrixString {
       }
 
       ctx.fillText(letter, xCoordinate, yCoordinate);
+
+      this.XYCoordinates = this.generateXYCoordinates();
     }
+  }
+
+  generateXYCoordinates() {
+    let output = new Array();
+
+    for (let i = 0; i < this.word.length - 1; i++) {
+      let xCoordinate = this.x;
+      let yCoordinate = this.y + i * this.fontSize;
+      output.push(new CoordinateObject(xCoordinate, yCoordinate));
+    }
+
+    return output;
   }
 }
 
