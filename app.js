@@ -67,56 +67,56 @@ colors ordered in array from brightest to darkest.
 */
 
 // white:
-let colorWhite = "#ffffff"; // white, yes I know white is a shade not a color
-let colorBlack = "#000000"; // black
+const colorWhite = "#ffffff"; // white, yes I know white is a shade not a color
+const colorBlack = "#000000"; // black
 
 // Green:
-let colorMatrixGreen = "#00ff41"; // matrix green
-let color95White5Green = "#e6ffec"; // color 95% white, 5% matrix green
-let color70White30Green = "#66ff8c"; // color 70% white, 30% matrix green
-let greenArray = [color95White5Green, color70White30Green, colorMatrixGreen];
+const colorMatrixGreen = "#00ff41"; // matrix green
+const color95White5Green = "#e6ffec"; // color 95% white, 5% matrix green
+const color70White30Green = "#66ff8c"; // color 70% white, 30% matrix green
+const greenArray = [color95White5Green, color70White30Green, colorMatrixGreen];
 
 // Red:
-let color95White5Red = "#ffe6e6"; // color 95% white, 5% red
-let color70White30Red = "#ff6666"; // color 70% white, 30% red
-let colorRed = "#e60000"; // red
-let redArray = [color95White5Red, color70White30Red, colorRed];
+const color95White5Red = "#ffe6e6"; // color 95% white, 5% red
+const color70White30Red = "#ff6666"; // color 70% white, 30% red
+const colorRed = "#e60000"; // red
+const redArray = [color95White5Red, color70White30Red, colorRed];
 
 // Yellow:
-let color95White5Yellow = "#ffffe6"; // color 95% white, 5% yellow
-let color70White30Yellow = "#ffff66"; // color 70% white, 30% yellow
-let colorYellow = "#ffff00"; // yellow
-let yellowArray = [color95White5Yellow, color70White30Yellow, colorYellow];
+const color95White5Yellow = "#ffffe6"; // color 95% white, 5% yellow
+const color70White30Yellow = "#ffff66"; // color 70% white, 30% yellow
+const colorYellow = "#ffff00"; // yellow
+const yellowArray = [color95White5Yellow, color70White30Yellow, colorYellow];
 
 // Blue:
-let color95White5Blue = "#e6e6ff"; // color 95% white, 5% blue
-let color70White30Blue = "#6666ff"; // color 70% white, 30% blue
-let colorBlue = "#0000ff"; // blue
-let blueArray = [color95White5Blue, color70White30Blue, colorBlue];
+const color95White5Blue = "#e6e6ff"; // color 95% white, 5% blue
+const color70White30Blue = "#6666ff"; // color 70% white, 30% blue
+const colorBlue = "#0000ff"; // blue
+const blueArray = [color95White5Blue, color70White30Blue, colorBlue];
 
 // Orange:
-let color95White5Orange = "#fff5e6"; // color 95% white, 5% orange
-let color70White30Orange = "#ffc266"; // color 70% white, 30% orange
-let colorOrange = "#ff9900"; // orange
-let orangeArray = [color95White5Orange, color70White30Orange, colorOrange];
+const color95White5Orange = "#fff5e6"; // color 95% white, 5% orange
+const color70White30Orange = "#ffc266"; // color 70% white, 30% orange
+const colorOrange = "#ff9900"; // orange
+const orangeArray = [color95White5Orange, color70White30Orange, colorOrange];
 
 // Pink
-let color95White5Pink = "#ffe6ff"; // color 95% white, 5% pink
-let color70White30Pink = "#ff66ff"; // color 70% white, 30% pink
-let colorPink = "#ff00ff"; // pink
-let pinkArray = [color95White5Pink, color70White30Pink, colorPink];
+const color95White5Pink = "#ffe6ff"; // color 95% white, 5% pink
+const color70White30Pink = "#ff66ff"; // color 70% white, 30% pink
+const colorPink = "#ff00ff"; // pink
+const pinkArray = [color95White5Pink, color70White30Pink, colorPink];
 
 // Cyan
-let color95White5Cyan = "#e6ffff"; // color 95% white, 5% cyan
-let color70White30Cyan = "#66ffff"; // color 70% white, 30% cyan
-let colorCyan = "#00ffff"; // cyan
-let cyanArray = [color95White5Cyan, color70White30Cyan, colorCyan];
+const color95White5Cyan = "#e6ffff"; // color 95% white, 5% cyan
+const color70White30Cyan = "#66ffff"; // color 70% white, 30% cyan
+const colorCyan = "#00ffff"; // cyan
+const cyanArray = [color95White5Cyan, color70White30Cyan, colorCyan];
 
 // random colors
 let randomColorArray = generateRandomColorArray();
 
 // array of color array
-let colorChoiceArray = [
+const colorChoiceArray = [
   greenArray,
   redArray,
   yellowArray,
@@ -329,7 +329,7 @@ class MatrixString {
   }
 
   // method for displaying text to the screen, default method
-  showVertical(inputArray) {
+  showVertical(inputColorArray) {
     // for changing the string to a different string with the same size every frame
     this.word = generateWord(this.word.length);
 
@@ -340,14 +340,14 @@ class MatrixString {
           ctx.fillStyle = colorWhite;
         } else if (i == this.word.length - 3) {
           // set second letter color to 95% white, 5% matrix color
-          ctx.fillStyle = inputArray[0];
+          ctx.fillStyle = inputColorArray[0];
         } else if (i == this.word.length - 4) {
           // set third letter color to 90% white, 10% matrix color
-          ctx.fillStyle = inputArray[1];
+          ctx.fillStyle = inputColorArray[1];
         } else {
           // set rest of the string to color
           // extension? fade out of darker colors
-          ctx.fillStyle = inputArray[2];
+          ctx.fillStyle = inputColorArray[2];
         }
         ctx.fillText(
           this.word.substring(i, i + 1),
@@ -362,14 +362,14 @@ class MatrixString {
           ctx.fillStyle = colorWhite;
         } else if (i == 1) {
           // set second letter color to 95% white, 5% matrix color
-          ctx.fillStyle = inputArray[0];
+          ctx.fillStyle = inputColorArray[0];
         } else if (i == 2) {
           // set third letter color to 90% white, 10% matrix color
-          ctx.fillStyle = inputArray[1];
+          ctx.fillStyle = inputColorArray[1];
         } else {
           // set rest of the string to color
           // extension? fade out of darker colors
-          ctx.fillStyle = inputArray[2];
+          ctx.fillStyle = inputColorArray[2];
         }
         ctx.fillText(
           this.word.substring(i, i + 1),
@@ -396,7 +396,7 @@ class MatrixString {
   }
 
   // for horizontal movements (east and west)
-  showHorizontal(inputArray) {
+  showHorizontal(inputColorArray) {
     // for changing the string to a different string with the same size every frame
     this.word = generateWord(this.word.length);
     // east
@@ -407,13 +407,13 @@ class MatrixString {
           ctx.fillStyle = colorWhite;
         } else if (i == 1) {
           // set second letter color to 95% white, 5% matrix color
-          ctx.fillStyle = inputArray[0];
+          ctx.fillStyle = inputColorArray[0];
         } else if (i == 2) {
           // set third letter color to 90% white, 10% matrix color
-          ctx.fillStyle = inputArray[1];
+          ctx.fillStyle = inputColorArray[1];
         } else {
           // set rest of the string to color
-          ctx.fillStyle = inputArray[2];
+          ctx.fillStyle = inputColorArray[2];
         }
         ctx.fillText(
           // reversal of above text for moving horizontal
@@ -429,13 +429,13 @@ class MatrixString {
           ctx.fillStyle = colorWhite;
         } else if (i == this.word.length - 3) {
           // set second letter color to 95% white, 5% matrix color
-          ctx.fillStyle = inputArray[0];
+          ctx.fillStyle = inputColorArray[0];
         } else if (i == this.word.length - 4) {
           // set third letter color to 90% white, 10% matrix color
-          ctx.fillStyle = inputArray[1];
+          ctx.fillStyle = inputColorArray[1];
         } else {
           // set rest of the string to color
-          ctx.fillStyle = inputArray[2];
+          ctx.fillStyle = inputColorArray[2];
         }
         ctx.fillText(
           // reversal of above text for moving horizontal
@@ -458,6 +458,17 @@ class MatrixString {
         this.word.substring(i, i + 1),
         this.x + i * this.fontSize,
         this.y
+      );
+    }
+  }
+
+  showAlternative() {
+    this.word = generateWord(this.word.length);
+    for (let i = 0; i < this.word.length - 1; i++) {
+      ctx.fillText(
+        this.word.substring(i, i + 1),
+        this.x,
+        this.y + i * this.fontSize
       );
     }
   }
@@ -578,9 +589,7 @@ function draw() {
 
   // draw black background with 0.025 opacity to show the trail
   ctx.font = fontSize + "px 'Consolas', 'Lucida Console'";
-  drawRect();
-  // ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
-  // ctx.fillRect(0, 0, width, height);
+  drawOpaqueRect();
 
   // draw strings falling from top to bottom
   for (let i = 0; i < words.length; i++) {
@@ -659,37 +668,63 @@ function draw() {
   }
 }
 
-function drawAlternative() {
-  ctx.fillStyle = "rgba(0, 0, 0, 1)";
-  ctx.fillRect(0, 0, width, height);
-  ctx.font = "20px Arial";
-  ctx.fillStyle = colorWhite;
-  let txtHeight = 25;
-  let offset = 5;
-
-  createMatrixArray("south");
-
-  words.forEach(function (arrayItem) {
-    arrayItem.word = generateWord(220);
-    console.log(arrayItem.word);
-  });
-
-  for (let i = 0; i < Math.ceil(canvas.height / txtHeight); i++) {
-    let txt = generateWord(220);
-    for (let j = 0; j < txt.length; j++) {
-      // console.log(txt.substring(j, j + 1));
-      // ctx.fillText(txt.substring(j, j + 1), -(i * offset), i * txtHeight);
-    }
-    ctx.fillText(txt, -(i * offset), i * txtHeight);
-  }
-}
-
-// let w = Math.ceil(ctx.measureText(txt).width);
-// let txt = new Array(w * 2).join(txt + " "); //change the multipler for more lines
-
-function drawRect() {
+function drawOpaqueRect() {
   ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
   ctx.fillRect(0, 0, width, height);
+}
+
+function drawSolidRect() {
+  ctx.fillStyle = "rgba(0, 0, 0, 1)";
+  ctx.fillRect(0, 0, width, height);
+}
+
+/**
+ * 
+
+           _ _                        _   _             _____                      ____  
+     /\   | | |                      | | (_)           |  __ \                    / /\ \ 
+    /  \  | | |_ ___ _ __ _ __   __ _| |_ ___   _____  | |  | |_ __ __ ___      _| |  | |
+   / /\ \ | | __/ _ \ '__| '_ \ / _` | __| \ \ / / _ \ | |  | | '__/ _` \ \ /\ / / |  | |
+  / ____ \| | ||  __/ |  | | | | (_| | |_| |\ V /  __/ | |__| | | | (_| |\ V  V /| |  | |
+ /_/    \_\_|\__\___|_|  |_| |_|\__,_|\__|_| \_/ \___| |_____/|_|  \__,_| \_/\_/ | |  | |
+                                                                                  \_\/_/ 
+                                                                                         
+
+ */
+
+const whiteColorArray = [colorWhite, colorWhite, colorWhite];
+
+function drawAlternative() {
+  drawSolidRect();
+  ctx.font = "20px Arial";
+  ctx.fillStyle = colorWhite;
+
+  ctx.font = fontSize + "px 'Consolas', 'Lucida Console'";
+
+  createMatrixArray("show");
+
+  let newWordSize = getNewWordSize();
+
+  words.forEach(function (arrayWord) {
+    arrayWord.y = 0;
+    arrayWord.word = generateWord(newWordSize);
+    arrayWord.showAlternative();
+  });
+
+  console.log(words.length);
+
+  console.log("drawAlternative running!");
+}
+function reallyTallScreen() {
+  return canvas.height > 2000;
+}
+
+function getNewWordSize() {
+  let output = 80;
+
+  if (reallyTallScreen()) output = doubleInt(output);
+
+  return output;
 }
 
 /*###########################################################################################
@@ -1138,6 +1173,8 @@ const frameCountElems = document.getElementsByClassName("frameCount");
 let menuInterval;
 let selectColor;
 
+// TODO: loop through and recolor each button for the inclusion of a new button
+
 // show and hide menu
 function showMenu() {
   for (let i = 0; i < menuDivs.length; i++) {
@@ -1334,6 +1371,14 @@ function matchColorToRGB(entryColor) {
 }
 
 // hover over button color change
+/**
+ * for multiple buttons, loop through html collection and change each item:
+ * 
+    Array.from(buttons.forEach(function(button) {
+    button.addEventListener("mouseover", function(button) {
+      buttonMouseOver(button); // TODO: edit buttonMouseOver and buttonMouseOut to take button as a parameter
+    });
+ */
 button.addEventListener("mouseover", buttonMouseOver);
 button.addEventListener("mouseout", buttonMouseOut);
 
