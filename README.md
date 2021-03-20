@@ -8,6 +8,8 @@ This program displays a digital rain animation within the window browser, as see
 
 ## Keyboard inputs:
 
+### Normal Mode:
+
 - Arrowkeys: Switch directions
 - Spacebar: Pause
 - C: Clear screen
@@ -29,6 +31,14 @@ This program displays a digital rain animation within the window browser, as see
 - 7: Change colour to cyan
 - 8: Change colour to random
 - Escape: Quit to menu
+
+### Move Square Mode:
+
+Same as Normal mode except:
+
+- Arrowkeys: move box directions
+- Altering speed disabled
+- Altering string length disabled
 
 ## Possible extensions in further versions:
 

@@ -159,3 +159,7 @@ Added `buttonDiscoChecked()` to the button mouseover functionality for changing 
 - Switched to switch case for key presses.
 - More elaborate switch direction keys: resets arrow when switching to a different angle.
 - Disco speed keyboard input added.
+
+### 20/03/2021
+
+- Square Mode added.
