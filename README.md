@@ -35,12 +35,12 @@ This program displays a digital rain animation within the window browser, as see
 
 ### Move Square Mode:
 
-Same as Normal mode except:
+Same as Normal Mode except:
 
 - Arrowkeys: move box directions
 - Altering speed disabled
 - Altering string length disabled
-- G: Toggle Hanging Words mode.
+- G: Toggle fixed word length.
 
 ## Possible extensions in further versions:
 
