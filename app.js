@@ -308,13 +308,20 @@ function calculateAverageStartingPosition(inputArray, inputDirection) {
 #################################################################################################
 */
 
+// disco frame counters
 const discoFrameElement = document.getElementById("frameCount");
 let discoFrameCounter = 0; // counter for determining frame which colors change
 
-let discoFrameCounterMax = discoFrameElement.value; // counter maximum for when counter goes back to 0
+let discoFrameCounterTurnoverPoint = discoFrameElement.value; // counter maximum for when counter goes back to 0
 if (discoFrameElement.value < 0 || discoFrameElement == null) {
-  discoFrameCounterMax = 10;
+  discoFrameCounterTurnoverPoint = 10;
 }
+
+// word change counters
+
+let wordChangeCounter = 0;
+const DEFAULT_WORD_CHANGE_NUM = 1;
+let wordChangeCounterTurnoverPoint = DEFAULT_WORD_CHANGE_NUM;
 
 let savedColor = getRandomColor();
 
@@ -331,7 +338,8 @@ class MatrixString {
   // method for displaying text to the screen, default method
   showVertical(inputColorArray) {
     // for changing the string to a different string with the same size every frame
-    this.word = generateWord(this.word.length);
+    // this.word = generateWord(this.word.length);
+    wordChangeCounterCheck(this);
 
     if (direction === "south") {
       for (let i = 0; i < this.word.length - 1; i++) {
@@ -463,7 +471,8 @@ class MatrixString {
   }
 
   showAlternative(inputColorArray) {
-    this.word = generateWord(this.word.length);
+    // this.word = generateWord(this.word.length);
+    wordChangeCounterCheck(this);
     for (let i = 0; i < this.word.length - 1; i++) {
       let letter = this.word.substring(i, i + 1);
       let xCoordinate = this.x;
@@ -506,15 +515,22 @@ class MatrixString {
   }
 }
 
-let conCount = 0;
-
 function discoColorCounterCheck() {
-  if (discoFrameCounter > discoFrameCounterMax) {
+  if (discoFrameCounter > discoFrameCounterTurnoverPoint) {
     ctx.fillStyle = getRandomColor();
     savedColor = ctx.fillStyle;
     discoFrameCounter = 0;
   } else {
     ctx.fillStyle = savedColor;
+  }
+}
+
+function wordChangeCounterCheck(inputMatrixStringObject) {
+  if (wordChangeCounter > wordChangeCounterTurnoverPoint) {
+    inputMatrixStringObject.word = generateWord(
+      inputMatrixStringObject.word.length
+    );
+    wordChangeCounter = 0;
   }
 }
 
@@ -530,19 +546,26 @@ function returnAlternativeFadeCondition(inputNum, xCoordinate, yCoordinate) {
 
   let xPos1 = x1 - coordinateNum + 10;
 
+  // right
   let con1 = xCoordinate == xPos1 && !(yCoordinate < y1 || yCoordinate > y2);
 
+  // left
   let con2 =
     xCoordinate == x2 + coordinateNum &&
     !(yCoordinate < y1 || yCoordinate > y2);
 
   let yPos1 = y1 - coordinateNum + 10;
 
+  // top
   let con3 = yCoordinate == yPos1 && !(xCoordinate < x1 || xCoordinate > x2);
 
+  // bottom
   let con4 =
     yCoordinate == y2 + coordinateNum &&
     !(xCoordinate < x1 || xCoordinate > x2);
+
+  // corners
+  // TODO: Calculate how to find the corner letters
 
   return con1 || con2 || con3 || con4;
 }
@@ -649,6 +672,9 @@ let fromVerticalDirection; // boolean value for setting vertical direction
 // show the characters in animation.
 function draw() {
   if (discoOn) discoFrameCounter++;
+
+  wordChangeCounter++;
+  console.log(wordChangeCounter);
 
   // draw black background with 0.025 opacity to show the trail
   ctx.font = fontSize + "px 'Consolas', 'Lucida Console'";
@@ -770,6 +796,8 @@ let y2 = 500;
 
 function drawAlternative() {
   if (discoOn) discoFrameCounter++;
+
+  wordChangeCounter++;
 
   squareCounter++;
   drawSolidRect();
@@ -1250,12 +1278,14 @@ const DISCO_FRAME_COUNTER_DEFAULT_MIN = 1;
 function discoIntervalSpeedControl(increase) {
   if (discoOn) {
     let canIncrease =
-      increase && discoFrameCounterMax < DISCO_FRAME_COUNTER_DEFAULT_MAX;
+      increase &&
+      discoFrameCounterTurnoverPoint < DISCO_FRAME_COUNTER_DEFAULT_MAX;
     let canDecrease =
-      !increase && discoFrameCounterMax > DISCO_FRAME_COUNTER_DEFAULT_MIN;
+      !increase &&
+      discoFrameCounterTurnoverPoint > DISCO_FRAME_COUNTER_DEFAULT_MIN;
 
-    if (canIncrease) discoFrameCounterMax++;
-    else if (canDecrease) discoFrameCounterMax--;
+    if (canIncrease) discoFrameCounterTurnoverPoint++;
+    else if (canDecrease) discoFrameCounterTurnoverPoint--;
   }
 }
 
@@ -1630,7 +1660,7 @@ function updateRandomColor() {
 function frameCountFunctionOnChange() {
   let currentDiscoFrameMax = discoFrameElement.value;
   localStorage.setItem("frameCountKey", currentDiscoFrameMax);
-  discoFrameCounterMax = currentDiscoFrameMax;
+  discoFrameCounterTurnoverPoint = currentDiscoFrameMax;
 }
 
 function frameCountFunctionOnLoad() {
