@@ -578,8 +578,9 @@ function draw() {
 
   // draw black background with 0.025 opacity to show the trail
   ctx.font = fontSize + "px 'Consolas', 'Lucida Console'";
-  ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
-  ctx.fillRect(0, 0, width, height);
+  drawRect();
+  // ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
+  // ctx.fillRect(0, 0, width, height);
 
   // draw strings falling from top to bottom
   for (let i = 0; i < words.length; i++) {
@@ -656,6 +657,39 @@ function draw() {
       }
     }
   }
+}
+
+function drawAlternative() {
+  ctx.fillStyle = "rgba(0, 0, 0, 1)";
+  ctx.fillRect(0, 0, width, height);
+  ctx.font = "20px Arial";
+  ctx.fillStyle = colorWhite;
+  let txtHeight = 25;
+  let offset = 5;
+
+  createMatrixArray("south");
+
+  words.forEach(function (arrayItem) {
+    arrayItem.word = generateWord(220);
+    console.log(arrayItem.word);
+  });
+
+  for (let i = 0; i < Math.ceil(canvas.height / txtHeight); i++) {
+    let txt = generateWord(220);
+    for (let j = 0; j < txt.length; j++) {
+      // console.log(txt.substring(j, j + 1));
+      // ctx.fillText(txt.substring(j, j + 1), -(i * offset), i * txtHeight);
+    }
+    ctx.fillText(txt, -(i * offset), i * txtHeight);
+  }
+}
+
+// let w = Math.ceil(ctx.measureText(txt).width);
+// let txt = new Array(w * 2).join(txt + " "); //change the multipler for more lines
+
+function drawRect() {
+  ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
+  ctx.fillRect(0, 0, width, height);
 }
 
 /*###########################################################################################
@@ -1057,7 +1091,7 @@ function loadMenuOptions() {
 }
 
 // like a main method in java, this function gets executed upon runtime
-function run() {
+function run(original) {
   // set up canvas
   canvasSetup();
 
@@ -1069,7 +1103,11 @@ function run() {
 
   // run the animation
   intervalValid = setInterval(function () {
-    draw();
+    if (original) {
+      draw();
+    } else {
+      drawAlternative();
+    }
   }, intervalSpeed);
   animationOn = true;
 }
