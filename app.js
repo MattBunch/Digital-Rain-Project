@@ -598,16 +598,19 @@ function discoColorCounterCheck() {
 // find  way of calculating correct return through multiple different
 function returnAlternativeFadeCondition(inputNum, xCoordinate, yCoordinate) {
   let coordinateNum = 0;
+  let alteredNum;
   switch (inputNum) {
     case 0:
       coordinateNum = alternativeFontSize;
+      alteredNum = coordinateNum / 2;
       break;
     case 1:
       coordinateNum = alternativeFontSize * 2;
+      alteredNum = coordinateNum / 4;
       break;
   }
 
-  let xPos1 = x1 - coordinateNum + 10;
+  let xPos1 = x1 - coordinateNum + alteredNum;
 
   // right
   let con1 = xCoordinate == xPos1 && !(yCoordinate < y1 || yCoordinate > y2);
@@ -1427,7 +1430,7 @@ function switchColor(input) {
 }
 
 function controlFontSize(increase) {
-  // exits out if in alternative mode
+  // disables ability to adjust font size in square animation mode
   if (squareAnimationOn) return;
 
   if (increase & (defaultFontSize < 65)) {
