@@ -330,7 +330,8 @@ if (discoFrameElement.value < 0 || discoFrameElement == null) {
 let savedColor = getRandomColor();
 
 class CoordinateObject {
-  constructor(xCoordinate, yCoordinate) {
+  constructor(letter, xCoordinate, yCoordinate) {
+    this.letter = letter;
     this.xCoordinate = xCoordinate;
     this.yCoordinate = yCoordinate;
   }
@@ -478,8 +479,6 @@ class MatrixString {
         );
       }
     }
-
-    this.XYCoordinates = this.generateXYCoordinates();
   }
 
   // disco mode horizontal, each letter will be a different color on each frame
@@ -495,14 +494,12 @@ class MatrixString {
       }
       ctx.fillText(letter, this.x + i * this.fontSize, this.y);
     }
-
-    this.XYCoordinates = this.generateXYCoordinates();
   }
 
   showAlternative(inputColorArray) {
     if (rapidWordChange) this.word = generateWord(this.word.length);
 
-    for (let i = 0; i < this.word.length - 1; i++) {
+    for (let i = 0; i < this.word.length; i++) {
       let letter = this.word.substring(i, i + 1);
       let xCoordinate = this.x;
       let yCoordinate = this.y + i * this.fontSize;
@@ -515,11 +512,12 @@ class MatrixString {
         yCoordinate < y1 ||
         yCoordinate > y2;
 
-      let alternativeFade1Condition = returnAlternativeFadeCondition(
-        0,
-        xCoordinate,
-        yCoordinate
-      );
+      // let alternativeFade1Condition = returnAlternativeFadeCondition(
+      //   0,
+      //   xCoordinate,
+      //   yCoordinate
+      // );
+      let alternativeFade1Condition = returnAlternativeFadeCondition2();
 
       let alternativeFade2Condition = returnAlternativeFadeCondition(
         1,
@@ -551,18 +549,25 @@ class MatrixString {
     }
   }
 
+  // only returns for vertical
   generateXYCoordinates() {
     let output = new Array();
 
-    for (let i = 0; i < this.word.length - 1; i++) {
+    for (let i = 0; i < this.word.length; i++) {
+      let letter = this.word.substring(i, i + 1);
       let xCoordinate = this.x;
       let yCoordinate = this.y + i * this.fontSize;
-      output.push(new CoordinateObject(xCoordinate, yCoordinate));
+      output.push(new CoordinateObject(letter, xCoordinate, yCoordinate));
     }
 
     return output;
   }
 }
+
+let testWord = new MatrixString("1234567890", 50, 50, 50, 50, 25);
+console.log(testWord.XYCoordinates.xCoordinate);
+
+const SQUARE_SIZE = 13;
 
 function discoColorCounterCheck() {
   if (discoFrameCounter > discoFrameCounterTurnoverPoint) {
@@ -608,6 +613,81 @@ function returnAlternativeFadeCondition(inputNum, xCoordinate, yCoordinate) {
 
   // corners
   // TODO: Calculate how to find the corner letters
+
+  return con1 || con2 || con3 || con4;
+}
+
+function returnAlternativeFadeCondition2(
+  currentXCoordinate,
+  currentYCoordinate,
+  topXCoordinate,
+  topYCoordinate,
+  bottomXCoordinate,
+  bottomYCoordinate,
+  previousObj,
+  followingObj
+) {
+  // get XYCoordinates
+  // let currentXYCoordinatesArray = currentObj.XYCoordinates;
+  let previousXYCoordinatesArray = previousObj.XYCoordinates;
+  let followingXYCoordinatesArray = followingObj.XYCoordinates;
+
+  // declare conditions
+  let con1 = false;
+  let con2 = false;
+  let con3 = false;
+  let con4 = false;
+
+  let notOutsideBoxX = !(xCoordinate < x1 || xCoordinate > x2);
+  let notOutsideBoxY = !(yCoordinate < y1 || yCoordinate > y2);
+
+  // right
+  // compare currentobject to previous Obj (mirrored screen)
+  previousXYCoordinatesArray.forEach(function (prevXYObj) {
+    if (currentXCoordinate == prevXYObj.xCoordinate && notOutsideBoxY) {
+      con1 = true;
+    }
+  });
+
+  // left
+  // compare currentobject to following Obj (mirrored screen)
+  followingXYCoordinatesArray.forEach(function (followingXYObj) {
+    if (currentXCoordinate == followingXYObj.xCoordinate && notOutsideBoxY) {
+      con2 = true;
+    }
+  });
+
+  // top
+  // compare currentobject to current Obj's previous letter coordinate (mirrored screen)
+  if (
+    currentXCoordinate == topXCoordinate &&
+    currentYCoordinate == topYCoordinate &&
+    notOutsideBoxX
+  ) {
+    con3 = true;
+  }
+  // currentXYCoordinatesArray.forEach(function (currXYObj) {
+  //   if (currentYCoordinate == currXYObj.yCoordinate) {
+  //     con3 = true;
+  //   }
+  // });
+
+  // bottom
+  // compare to current obj following coordinate
+  if (
+    currentXCoordinate == bottomXCoordinate &&
+    currentYCoordinate == bottomYCoordinate &&
+    notOutsideBoxX
+  ) {
+    con4 = true;
+  }
+  // currentXYCoordinatesArray.forEach(function (currXYObj) {
+  //   if (currentYCoordinate == currXYObj.yCoordinate) {
+  //     con4 = true;
+  //   }
+  // });
+
+  // corners
 
   return con1 || con2 || con3 || con4;
 }
