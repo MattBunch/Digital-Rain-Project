@@ -512,12 +512,26 @@ class MatrixString {
         yCoordinate < y1 ||
         yCoordinate > y2;
 
-      // let alternativeFade1Condition = returnAlternativeFadeCondition(
-      //   0,
+      let alternativeFade1Condition = returnAlternativeFadeCondition(
+        0,
+        xCoordinate,
+        yCoordinate
+      );
+
+      let topXCoordinate = xCoordinate;
+      let topYCoordinate = this.y + (i - 1) * this.fontSize;
+
+      let bottomXCoordinate = xCoordinate;
+      let bottomYCoordinate = this.y + (i + 1) * this.fontSize;
+
+      // let alternativeFade1Condition = returnAlternativeFadeCondition2(
       //   xCoordinate,
-      //   yCoordinate
+      //   yCoordinate,
+      //   topXCoordinate,
+      //   topYCoordinate,
+      //   bottomXCoordinate,
+      //   bottomYCoordinate
       // );
-      let alternativeFade1Condition = returnAlternativeFadeCondition2();
 
       let alternativeFade2Condition = returnAlternativeFadeCondition(
         1,
@@ -565,7 +579,6 @@ class MatrixString {
 }
 
 let testWord = new MatrixString("1234567890", 50, 50, 50, 50, 25);
-console.log(testWord.XYCoordinates.xCoordinate);
 
 const SQUARE_SIZE = 13;
 
@@ -627,6 +640,15 @@ function returnAlternativeFadeCondition2(
   previousObj,
   followingObj
 ) {
+  if (
+    topXCoordinate == null ||
+    topYCoordinate == null ||
+    bottomXCoordinate == null ||
+    bottomYCoordinate == null
+  ) {
+    return false;
+  }
+
   // get XYCoordinates
   // let currentXYCoordinatesArray = currentObj.XYCoordinates;
   let previousXYCoordinatesArray = previousObj.XYCoordinates;
@@ -956,7 +978,7 @@ function drawAlternative() {
 
   newWordSize = getNewWordSize();
 
-  words.forEach(function (arrayItem) {
+  words.forEach(function (arrayItem, index) {
     arrayItem.y = 0;
     arrayItem.fontSize = alternativeFontSize;
 
