@@ -171,3 +171,4 @@ Added `buttonDiscoChecked()` to the button mouseover functionality for changing 
 ### 21/03/2021
 
 - Switch Mode button added.
+- Alternative fading method using X and Y coordinates attempted. Did not work because the other Matrix String Objects were not defined.

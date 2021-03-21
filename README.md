@@ -41,6 +41,7 @@ Same as Normal Mode except:
 - Arrowkeys: move box directions
 - Altering speed disabled
 - Altering string length disabled
+- Altering font size disabled.
 - G: Toggle fixed word length.
 
 ## Possible extensions in further versions:

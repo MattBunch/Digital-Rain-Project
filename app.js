@@ -604,6 +604,7 @@ function returnAlternativeFadeCondition(inputNum, xCoordinate, yCoordinate) {
       break;
     case 1:
       coordinateNum = alternativeFontSize * 2;
+      break;
   }
 
   let xPos1 = x1 - coordinateNum + 10;
@@ -1426,6 +1427,9 @@ function switchColor(input) {
 }
 
 function controlFontSize(increase) {
+  // exits out if in alternative mode
+  if (squareAnimationOn) return;
+
   if (increase & (defaultFontSize < 65)) {
     defaultFontSize++;
     alternativeFontSize++;
