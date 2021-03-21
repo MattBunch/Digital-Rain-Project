@@ -1050,28 +1050,36 @@ function returnRandomSquareCoordinates() {
 }
 
 function moveSquareLeft() {
-  if (x2 < canvas.width - alternativeFontSize) {
+  let leftEdge = canvas.width - alternativeFontSize * 3;
+
+  if (x2 < leftEdge) {
     x1 = x1 + alternativeFontSize;
     x2 = x2 + alternativeFontSize;
   }
 }
 
 function moveSquareUp() {
-  if (y1 > 0 + alternativeFontSize) {
+  let topEdge = 0 + alternativeFontSize * 3;
+
+  if (y1 > topEdge) {
     y1 = y1 - alternativeFontSize;
     y2 = y2 - alternativeFontSize;
   }
 }
 
 function moveSquareRight() {
-  if (x1 > 0 + alternativeFontSize) {
+  let rightEdge = 0 + alternativeFontSize * 3;
+
+  if (x1 > rightEdge) {
     x1 = x1 - alternativeFontSize;
     x2 = x2 - alternativeFontSize;
   }
 }
 
 function moveSquareDown() {
-  if (y2 < canvas.height - alternativeFontSize) {
+  let bottomEdge = canvas.height - alternativeFontSize * 3;
+
+  if (y2 < bottomEdge) {
     y1 = y1 + alternativeFontSize;
     y2 = y2 + alternativeFontSize;
   }
