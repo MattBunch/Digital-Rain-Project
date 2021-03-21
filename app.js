@@ -629,15 +629,22 @@ function returnAlternativeFadeCondition(inputNum, xCoordinate, yCoordinate) {
   let yPos1 = y1 - coordinateNum + 10;
 
   // top
-  let con3 = yCoordinate == yPos1 && !(xCoordinate < x1 || xCoordinate > x2);
+  let con3 =
+    yCoordinate == yPos1 &&
+    !(
+      xCoordinate < x1 - alternativeFontSize ||
+      xCoordinate > x2 + alternativeFontSize
+    );
 
   // bottom
   let con4 =
     yCoordinate == y2 + coordinateNum &&
-    !(xCoordinate < x1 || xCoordinate > x2);
+    !(
+      xCoordinate < x1 - alternativeFontSize ||
+      xCoordinate > x2 + alternativeFontSize
+    );
 
   // corners
-  // TODO: Calculate how to find the corner letters
 
   return con1 || con2 || con3 || con4;
 }
