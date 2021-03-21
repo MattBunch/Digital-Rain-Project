@@ -185,6 +185,12 @@ function generateWordSizeRand() {
   return Math.floor(generateRandomNumber(stringSizeMin, stringSizeMax));
 }
 
+function generateWordSizeRandHanging() {
+  return Math.floor(
+    generateRandomNumber(stringSizeMin - 10, stringSizeMax + 3)
+  );
+}
+
 // generate font size number between 15 and 25
 function generateFontSize() {
   return Math.floor(generateRandomNumber(fontSize - 5, fontSize + 5));
@@ -1089,7 +1095,7 @@ function moveSquareDown() {
 function giveEachWordNewWord() {
   words.forEach(function (arrayWord) {
     if (hangingWords) {
-      arrayWord.word = generateWord(generateWordSizeRand());
+      arrayWord.word = generateWord(generateWordSizeRandHanging());
     } else arrayWord.word = generateWord(newWordSize);
   });
 }
