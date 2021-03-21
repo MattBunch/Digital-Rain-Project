@@ -334,8 +334,7 @@ if (discoFrameElement.value < 0 || discoFrameElement == null) {
 let savedColor = getRandomColor();
 
 class CoordinateObject {
-  constructor(letter, xCoordinate, yCoordinate) {
-    this.letter = letter;
+  constructor(xCoordinate, yCoordinate) {
     this.xCoordinate = xCoordinate;
     this.yCoordinate = yCoordinate;
   }
@@ -557,10 +556,9 @@ class MatrixString {
     let output = new Array();
 
     for (let i = 0; i < this.word.length; i++) {
-      let letter = this.word.substring(i, i + 1);
       let xCoordinate = this.x;
       let yCoordinate = this.y + i * this.fontSize;
-      output.push(new CoordinateObject(letter, xCoordinate, yCoordinate));
+      output.push(new CoordinateObject(xCoordinate, yCoordinate));
     }
 
     return output;
@@ -738,6 +736,8 @@ function returnAlternativeFadeCondition2(
 // declare array of words to hold
 let words = new Array();
 
+let allCoordinates = new Array();
+
 let xInput, yInput, xSpeedInput, ySpeedInput, newWord, newFontSize;
 
 function createMatrixArray(directionMatrix) {
@@ -799,6 +799,36 @@ function createMatrixArray(directionMatrix) {
       );
     }
   }
+}
+
+/**  Hypothetically, coordinates array would have to be reset every frame of the falling rain animation.
+ *    However, since it will only be relevant to the static move square mode, this is a none issue.
+ *    If this is needed for the default falling rain animation, then this needs to be called after every frame cycle to adjust for new coordinates.
+ */
+function createCoordinatesArray() {
+  allCoordinates = [];
+
+  words.forEach(function (wordsObj) {
+    allCoordinates.push(wordsObj.XYCoordinates);
+  });
+}
+
+function printEveryCoordinateinCoordinates() {
+  // allCoordinates.forEach(function (allCoordinatesObj) {
+  //   // console.log(allCoordinatesObj);
+  //   allCoordinatesObj.forEach(function (innerObj) {
+  //     console.log(innerObj);
+  //   });
+
+  //   // let matchingXPos = xPos1 == allCoordinatesObj.xCoordinate;
+  //   //   let matchingYPos = yPos1 == allCoordinatesObj.yCoordinate;
+  //   //   if (matchingXPos && matchingYPos) {
+  //   //     console.log("Match Found!");
+  //   //   }
+
+  // });
+
+  console.log(allCoordinates);
 }
 
 /*###########################################################################################
@@ -976,6 +1006,8 @@ function drawAlternative() {
   // alternative method: input "south" as direction and empty array after forEach loop
   createMatrixArray();
 
+  createCoordinatesArray();
+
   if (squareCounter > 50) {
     randomSquareCoordinates = returnRandomSquareCoordinates();
     squareCounter = 0;
@@ -1109,6 +1141,8 @@ function giveEachWordNewWord() {
 
       arrayWord.word = generateWord(hangingWordSize);
     } else arrayWord.word = generateWord(newWordSize);
+
+    arrayWord.XYCoordinates = arrayWord.generateXYCoordinates();
   });
 }
 
@@ -1604,6 +1638,8 @@ function run(original) {
     words.shift();
     giveEachWordNewWord();
   }
+
+  createCoordinatesArray();
 
   // run the animation
   intervalValid = setInterval(function () {
