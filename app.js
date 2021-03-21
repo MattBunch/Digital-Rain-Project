@@ -1066,10 +1066,10 @@ let rightEdgeDisco = 0 + alternativeFontSize;
 let bottomEdgeDisco;
 let leftEdgeDisco;
 
-function moveSquareLeft() {
+function moveSquareLeft(forceMove) {
   let inputLeftEdge = leftEdge;
 
-  if (discoOn) inputLeftEdge = leftEdgeDisco;
+  if (discoOn || forceMove) inputLeftEdge = leftEdgeDisco;
 
   if (x2 < inputLeftEdge) {
     x1 = x1 + alternativeFontSize;
@@ -1077,10 +1077,10 @@ function moveSquareLeft() {
   }
 }
 
-function moveSquareUp() {
+function moveSquareUp(forceMove) {
   let inputTopEdge = topEdge;
 
-  if (discoOn) inputTopEdge = topEdgeDisco;
+  if (discoOn || forceMove) inputTopEdge = topEdgeDisco;
 
   if (y1 > inputTopEdge) {
     y1 = y1 - alternativeFontSize;
@@ -1088,10 +1088,10 @@ function moveSquareUp() {
   }
 }
 
-function moveSquareRight() {
+function moveSquareRight(forceMove) {
   let inputRightEdge = rightEdge;
 
-  if (discoOn) inputRightEdge = rightEdgeDisco;
+  if (discoOn || forceMove) inputRightEdge = rightEdgeDisco;
 
   if (x1 > inputRightEdge) {
     x1 = x1 - alternativeFontSize;
@@ -1099,10 +1099,10 @@ function moveSquareRight() {
   }
 }
 
-function moveSquareDown() {
+function moveSquareDown(forceMove) {
   let inputBottomEdge = bottomEdge;
 
-  if (discoOn) inputBottomEdge = bottomEdgeDisco;
+  if (discoOn || forceMove) inputBottomEdge = bottomEdgeDisco;
 
   if (y2 < inputBottomEdge) {
     y1 = y1 + alternativeFontSize;
@@ -1248,28 +1248,28 @@ document.addEventListener("keydown", function (event) {
       if (!squareAnimationOn) {
         arrowDirectionControl("west", "east");
       } else {
-        moveSquareLeft();
+        moveSquareLeft(false);
       }
       break;
     case "ArrowUp":
       if (!squareAnimationOn) {
         arrowDirectionControl("north", "south");
       } else {
-        moveSquareUp();
+        moveSquareUp(false);
       }
       break;
     case "ArrowRight":
       if (!squareAnimationOn) {
         arrowDirectionControl("east", "west");
       } else {
-        moveSquareRight();
+        moveSquareRight(false);
       }
       break;
     case "ArrowDown":
       if (!squareAnimationOn) {
         arrowDirectionControl("south", "north");
       } else {
-        moveSquareDown();
+        moveSquareDown(false);
       }
       break;
     case " ":
