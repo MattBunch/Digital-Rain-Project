@@ -1563,7 +1563,10 @@ function resetWordsArray() {
 
   if (!hangingWords) giveEachWordNewWord();
 
-  if (squareAnimationOn) repositionSquare();
+  if (squareAnimationOn) {
+    words.shift();
+    repositionSquare();
+  }
 }
 
 // get menu information
@@ -1597,7 +1600,10 @@ function run(original) {
 
   newWordSize = getNewWordSize();
 
-  if (squareAnimationOn) giveEachWordNewWord();
+  if (squareAnimationOn) {
+    words.shift();
+    giveEachWordNewWord();
+  }
 
   // run the animation
   intervalValid = setInterval(function () {
