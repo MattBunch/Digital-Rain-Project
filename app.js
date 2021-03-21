@@ -52,6 +52,9 @@ function canvasSetup() {
 
   leftEdge = canvas.width - alternativeFontSize * 3;
   bottomEdge = canvas.height - alternativeFontSize * 3;
+
+  leftEdgeDisco = canvas.width - alternativeFontSize;
+  bottomEdgeDisco = canvas.height - alternativeFontSize;
 }
 
 /*
@@ -507,7 +510,10 @@ class MatrixString {
       let xCoordinate = this.x;
       let yCoordinate = this.y + i * this.fontSize;
 
-      if (onePercentChance() && !rapidWordChange) letter = getRandomChar();
+      if (onePercentChance() && !rapidWordChange && i != 0)
+        letter = getRandomChar();
+
+      if (i == 0) letter = " ";
 
       let primaryColorCondition =
         xCoordinate < x1 ||
@@ -1055,12 +1061,15 @@ let rightEdge = 0 + alternativeFontSize * 3;
 let bottomEdge;
 let leftEdge;
 
+let topEdgeDisco = 0 + alternativeFontSize;
+let rightEdgeDisco = 0 + alternativeFontSize;
+let bottomEdgeDisco;
+let leftEdgeDisco;
+
 function moveSquareLeft() {
   let inputLeftEdge = leftEdge;
 
-  if (discoOn) {
-    inputLeftEdge = canvas.width - alternativeFontSize;
-  }
+  if (discoOn) inputLeftEdge = leftEdgeDisco;
 
   if (x2 < inputLeftEdge) {
     x1 = x1 + alternativeFontSize;
@@ -1071,9 +1080,7 @@ function moveSquareLeft() {
 function moveSquareUp() {
   let inputTopEdge = topEdge;
 
-  if (discoOn) {
-    inputTopEdge = 0 + alternativeFontSize;
-  }
+  if (discoOn) inputTopEdge = topEdgeDisco;
 
   if (y1 > inputTopEdge) {
     y1 = y1 - alternativeFontSize;
@@ -1084,9 +1091,7 @@ function moveSquareUp() {
 function moveSquareRight() {
   let inputRightEdge = rightEdge;
 
-  if (discoOn) {
-    inputRightEdge = 0 + alternativeFontSize;
-  }
+  if (discoOn) inputRightEdge = rightEdgeDisco;
 
   if (x1 > inputRightEdge) {
     x1 = x1 - alternativeFontSize;
@@ -1097,9 +1102,7 @@ function moveSquareRight() {
 function moveSquareDown() {
   let inputBottomEdge = bottomEdge;
 
-  if (discoOn) {
-    inputBottomEdge = canvas.height - alternativeFontSize;
-  }
+  if (discoOn) inputBottomEdge = bottomEdgeDisco;
 
   if (y2 < inputBottomEdge) {
     y1 = y1 + alternativeFontSize;
