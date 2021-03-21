@@ -518,11 +518,13 @@ class MatrixString {
         yCoordinate
       );
 
-      let topXCoordinate = xCoordinate;
-      let topYCoordinate = this.y + (i - 1) * this.fontSize;
+      // FIXME: alternative fade condition using coordinates doesn't work
 
-      let bottomXCoordinate = xCoordinate;
-      let bottomYCoordinate = this.y + (i + 1) * this.fontSize;
+      // let topXCoordinate = xCoordinate;
+      // let topYCoordinate = this.y + (i - 1) * this.fontSize;
+
+      // let bottomXCoordinate = xCoordinate;
+      // let bottomYCoordinate = this.y + (i + 1) * this.fontSize;
 
       // let alternativeFade1Condition = returnAlternativeFadeCondition2(
       //   xCoordinate,
@@ -630,6 +632,7 @@ function returnAlternativeFadeCondition(inputNum, xCoordinate, yCoordinate) {
   return con1 || con2 || con3 || con4;
 }
 
+// FIXME: entire function does not work
 function returnAlternativeFadeCondition2(
   currentXCoordinate,
   currentYCoordinate,
@@ -646,13 +649,14 @@ function returnAlternativeFadeCondition2(
     bottomXCoordinate == null ||
     bottomYCoordinate == null
   ) {
+    console.log("null object");
     return false;
   }
 
   // get XYCoordinates
   // let currentXYCoordinatesArray = currentObj.XYCoordinates;
-  let previousXYCoordinatesArray = previousObj.XYCoordinates;
-  let followingXYCoordinatesArray = followingObj.XYCoordinates;
+  // let previousXYCoordinatesArray = previousObj.XYCoordinates;
+  // let followingXYCoordinatesArray = followingObj.XYCoordinates;
 
   // declare conditions
   let con1 = false;
@@ -660,13 +664,14 @@ function returnAlternativeFadeCondition2(
   let con3 = false;
   let con4 = false;
 
-  let notOutsideBoxX = !(xCoordinate < x1 || xCoordinate > x2);
-  let notOutsideBoxY = !(yCoordinate < y1 || yCoordinate > y2);
+  let notOutsideBoxX = !(currentXCoordinate < x1 || currentXCoordinate > x2);
+  let notOutsideBoxY = !(currentYCoordinate < y1 || currentYCoordinate > y2);
 
   // right
   // compare currentobject to previous Obj (mirrored screen)
   previousXYCoordinatesArray.forEach(function (prevXYObj) {
     if (currentXCoordinate == prevXYObj.xCoordinate && notOutsideBoxY) {
+      console.log("con1 true");
       con1 = true;
     }
   });
@@ -675,6 +680,7 @@ function returnAlternativeFadeCondition2(
   // compare currentobject to following Obj (mirrored screen)
   followingXYCoordinatesArray.forEach(function (followingXYObj) {
     if (currentXCoordinate == followingXYObj.xCoordinate && notOutsideBoxY) {
+      console.log("con2 true");
       con2 = true;
     }
   });
@@ -686,6 +692,7 @@ function returnAlternativeFadeCondition2(
     currentYCoordinate == topYCoordinate &&
     notOutsideBoxX
   ) {
+    console.log("con3 true");
     con3 = true;
   }
   // currentXYCoordinatesArray.forEach(function (currXYObj) {
@@ -701,6 +708,7 @@ function returnAlternativeFadeCondition2(
     currentYCoordinate == bottomYCoordinate &&
     notOutsideBoxX
   ) {
+    console.log("con4 true");
     con4 = true;
   }
   // currentXYCoordinatesArray.forEach(function (currXYObj) {
