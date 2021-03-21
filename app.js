@@ -1128,15 +1128,17 @@ function giveEachWordNewWord() {
     if (hangingWords) {
       let hangingWordSize = generateWordSizeRandHanging();
 
-      if (!isCanvasLarge()) {
-        hangingWordSize = Math.round(hangingWordSize * 0.8);
-      }
+      if (isScreenSmall()) hangingWordSize = Math.round(hangingWordSize * 0.6);
 
       arrayWord.word = generateWord(hangingWordSize);
     } else arrayWord.word = generateWord(newWordSize);
 
     arrayWord.XYCoordinates = arrayWord.generateXYCoordinates();
   });
+}
+
+function isScreenSmall() {
+  return window.innerHeight < 1000;
 }
 
 /*###########################################################################################
@@ -1202,6 +1204,7 @@ function reset() {
   defaultFontSize = 20;
   resetStringSizes();
   alternativeFontSize = 20;
+  frameCountFunctionOnChange();
 }
 
 function resetRandomColor() {
