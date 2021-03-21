@@ -172,3 +172,4 @@ Added `buttonDiscoChecked()` to the button mouseover functionality for changing 
 
 - Switch Mode button added.
 - Alternative fading method using X and Y coordinates attempted. Did not work because the other Matrix String Objects were not defined.
+- Fading corning in alternative mode achieved through perseverance through original function (doubled number of returning conditions just to account for a few squares). Only works so one font size so disabled adjusting the font size with the keyboard for the alternative mode.
