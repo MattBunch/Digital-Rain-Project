@@ -736,8 +736,6 @@ function returnAlternativeFadeCondition2(
 // declare array of words to hold
 let words = new Array();
 
-let allCoordinates = new Array();
-
 let xInput, yInput, xSpeedInput, ySpeedInput, newWord, newFontSize;
 
 function createMatrixArray(directionMatrix) {
@@ -799,36 +797,6 @@ function createMatrixArray(directionMatrix) {
       );
     }
   }
-}
-
-/**  Hypothetically, coordinates array would have to be reset every frame of the falling rain animation.
- *    However, since it will only be relevant to the static move square mode, this is a none issue.
- *    If this is needed for the default falling rain animation, then this needs to be called after every frame cycle to adjust for new coordinates.
- */
-function createCoordinatesArray() {
-  allCoordinates = [];
-
-  words.forEach(function (wordsObj) {
-    allCoordinates.push(wordsObj.XYCoordinates);
-  });
-}
-
-function printEveryCoordinateinCoordinates() {
-  // allCoordinates.forEach(function (allCoordinatesObj) {
-  //   // console.log(allCoordinatesObj);
-  //   allCoordinatesObj.forEach(function (innerObj) {
-  //     console.log(innerObj);
-  //   });
-
-  //   // let matchingXPos = xPos1 == allCoordinatesObj.xCoordinate;
-  //   //   let matchingYPos = yPos1 == allCoordinatesObj.yCoordinate;
-  //   //   if (matchingXPos && matchingYPos) {
-  //   //     console.log("Match Found!");
-  //   //   }
-
-  // });
-
-  console.log(allCoordinates);
 }
 
 /*###########################################################################################
@@ -1005,8 +973,6 @@ function drawAlternative() {
   // no direction input, very important
   // alternative method: input "south" as direction and empty array after forEach loop
   createMatrixArray();
-
-  createCoordinatesArray();
 
   if (squareCounter > 50) {
     randomSquareCoordinates = returnRandomSquareCoordinates();
@@ -1638,8 +1604,6 @@ function run(original) {
     words.shift();
     giveEachWordNewWord();
   }
-
-  createCoordinatesArray();
 
   // run the animation
   intervalValid = setInterval(function () {

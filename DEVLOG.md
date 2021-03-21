@@ -173,3 +173,4 @@ Added `buttonDiscoChecked()` to the button mouseover functionality for changing 
 - Switch Mode button added.
 - Alternative fading method using X and Y coordinates attempted. Did not work because the other Matrix String Objects were not defined.
 - Fading corning in alternative mode achieved through perseverance through original function (doubled number of returning conditions just to account for a few squares). Only works so one font size so disabled adjusting the font size with the keyboard for the alternative mode.
+- Created a method of looping through all the Coordinates in an array and comparing the x and y of each string object inside of the Words array to those coordinates. This method worked and matched up, but unfortunately, it slows down the browser too much because of the o(n^2) time complexity of having to loop through both arrays every second and isn't worth implementing.
