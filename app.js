@@ -49,6 +49,9 @@ function canvasSetup() {
   // mirror the screen
   ctx.translate(canvas.width, 0);
   ctx.scale(-1, 1);
+
+  leftEdge = canvas.width - alternativeFontSize * 3;
+  bottomEdge = canvas.height - alternativeFontSize * 3;
 }
 
 /*
@@ -1049,9 +1052,12 @@ function returnRandomSquareCoordinates() {
   }
 }
 
-function moveSquareLeft() {
-  let leftEdge = canvas.width - alternativeFontSize * 3;
+let topEdge = 0 + alternativeFontSize * 3;
+let rightEdge = 0 + alternativeFontSize * 3;
+let bottomEdge;
+let leftEdge;
 
+function moveSquareLeft() {
   if (x2 < leftEdge) {
     x1 = x1 + alternativeFontSize;
     x2 = x2 + alternativeFontSize;
@@ -1059,8 +1065,6 @@ function moveSquareLeft() {
 }
 
 function moveSquareUp() {
-  let topEdge = 0 + alternativeFontSize * 3;
-
   if (y1 > topEdge) {
     y1 = y1 - alternativeFontSize;
     y2 = y2 - alternativeFontSize;
@@ -1068,8 +1072,6 @@ function moveSquareUp() {
 }
 
 function moveSquareRight() {
-  let rightEdge = 0 + alternativeFontSize * 3;
-
   if (x1 > rightEdge) {
     x1 = x1 - alternativeFontSize;
     x2 = x2 - alternativeFontSize;
@@ -1077,12 +1079,23 @@ function moveSquareRight() {
 }
 
 function moveSquareDown() {
-  let bottomEdge = canvas.height - alternativeFontSize * 3;
-
   if (y2 < bottomEdge) {
     y1 = y1 + alternativeFontSize;
     y2 = y2 + alternativeFontSize;
   }
+}
+
+function repositionSquare() {
+  if (x1 > rightEdge || x2 < leftEdge || y1 > topEdge || y2 < bottomEdge) {
+    resetSquarePosition();
+  }
+}
+
+function resetSquarePosition() {
+  x1 = 250;
+  x2 = 500;
+  y1 = 250;
+  y2 = 500;
 }
 
 function giveEachWordNewWord() {
@@ -1549,6 +1562,8 @@ function resetWordsArray() {
   createMatrixArray(direction);
 
   if (!hangingWords) giveEachWordNewWord();
+
+  if (squareAnimationOn) repositionSquare();
 }
 
 // get menu information
