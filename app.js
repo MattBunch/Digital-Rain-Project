@@ -1056,28 +1056,52 @@ let bottomEdge;
 let leftEdge;
 
 function moveSquareLeft() {
-  if (x2 < leftEdge) {
+  let inputLeftEdge = leftEdge;
+
+  if (discoOn) {
+    inputLeftEdge = canvas.width - alternativeFontSize;
+  }
+
+  if (x2 < inputLeftEdge) {
     x1 = x1 + alternativeFontSize;
     x2 = x2 + alternativeFontSize;
   }
 }
 
 function moveSquareUp() {
-  if (y1 > topEdge) {
+  let inputTopEdge = topEdge;
+
+  if (discoOn) {
+    inputTopEdge = 0 + alternativeFontSize;
+  }
+
+  if (y1 > inputTopEdge) {
     y1 = y1 - alternativeFontSize;
     y2 = y2 - alternativeFontSize;
   }
 }
 
 function moveSquareRight() {
-  if (x1 > rightEdge) {
+  let inputRightEdge = rightEdge;
+
+  if (discoOn) {
+    inputRightEdge = 0 + alternativeFontSize;
+  }
+
+  if (x1 > inputRightEdge) {
     x1 = x1 - alternativeFontSize;
     x2 = x2 - alternativeFontSize;
   }
 }
 
 function moveSquareDown() {
-  if (y2 < bottomEdge) {
+  let inputBottomEdge = bottomEdge;
+
+  if (discoOn) {
+    inputBottomEdge = canvas.height - alternativeFontSize;
+  }
+
+  if (y2 < inputBottomEdge) {
     y1 = y1 + alternativeFontSize;
     y2 = y2 + alternativeFontSize;
   }
