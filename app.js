@@ -1282,13 +1282,13 @@ document.addEventListener("keydown", function (event) {
     case "a":
       controlStringSize(false);
       break;
-    case "r":
+    case "t":
       discoIntervalSpeedControl(true);
       break;
-    case "f":
+    case "g":
       discoIntervalSpeedControl(false);
       break;
-    case "t":
+    case "r":
       rapidWordChangeControl();
       break;
     case "h":
