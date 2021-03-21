@@ -162,10 +162,6 @@ function generateRandomNumber(min, max) {
   return number;
 }
 
-function coinToss() {
-  return Math.random() < 0.5;
-}
-
 function onePercentChance() {
   return Math.random() < 0.01;
 }
@@ -244,7 +240,6 @@ function generateXEast() {
   return generateStartingPointInput(minNum, maxNum);
 }
 
-// TODO: fix the output
 function generateXWest(word, inputFontSize) {
   let minNum = 0 - (word.length * inputFontSize + 20);
   let maxNum = canvas.width * -1 * 1.5;
@@ -524,23 +519,6 @@ class MatrixString {
         yCoordinate
       );
 
-      // FIXME: alternative fade condition using coordinates doesn't work
-
-      // let topXCoordinate = xCoordinate;
-      // let topYCoordinate = this.y + (i - 1) * this.fontSize;
-
-      // let bottomXCoordinate = xCoordinate;
-      // let bottomYCoordinate = this.y + (i + 1) * this.fontSize;
-
-      // let alternativeFade1Condition = returnAlternativeFadeCondition2(
-      //   xCoordinate,
-      //   yCoordinate,
-      //   topXCoordinate,
-      //   topYCoordinate,
-      //   bottomXCoordinate,
-      //   bottomYCoordinate
-      // );
-
       let alternativeFade2Condition = returnAlternativeFadeCondition(
         1,
         xCoordinate,
@@ -600,8 +578,6 @@ function discoColorCounterCheck() {
   }
 }
 
-// FIXME: alternative fade condition only returns on default alternative font size
-// find  way of calculating correct return through multiple different
 function returnAlternativeFadeCondition(inputNum, xCoordinate, yCoordinate) {
   let coordinateNum = 0;
   let alteredNum;
@@ -619,56 +595,38 @@ function returnAlternativeFadeCondition(inputNum, xCoordinate, yCoordinate) {
   let xPos1 = x1 - coordinateNum + alteredNum;
 
   // right
-  let con1 = xCoordinate == xPos1 && !(yCoordinate < y1 || yCoordinate > y2);
+  let con1 =
+    xCoordinate == xPos1 &&
+    (!(yCoordinate < y1 || yCoordinate > y2) ||
+      !(yCoordinate < y1 - coordinateNum || yCoordinate > y2 + coordinateNum));
 
   // left
   let con2 =
     xCoordinate == x2 + coordinateNum &&
-    !(yCoordinate < y1 || yCoordinate > y2);
+    (!(yCoordinate < y1 || yCoordinate > y2) ||
+      !(yCoordinate < y1 - coordinateNum || yCoordinate > y2 + coordinateNum));
 
   let yPos1 = y1 - coordinateNum + 10;
 
-  // top and top inner corners
+  // top
   let con3 =
     yCoordinate == yPos1 &&
-    !(
+    (!(
       xCoordinate < x1 - alternativeFontSize ||
       xCoordinate > x2 + alternativeFontSize
-    );
+    ) ||
+      !(xCoordinate < x1 - coordinateNum || xCoordinate > x2 + coordinateNum));
 
-  // bottom and bottom inner corners
+  // bottom
   let con4 =
     yCoordinate == y2 + coordinateNum &&
-    !(
+    (!(
       xCoordinate < x1 - alternativeFontSize ||
       xCoordinate > x2 + alternativeFontSize
-    );
+    ) ||
+      !(xCoordinate < x1 - coordinateNum || xCoordinate > x2 + coordinateNum));
 
-  //  outer corners
-  let con5, con6, con7, con8;
-  if (inputNum == 1) {
-    // bottom
-    con5 =
-      yCoordinate == y2 + coordinateNum &&
-      !(xCoordinate < x1 - coordinateNum || xCoordinate > x2 + coordinateNum);
-
-    // top
-    con6 =
-      yCoordinate == yPos1 &&
-      !(xCoordinate < x1 - coordinateNum || xCoordinate > x2 + coordinateNum);
-
-    // left
-    con7 =
-      xCoordinate == x2 + coordinateNum &&
-      !(yCoordinate < y1 - coordinateNum || yCoordinate > y2 + coordinateNum);
-
-    // right
-    con8 =
-      xCoordinate == xPos1 &&
-      !(yCoordinate < y1 - coordinateNum || yCoordinate > y2 + coordinateNum);
-  }
-
-  return con1 || con2 || con3 || con4 || con5 || con6 || con7 || con8;
+  return con1 || con2 || con3 || con4;
 }
 
 // FIXME: entire function does not work
@@ -870,9 +828,6 @@ function draw() {
 
   // draw strings
   for (let i = 0; i < words.length; i++) {
-    // TODO: toggle this on and off with a keypress
-    // these get reset upon reseting as well.
-
     changeWordCheck(words[i], words[i].word.length);
 
     if (direction === "south") {
@@ -1034,6 +989,7 @@ function drawAlternative() {
     if (hangingWords && rapidWordChange) {
       arrayItem.word = generateWord(arrayItem.word.length);
     }
+
     // true
     // false
     else if (hangingWords && !rapidWordChange) {
@@ -1186,7 +1142,7 @@ function matchColorToIndex(input) {
 
 // reset values to null so the program can be ran again
 function reset() {
-  words = []; // empty array
+  words = [];
   direction = null;
   discoOn = null;
   chosenColor = null;
@@ -1659,8 +1615,6 @@ const frameCountElems = document.getElementsByClassName("frameCount");
 let menuInterval;
 let selectColor;
 
-// TODO: loop through and recolor each button for the inclusion of a new button
-
 // show and hide menu
 function showMenu() {
   for (let i = 0; i < menuDivs.length; i++) {
@@ -1775,7 +1729,6 @@ function recolorMenuOneColor(inputColor) {
   }
 
   // button border color
-  // TODO: edit this to accomodate multiple butttons
   buttonBorderColorSelectedColor();
 
   // for border select boxes
@@ -1818,12 +1771,6 @@ function menuOnLoad() {
   // Retrieve
   selectColor = localStorage.getItem("key");
 
-  // if (checkBox.checked) {
-  //   checkboxFunction();
-  // } else {
-  //   selectFunction();
-  // }
-
   checkboxFunction();
 
   selectFunction();
@@ -1847,21 +1794,12 @@ function matchColorToRGB(entryColor) {
       return colorCyan;
     case "random":
       return randomColorArray[2];
-    // return getRandomColor(); // create random color each time this is called.
     default:
       return null;
   }
 }
 
 // hover over button color change
-/**
- * for multiple buttons, loop through html collection and change each item:
- * 
-    Array.from(buttons.forEach(function(button) {
-    button.addEventListener("mouseover", function(button) {
-      buttonMouseOver(button); // TODO: edit buttonMouseOver and buttonMouseOut to take button as a parameter
-    });
- */
 button.addEventListener("mouseover", function () {
   buttonMouseOver(1);
 });
@@ -1928,14 +1866,12 @@ function buttonDiscoBackgroundChangeColor() {
   }
 }
 
-// TODO: edit this to accomodate multiple buttons
 function buttonBorderColorRandom() {
   for (let i = 0; i < buttons.length; i++) {
     buttons[i].style.border = borderPrefix + getRandomColor();
   }
 }
 
-// TODO: edit this to accomodate multiple buttons
 function buttonBorderColorSelectedColor() {
   for (let i = 0; i < buttons.length; i++) {
     buttons[i].style.border = borderPrefix + selectColor;
