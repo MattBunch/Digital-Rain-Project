@@ -1151,16 +1151,10 @@ function discoForceMoveCheck(forceMove) {
   return discoOn || forceMove;
 }
 
-function repositionSquare() {
-  if (x1 > rightEdge || x2 < leftEdge || y1 > topEdge || y2 < bottomEdge) {
-    resetSquarePosition();
-  }
-}
-
-function forceSquare(input) {
+function forceSquare(inputNum) {
   for (let i = 0; i < 2; i++) {
-    // same order as in repositionSquareToNormal()
-    switch (input) {
+    // inputNum case order is same order as if else check list in repositionSquareToNormal()
+    switch (inputNum) {
       case 4:
         moveSquareLeft(true);
         moveSquareDown(true);
@@ -1195,53 +1189,31 @@ function forceSquare(input) {
 
 function repositionSquareToNormal() {
   let borderChecks = returnArrayOfCollisionBooleans();
-  console.log(borderChecks);
-
-  console.log("\nbefore checking edges:\n");
-  printSquarePositionInfo();
 
   // parameter input for forceSquare same as border position in array
   // check corners first:
   if (borderChecks[4]) {
-    console.log("---");
-    console.log("topRightEdge hit");
     forceSquare(4);
   } else if (borderChecks[5]) {
-    console.log("---");
-    console.log("topLeftEdge hit");
     forceSquare(5);
   } else if (borderChecks[6]) {
-    console.log("---");
-    console.log("bottomRightEdge hit");
     forceSquare(6);
   } else if (borderChecks[7]) {
     forceSquare(7);
-    console.log("---");
-    console.log("bottomEdge hit");
   } else if (borderChecks[0]) {
-    console.log("---");
-    console.log("rightEdge hit");
     forceSquare(0);
   } else if (borderChecks[1]) {
-    console.log("---");
-    console.log("leftEdge hit");
     forceSquare(1);
   } else if (borderChecks[2]) {
-    console.log("---");
-    console.log("topEdge hit");
     forceSquare(2);
   } else if (borderChecks[3]) {
-    console.log("---");
-    console.log("bottomEdge hit");
     forceSquare(3);
   }
-
-  console.log("---");
-  console.log("\n###\nafter checking edges:\n###");
-  printSquarePositionInfo();
 }
 
+// for debugging
 function printSquarePositionInfo() {
+  console.log("---");
   console.log("x1: " + x1);
   console.log("rightEdge: " + rightEdge);
   console.log("---");
@@ -1765,7 +1737,7 @@ function resetWordsArray() {
 
   if (squareAnimationOn) {
     words.shift();
-    repositionSquare();
+    repositionSquareToNormal();
   }
 }
 
