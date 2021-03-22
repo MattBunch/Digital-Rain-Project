@@ -817,12 +817,9 @@ function getAllXCoordinates() {
 
   allXCons = [...new Set(helperArrayX)];
 
-  timesPassed++;
   console.log("getAllCoordinates" + " passed");
   console.log(allXCons);
 }
-
-let timesPassed = 0;
 
 /*###########################################################################################
   _____                      ____    ______                _   _             
@@ -1355,8 +1352,6 @@ function reset() {
 
   console.log(allXCons);
   allXCons = [];
-  console.log(timesPassed);
-  timesPassed = 0;
 }
 
 function resetRandomColor() {
@@ -1378,7 +1373,7 @@ function resetRandomColor() {
 
 let intervalValid, animationOn;
 let savedDirection = direction;
-let rapidChangingSquare;
+let rapidSquareOn;
 
 const DEFAULT_SPEED = 50;
 const amountOfSpeedLevels = 7;
@@ -1392,6 +1387,8 @@ let hangingWords = true;
 
 document.addEventListener("keydown", function (event) {
   iCounter = 0;
+
+  // printSquarePositionInfo();
 
   switch (event.key) {
     case "Escape":
@@ -1499,6 +1496,9 @@ document.addEventListener("keydown", function (event) {
       break;
     case "m":
       if (ctx != undefined) switchMode();
+      break;
+    case "u":
+      rapidSquareControl();
       break;
   }
 });
@@ -1734,6 +1734,12 @@ function switchMode() {
   resetToMenu();
 
   run(original);
+}
+
+function rapidSquareControl() {
+  if (rapidSquareOn) rapidSquareOn = false;
+  else rapidSquareOn = true;
+  console.log(rapidSquareOn);
 }
 
 window.addEventListener("resize", resetWordsArray);
