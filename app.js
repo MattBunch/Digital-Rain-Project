@@ -1383,31 +1383,31 @@ document.addEventListener("keydown", function (event) {
       resetToMenu();
       break;
     case "ArrowLeft":
-      if (!squareAnimationOn) {
-        arrowDirectionControl("west", "east");
-      } else {
+      if (squareAnimationOn) {
         moveSquareLeft(false);
+      } else {
+        arrowDirectionControl("west", "east");
       }
       break;
     case "ArrowUp":
-      if (!squareAnimationOn) {
-        arrowDirectionControl("north", "south");
-      } else {
+      if (squareAnimationOn) {
         moveSquareUp(false);
+      } else {
+        arrowDirectionControl("north", "south");
       }
       break;
     case "ArrowRight":
-      if (!squareAnimationOn) {
-        arrowDirectionControl("east", "west");
-      } else {
+      if (squareAnimationOn) {
         moveSquareRight(false);
+      } else {
+        arrowDirectionControl("east", "west");
       }
       break;
     case "ArrowDown":
-      if (!squareAnimationOn) {
-        arrowDirectionControl("south", "north");
-      } else {
+      if (squareAnimationOn) {
         moveSquareDown(false);
+      } else {
+        arrowDirectionControl("south", "north");
       }
       break;
     case " ":
