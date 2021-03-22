@@ -178,3 +178,7 @@ Added `buttonDiscoChecked()` to the button mouseover functionality for changing 
 ### 22/03/2021
 
 - Forcing square back into canvas upon switching from disco to normal mode solved.
+
+### 23/03/2021
+
+- Fixed random square position and hanging words on screen resize.
