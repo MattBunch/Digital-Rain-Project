@@ -741,7 +741,6 @@ function returnAlternativeFadeCondition2(
 
 // declare array of words to hold
 let words = new Array();
-let allXCons = new Array();
 
 let xInput, yInput, xSpeedInput, ySpeedInput, newWord, newFontSize;
 
@@ -804,24 +803,6 @@ function createMatrixArray(directionMatrix) {
       );
     }
   }
-}
-
-// TODO: call on reset too
-function getAllXCoordinates() {
-  let helperArrayX = new Array();
-  words.forEach(function (obj) {
-    obj.XYCoordinates.forEach(function (individualXY) {
-      helperArrayX.push(individualXY.xCoordinate);
-    });
-  });
-
-  allXCons = [...new Set(helperArrayX)];
-
-  removeAllUnneededXPositions();
-
-  //TODO: delete this debugging info
-  console.log("getAllCoordinates" + " passed");
-  console.log(allXCons);
 }
 
 /*###########################################################################################
@@ -978,8 +959,6 @@ let newWordSize;
 function drawAlternative() {
   if (discoOn) discoFrameCounter++;
 
-  if (allXCons.length == 0) getAllXCoordinates();
-
   squareCounter++;
 
   drawOpaqueRect();
@@ -996,6 +975,8 @@ function drawAlternative() {
     randomSquareCoordinates = returnRandomSquareCoordinates();
     squareCounter = 0;
   }
+
+  if (rapidSquareOn) generateRandomSquarePositions();
 
   newWordSize = getNewWordSize();
 
@@ -1075,17 +1056,6 @@ function resetAllWordsYPositionTo0() {
   words.forEach(function (arrayItem) {
     arrayItem.y = 0;
   });
-}
-
-function removeAllUnneededXPositions() {
-  for (let i = allXCons.length; i >= 0; i--) {
-    //TODO: delete this debugging info
-    if (allXCons[i] > 1110) {
-      console.log(allXCons[i] + " removed");
-
-      allXCons.splice(i, 1);
-    }
-  }
 }
 
 /**
@@ -1299,11 +1269,14 @@ function resetSquarePosition() {
   y2 = 500;
 }
 
-function generateRandomSquarePositions() {}
+function generateRandomSquarePositions() {
+  x1 = generateRandomNumber(0, canvas.width);
 
-function getRandomXCon() {
-  return _.sample(allXCons);
-  // return allXCons[Math.floor(Math.random() * allXCons.length)]
+  x2 = x1 + 250;
+
+  y1 = generateRandomNumber(0, canvas.width);
+
+  y2 = y1 + 250;
 }
 
 /*###########################################################################################
@@ -1370,9 +1343,6 @@ function reset() {
   resetStringSizes();
   alternativeFontSize = 20;
   frameCountFunctionOnChange();
-
-  console.log(allXCons);
-  allXCons = [];
 }
 
 function resetRandomColor() {
