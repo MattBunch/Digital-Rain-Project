@@ -1153,7 +1153,6 @@ function discoForceMoveCheck(forceMove) {
 
 function forceSquare(inputNum) {
   for (let i = 0; i < 2; i++) {
-    // inputNum case order is same order as if else check list in repositionSquareToNormal()
     switch (inputNum) {
       case 0:
         moveSquareLeft(true);
@@ -1188,7 +1187,6 @@ function forceSquare(inputNum) {
 }
 
 function repositionSquareToNormal() {
-  // parameter input for forceSquare same as border position in array
   // check corners first:
   if (returnTopRightCollision()) {
     forceSquare(4);
