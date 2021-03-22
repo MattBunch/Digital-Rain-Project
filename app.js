@@ -573,8 +573,6 @@ class MatrixString {
 
 let testWord = new MatrixString("1234567890", 50, 50, 50, 50, 25);
 
-const SQUARE_SIZE = 13;
-
 function discoColorCounterCheck() {
   if (discoFrameCounter > discoFrameCounterTurnoverPoint) {
     ctx.fillStyle = getRandomColor();
@@ -1099,6 +1097,7 @@ let x1 = 250;
 let x2 = 500;
 let y1 = 250;
 let y2 = 500;
+const SQUARE_SIZE = 250;
 
 let topEdge = 0 + alternativeFontSize * 3;
 let rightEdge = 0 + alternativeFontSize * 3;
@@ -1270,11 +1269,11 @@ function resetSquarePosition() {
 }
 
 function generateRandomSquarePositions() {
-  x1 = generateRandomNumber(0, canvas.width);
+  x1 = generateRandomNumber(0, canvas.width - SQUARE_SIZE);
 
   x2 = x1 + 250;
 
-  y1 = generateRandomNumber(0, canvas.width);
+  y1 = generateRandomNumber(0, canvas.height - SQUARE_SIZE);
 
   y2 = y1 + 250;
 }
@@ -1378,8 +1377,6 @@ let hangingWords = true;
 
 document.addEventListener("keydown", function (event) {
   iCounter = 0;
-
-  printSquarePositionInfo();
 
   switch (event.key) {
     case "Escape":
@@ -1744,12 +1741,16 @@ function resetWordsArray() {
 
   createMatrixArray(direction);
 
-  if (!hangingWords) giveEachWordNewWord();
-
   if (squareAnimationOn) {
     words.shift();
     repositionSquareToNormal();
+    if (hangingWords) hangingWordsSetup();
   }
+}
+
+function hangingWordsSetup() {
+  giveEachWordNewWord();
+  resetAllWordsYPositionTo0();
 }
 
 // get menu information
@@ -1768,7 +1769,7 @@ function loadMenuOptions() {
   createMatrixArray(direction);
 }
 
-// like a main method in java, this function gets executed upon runtime
+// this function gets executed upon clicking the start button
 function run(original) {
   // set up canvas
   canvasSetup();
@@ -1781,9 +1782,8 @@ function run(original) {
 
   squareAnimationOn = !original;
 
-  newWordSize = getNewWordSize();
-
   if (squareAnimationOn) {
+    newWordSize = getNewWordSize();
     words.shift();
     giveEachWordNewWord();
     resetAllWordsYPositionTo0();
