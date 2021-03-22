@@ -1155,6 +1155,18 @@ function forceSquare(inputNum) {
   for (let i = 0; i < 2; i++) {
     // inputNum case order is same order as if else check list in repositionSquareToNormal()
     switch (inputNum) {
+      case 0:
+        moveSquareLeft(true);
+        break;
+      case 1:
+        moveSquareRight(true);
+        break;
+      case 2:
+        moveSquareDown(true);
+        break;
+      case 3:
+        moveSquareUp(true);
+        break;
       case 4:
         moveSquareLeft(true);
         moveSquareDown(true);
@@ -1171,76 +1183,31 @@ function forceSquare(inputNum) {
         moveSquareUp(true);
         moveSquareRight(true);
         break;
-      case 0:
-        moveSquareLeft(true);
-        break;
-      case 1:
-        moveSquareRight(true);
-        break;
-      case 2:
-        moveSquareDown(true);
-        break;
-      case 3:
-        moveSquareUp(true);
-        break;
     }
   }
 }
 
 function repositionSquareToNormal() {
-  let borderChecks = returnArrayOfCollisionBooleans();
-
   // parameter input for forceSquare same as border position in array
   // check corners first:
-  if (borderChecks[4]) {
+  if (returnTopRightCollision()) {
     forceSquare(4);
-  } else if (borderChecks[5]) {
+  } else if (returnTopLeftCollision()) {
     forceSquare(5);
-  } else if (borderChecks[6]) {
+  } else if (returnBottomRightCollision()) {
     forceSquare(6);
-  } else if (borderChecks[7]) {
+  } else if (returnBottomLeftCollision()) {
     forceSquare(7);
-  } else if (borderChecks[0]) {
+  } else if (returnRightCollision()) {
     forceSquare(0);
-  } else if (borderChecks[1]) {
+  } else if (returnLeftCollision()) {
     forceSquare(1);
-  } else if (borderChecks[2]) {
+  } else if (returnTopCollision()) {
     forceSquare(2);
-  } else if (borderChecks[3]) {
+  } else if (returnBottomCollision()) {
     forceSquare(3);
   }
 }
-
-// for debugging
-function printSquarePositionInfo() {
-  console.log("---");
-  console.log("x1: " + x1);
-  console.log("rightEdge: " + rightEdge);
-  console.log("---");
-  console.log("x2: " + x2);
-  console.log("leftEdge: " + leftEdge);
-  console.log("---");
-  console.log("y1: " + y1);
-  console.log("topEdge: " + topEdge);
-  console.log("---");
-  console.log("y2: " + y2);
-  console.log("bottomEdge: " + bottomEdge);
-  console.log("---");
-}
-
-function returnArrayOfCollisionBooleans() {
-  return [
-    returnRightCollision(), // 0
-    returnLeftCollision(), // 1
-    returnTopCollision(), // 2
-    returnBottomCollision(), // 3
-    returnTopRightCollision(), // 4
-    returnTopLeftCollision(), // 5
-    returnBottomRightCollision(), // 6
-    returnBottomLeftCollision(), // 7
-  ];
-}
-
 function returnRightCollision() {
   return x1 < rightEdge;
 }
@@ -1271,6 +1238,23 @@ function returnBottomLeftCollision() {
 
 function returnBottomRightCollision() {
   return returnBottomCollision() && returnRightCollision();
+}
+
+// for debugging
+function printSquarePositionInfo() {
+  console.log("---");
+  console.log("x1: " + x1);
+  console.log("rightEdge: " + rightEdge);
+  console.log("---");
+  console.log("x2: " + x2);
+  console.log("leftEdge: " + leftEdge);
+  console.log("---");
+  console.log("y1: " + y1);
+  console.log("topEdge: " + topEdge);
+  console.log("---");
+  console.log("y2: " + y2);
+  console.log("bottomEdge: " + bottomEdge);
+  console.log("---");
 }
 
 function resetSquarePosition() {
