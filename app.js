@@ -817,6 +817,9 @@ function getAllXCoordinates() {
 
   allXCons = [...new Set(helperArrayX)];
 
+  removeAllUnneededXPositions();
+
+  //TODO: delete this debugging info
   console.log("getAllCoordinates" + " passed");
   console.log(allXCons);
 }
@@ -1074,6 +1077,17 @@ function resetAllWordsYPositionTo0() {
   });
 }
 
+function removeAllUnneededXPositions() {
+  for (let i = allXCons.length; i >= 0; i--) {
+    //TODO: delete this debugging info
+    if (allXCons[i] > 1110) {
+      console.log(allXCons[i] + " removed");
+
+      allXCons.splice(i, 1);
+    }
+  }
+}
+
 /**
  * 
   ###########################################################################################
@@ -1285,6 +1299,13 @@ function resetSquarePosition() {
   y2 = 500;
 }
 
+function generateRandomSquarePositions() {}
+
+function getRandomXCon() {
+  return _.sample(allXCons);
+  // return allXCons[Math.floor(Math.random() * allXCons.length)]
+}
+
 /*###########################################################################################
   __  __                     _____           _   _             
  |  \/  |                   / ____|         | | (_)            
@@ -1388,7 +1409,7 @@ let hangingWords = true;
 document.addEventListener("keydown", function (event) {
   iCounter = 0;
 
-  // printSquarePositionInfo();
+  printSquarePositionInfo();
 
   switch (event.key) {
     case "Escape":
