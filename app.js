@@ -741,6 +741,7 @@ function returnAlternativeFadeCondition2(
 
 // declare array of words to hold
 let words = new Array();
+let allXCons = new Array();
 
 let xInput, yInput, xSpeedInput, ySpeedInput, newWord, newFontSize;
 
@@ -804,6 +805,24 @@ function createMatrixArray(directionMatrix) {
     }
   }
 }
+
+// TODO: call on reset too
+function getAllXCoordinates() {
+  let helperArrayX = new Array();
+  words.forEach(function (obj) {
+    obj.XYCoordinates.forEach(function (individualXY) {
+      helperArrayX.push(individualXY.xCoordinate);
+    });
+  });
+
+  allXCons = [...new Set(helperArrayX)];
+
+  timesPassed++;
+  console.log("getAllCoordinates" + " passed");
+  console.log(allXCons);
+}
+
+let timesPassed = 0;
 
 /*###########################################################################################
   _____                      ____    ______                _   _             
@@ -959,6 +978,8 @@ let newWordSize;
 function drawAlternative() {
   if (discoOn) discoFrameCounter++;
 
+  if (allXCons.length == 0) getAllXCoordinates();
+
   squareCounter++;
 
   drawOpaqueRect();
@@ -978,8 +999,7 @@ function drawAlternative() {
 
   newWordSize = getNewWordSize();
 
-  words.forEach(function (arrayItem, index) {
-    arrayItem.y = 0;
+  words.forEach(function (arrayItem) {
     arrayItem.fontSize = alternativeFontSize;
 
     // true
@@ -1049,6 +1069,12 @@ function giveEachWordNewWord() {
 
 function isScreenSmall() {
   return window.innerHeight < 1000;
+}
+
+function resetAllWordsYPositionTo0() {
+  words.forEach(function (arrayItem) {
+    arrayItem.y = 0;
+  });
 }
 
 /**
@@ -1326,6 +1352,11 @@ function reset() {
   resetStringSizes();
   alternativeFontSize = 20;
   frameCountFunctionOnChange();
+
+  console.log(allXCons);
+  allXCons = [];
+  console.log(timesPassed);
+  timesPassed = 0;
 }
 
 function resetRandomColor() {
@@ -1347,6 +1378,7 @@ function resetRandomColor() {
 
 let intervalValid, animationOn;
 let savedDirection = direction;
+let rapidChangingSquare;
 
 const DEFAULT_SPEED = 50;
 const amountOfSpeedLevels = 7;
@@ -1757,6 +1789,7 @@ function run(original) {
   if (squareAnimationOn) {
     words.shift();
     giveEachWordNewWord();
+    resetAllWordsYPositionTo0();
   }
 
   // run the animation
