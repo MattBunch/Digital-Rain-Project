@@ -954,15 +954,6 @@ function drawSolidRect() {
 const whiteColorArray = [colorWhite, colorWhite, colorWhite];
 let alternativeFontSize = 20;
 
-let squareCounter = 0;
-let randomSquareCoordinates = returnRandomSquareCoordinates();
-
-let squareAnimationOn;
-let x1 = 250; //350
-let x2 = 500; //650
-let y1 = 250; //350
-let y2 = 500; // 650
-
 let newWordSize;
 
 function drawAlternative() {
@@ -1042,87 +1033,6 @@ function getNewWordSize() {
   return output;
 }
 
-function returnRandomSquareCoordinates() {
-  let num = Math.floor(generateRandomNumber(0, 4));
-  switch (num) {
-    case 0:
-      return [250, 500, 250, 500];
-    case 1:
-      return [500, 750, 500, 750];
-    case 2:
-      return [750, 1000, 750, 1000];
-    case 3:
-      return [1000, 1250, 1000, 1250];
-  }
-}
-
-let topEdge = 0 + alternativeFontSize * 3;
-let rightEdge = 0 + alternativeFontSize * 3;
-let bottomEdge;
-let leftEdge;
-
-let topEdgeDisco = 0 + alternativeFontSize;
-let rightEdgeDisco = 0 + alternativeFontSize;
-let bottomEdgeDisco;
-let leftEdgeDisco;
-
-function moveSquareLeft() {
-  let inputLeftEdge = leftEdge;
-
-  if (discoOn) inputLeftEdge = leftEdgeDisco;
-
-  if (x2 < inputLeftEdge) {
-    x1 = x1 + alternativeFontSize;
-    x2 = x2 + alternativeFontSize;
-  }
-}
-
-function moveSquareUp() {
-  let inputTopEdge = topEdge;
-
-  if (discoOn) inputTopEdge = topEdgeDisco;
-
-  if (y1 > inputTopEdge) {
-    y1 = y1 - alternativeFontSize;
-    y2 = y2 - alternativeFontSize;
-  }
-}
-
-function moveSquareRight() {
-  let inputRightEdge = rightEdge;
-
-  if (discoOn) inputRightEdge = rightEdgeDisco;
-
-  if (x1 > inputRightEdge) {
-    x1 = x1 - alternativeFontSize;
-    x2 = x2 - alternativeFontSize;
-  }
-}
-
-function moveSquareDown() {
-  let inputBottomEdge = bottomEdge;
-
-  if (discoOn) inputBottomEdge = bottomEdgeDisco;
-
-  if (y2 < inputBottomEdge) {
-    y1 = y1 + alternativeFontSize;
-    y2 = y2 + alternativeFontSize;
-  }
-}
-
-function repositionSquare() {
-  if (x1 > rightEdge || x2 < leftEdge || y1 > topEdge || y2 < bottomEdge) {
-    resetSquarePosition();
-  }
-}
-
-function resetSquarePosition() {
-  x1 = 250;
-  x2 = 500;
-  y1 = 250;
-  y2 = 500;
-}
-
 function giveEachWordNewWord() {
   words.forEach(function (arrayWord) {
     if (hangingWords) {
@@ -1139,6 +1049,263 @@ function giveEachWordNewWord() {
 
 function isScreenSmall() {
   return window.innerHeight < 1000;
+}
+
+/**
+ * 
+  ###########################################################################################
+  
+
+   _____                              __  __                                     _       
+  / ____|                            |  \/  |                                   | |      
+ | (___   __ _ _   _  __ _ _ __ ___  | \  / | _____   _____ _ __ ___   ___ _ __ | |_ ___ 
+  \___ \ / _` | | | |/ _` | '__/ _ \ | |\/| |/ _ \ \ / / _ \ '_ ` _ \ / _ \ '_ \| __/ __|
+  ____) | (_| | |_| | (_| | | |  __/ | |  | | (_) \ V /  __/ | | | | |  __/ | | | |_\__ \
+ |_____/ \__, |\__,_|\__,_|_|  \___| |_|  |_|\___/ \_/ \___|_| |_| |_|\___|_| |_|\__|___/
+            | |                                                                          
+            |_|                                                                          
+
+  ###########################################################################################
+  
+ */
+
+// TODO: not being used, can be deleted
+function returnRandomSquareCoordinates() {
+  let num = Math.floor(generateRandomNumber(0, 4));
+  switch (num) {
+    case 0:
+      return [250, 500, 250, 500];
+    case 1:
+      return [500, 750, 500, 750];
+    case 2:
+      return [750, 1000, 750, 1000];
+    case 3:
+      return [1000, 1250, 1000, 1250];
+  }
+}
+
+let squareCounter = 0;
+let randomSquareCoordinates = returnRandomSquareCoordinates();
+
+let squareAnimationOn;
+let x1 = 250;
+let x2 = 500;
+let y1 = 250;
+let y2 = 500;
+
+let topEdge = 0 + alternativeFontSize * 3;
+let rightEdge = 0 + alternativeFontSize * 3;
+let bottomEdge;
+let leftEdge;
+
+let topEdgeDisco = 0 + alternativeFontSize;
+let rightEdgeDisco = 0 + alternativeFontSize;
+let bottomEdgeDisco;
+let leftEdgeDisco;
+
+function moveSquareLeft(forceMove) {
+  let inputLeftEdge = leftEdge;
+
+  if (discoForceMoveCheck(forceMove)) inputLeftEdge = leftEdgeDisco;
+
+  if (x2 < inputLeftEdge) {
+    x1 = x1 + alternativeFontSize;
+    x2 = x2 + alternativeFontSize;
+  }
+}
+
+function moveSquareUp(forceMove) {
+  let inputTopEdge = topEdge;
+
+  if (discoForceMoveCheck(forceMove)) inputTopEdge = topEdgeDisco;
+
+  if (y1 > inputTopEdge) {
+    y1 = y1 - alternativeFontSize;
+    y2 = y2 - alternativeFontSize;
+  }
+}
+
+function moveSquareRight(forceMove) {
+  let inputRightEdge = rightEdge;
+
+  if (discoForceMoveCheck(forceMove)) inputRightEdge = rightEdgeDisco;
+
+  if (x1 > inputRightEdge) {
+    x1 = x1 - alternativeFontSize;
+    x2 = x2 - alternativeFontSize;
+  }
+}
+
+function moveSquareDown(forceMove) {
+  let inputBottomEdge = bottomEdge;
+
+  if (discoForceMoveCheck(forceMove)) inputBottomEdge = bottomEdgeDisco;
+
+  if (y2 < inputBottomEdge) {
+    y1 = y1 + alternativeFontSize;
+    y2 = y2 + alternativeFontSize;
+  }
+}
+
+function discoForceMoveCheck(forceMove) {
+  return discoOn || forceMove;
+}
+
+function repositionSquare() {
+  if (x1 > rightEdge || x2 < leftEdge || y1 > topEdge || y2 < bottomEdge) {
+    resetSquarePosition();
+  }
+}
+
+function forceSquare(input) {
+  for (let i = 0; i < 2; i++) {
+    // same order as in repositionSquareToNormal()
+    switch (input) {
+      case 4:
+        moveSquareLeft(true);
+        moveSquareDown(true);
+        break;
+      case 5:
+        moveSquareRight(true);
+        moveSquareDown(true);
+        break;
+      case 6:
+        moveSquareUp(true);
+        moveSquareLeft(true);
+        break;
+      case 7:
+        moveSquareUp(true);
+        moveSquareRight(true);
+        break;
+      case 0:
+        moveSquareLeft(true);
+        break;
+      case 1:
+        moveSquareRight(true);
+        break;
+      case 2:
+        moveSquareDown(true);
+        break;
+      case 3:
+        moveSquareUp(true);
+        break;
+    }
+  }
+}
+
+function repositionSquareToNormal() {
+  let borderChecks = returnArrayOfCollisionBooleans();
+  console.log(borderChecks);
+
+  console.log("\nbefore checking edges:\n");
+  printSquarePositionInfo();
+
+  // parameter input for forceSquare same as border position in array
+  // check corners first:
+  if (borderChecks[4]) {
+    console.log("---");
+    console.log("topRightEdge hit");
+    forceSquare(4);
+  } else if (borderChecks[5]) {
+    console.log("---");
+    console.log("topLeftEdge hit");
+    forceSquare(5);
+  } else if (borderChecks[6]) {
+    console.log("---");
+    console.log("bottomRightEdge hit");
+    forceSquare(6);
+  } else if (borderChecks[7]) {
+    forceSquare(7);
+    console.log("---");
+    console.log("bottomEdge hit");
+  } else if (borderChecks[0]) {
+    console.log("---");
+    console.log("rightEdge hit");
+    forceSquare(0);
+  } else if (borderChecks[1]) {
+    console.log("---");
+    console.log("leftEdge hit");
+    forceSquare(1);
+  } else if (borderChecks[2]) {
+    console.log("---");
+    console.log("topEdge hit");
+    forceSquare(2);
+  } else if (borderChecks[3]) {
+    console.log("---");
+    console.log("bottomEdge hit");
+    forceSquare(3);
+  }
+
+  console.log("---");
+  console.log("\n###\nafter checking edges:\n###");
+  printSquarePositionInfo();
+}
+
+function printSquarePositionInfo() {
+  console.log("x1: " + x1);
+  console.log("rightEdge: " + rightEdge);
+  console.log("---");
+  console.log("x2: " + x2);
+  console.log("leftEdge: " + leftEdge);
+  console.log("---");
+  console.log("y1: " + y1);
+  console.log("topEdge: " + topEdge);
+  console.log("---");
+  console.log("y2: " + y2);
+  console.log("bottomEdge: " + bottomEdge);
+  console.log("---");
+}
+
+function returnArrayOfCollisionBooleans() {
+  return [
+    returnRightCollision(), // 0
+    returnLeftCollision(), // 1
+    returnTopCollision(), // 2
+    returnBottomCollision(), // 3
+    returnTopRightCollision(), // 4
+    returnTopLeftCollision(), // 5
+    returnBottomRightCollision(), // 6
+    returnBottomLeftCollision(), // 7
+  ];
+}
+
+function returnRightCollision() {
+  return x1 < rightEdge;
+}
+
+function returnLeftCollision() {
+  return x2 > leftEdge;
+}
+
+function returnTopCollision() {
+  return y1 < topEdge;
+}
+
+function returnBottomCollision() {
+  return y2 > bottomEdge;
+}
+
+function returnTopLeftCollision() {
+  return returnTopCollision() && returnLeftCollision();
+}
+
+function returnTopRightCollision() {
+  return returnTopCollision() && returnRightCollision();
+}
+
+function returnBottomLeftCollision() {
+  return returnBottomCollision() && returnLeftCollision();
+}
+
+function returnBottomRightCollision() {
+  return returnBottomCollision() && returnRightCollision();
+}
+
+function resetSquarePosition() {
+  x1 = 250;
+  x2 = 500;
+  y1 = 250;
+  y2 = 500;
 }
 
 /*###########################################################################################
@@ -1248,28 +1415,28 @@ document.addEventListener("keydown", function (event) {
       if (!squareAnimationOn) {
         arrowDirectionControl("west", "east");
       } else {
-        moveSquareLeft();
+        moveSquareLeft(false);
       }
       break;
     case "ArrowUp":
       if (!squareAnimationOn) {
         arrowDirectionControl("north", "south");
       } else {
-        moveSquareUp();
+        moveSquareUp(false);
       }
       break;
     case "ArrowRight":
       if (!squareAnimationOn) {
         arrowDirectionControl("east", "west");
       } else {
-        moveSquareRight();
+        moveSquareRight(false);
       }
       break;
     case "ArrowDown":
       if (!squareAnimationOn) {
         arrowDirectionControl("south", "north");
       } else {
-        moveSquareDown();
+        moveSquareDown(false);
       }
       break;
     case " ":
@@ -1417,6 +1584,9 @@ function toggleDisco() {
   if (discoOn) {
     discoOn = false;
     checkBox.checked = false;
+    if (squareAnimationOn) {
+      repositionSquareToNormal();
+    }
   } else {
     discoOn = true;
     checkBox.checked = true;
