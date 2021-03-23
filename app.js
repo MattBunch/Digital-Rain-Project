@@ -169,7 +169,8 @@ function generateRandomNumber(min, max) {
 }
 
 function onePercentChance() {
-  return Math.random() < 0.01;
+  let result = Math.random() < 0.01;
+  return result;
 }
 
 const DEFAULT_STRING_SIZE_MIN = 20;
@@ -739,24 +740,25 @@ function returnAlternativeFadeCondition2(
 
 // declare array of words to hold
 let words = new Array();
+let all4DirectionsArray = new Array();
 
 let xInput, yInput, xSpeedInput, ySpeedInput, newWord, newFontSize;
 
-function createMatrixArray(directionMatrix) {
+function createMatrixArray(inputDirectionMatrix) {
   // vertical
   // fill words array to number of columns
-  if (directionMatrix === "south" || directionMatrix === "north") {
+  if (inputDirectionMatrix === "south" || inputDirectionMatrix === "north") {
     for (let i = 0; i < columns; i++) {
       // matrixString xInput value
       xInput = fontSize * i;
       newWord = generateWord(generateWordSizeRand());
       newFontSize = generateFontSize();
 
-      if (directionMatrix === "south") {
+      if (inputDirectionMatrix === "south") {
         yInput = generateYSouth(newWord, newFontSize);
         xSpeedInput = null;
         ySpeedInput = generateSpeed();
-      } else if (directionMatrix === "north") {
+      } else if (inputDirectionMatrix === "north") {
         yInput = generateYNorth();
         xSpeedInput = null;
         ySpeedInput = -Math.abs(generateSpeed());
@@ -774,16 +776,19 @@ function createMatrixArray(directionMatrix) {
       );
     }
     // horizontal
-  } else if (directionMatrix === "east" || directionMatrix === "west") {
+  } else if (
+    inputDirectionMatrix === "east" ||
+    inputDirectionMatrix === "west"
+  ) {
     for (let i = 0; i < rows; i++) {
       yInput = fontSize * i;
       newWord = generateWord(generateWordSizeRand());
       newFontSize = generateFontSize();
-      if (directionMatrix === "east") {
+      if (inputDirectionMatrix === "east") {
         xInput = generateXEast(); // goal: negative / moving from left of the screen to right / need to generate this later
         xSpeedInput = generateSpeed(); // positive / updating position to the right
         ySpeedInput = null;
-      } else if (directionMatrix === "west") {
+      } else if (inputDirectionMatrix === "west") {
         xInput = generateXWest(newWord, newFontSize); // goal: positive / moving from the right of the screen to the left
         xSpeedInput = -Math.abs(generateSpeed()); // negative / updating position to the left
         ySpeedInput = null;
@@ -801,6 +806,51 @@ function createMatrixArray(directionMatrix) {
       );
     }
   }
+}
+
+function initializeAll4Directions() {
+  words = [];
+  let northWords, southWords, eastWords, westWords;
+  let inputDirection = "";
+  for (let i = 0; i < 4; i++) {
+    console.log(i);
+    switch (i) {
+      case 0:
+        inputDirection = "north";
+        break;
+      case 1:
+        inputDirection = "south";
+        break;
+      case 2:
+        inputDirection = "east";
+        break;
+      case 3:
+        inputDirection = "west";
+        break;
+    }
+    createMatrixArray(inputDirection);
+
+    switch (i) {
+      case 0:
+        northWords = words;
+        words = [];
+        break;
+      case 1:
+        southWords = words;
+        words = [];
+        break;
+      case 2:
+        eastWords = words;
+        words = [];
+        break;
+      case 3:
+        westWords = words;
+        words = [];
+        break;
+    }
+  }
+
+  all4DirectionsArray = [northWords, southWords, eastWords, westWords];
 }
 
 /*###########################################################################################
@@ -822,18 +872,30 @@ let xDirection; // direction of x points (west and east)
 let fromHorizontalDirection; // boolean value for setting horizontal  direction
 let fromVerticalDirection; // boolean value for setting vertical direction
 
+// let passThroughToDraw = false;
+
 // draw direction going south
 // show the characters in animation.
-function draw() {
+function draw(inputWords, passThroughToDraw) {
   if (discoOn) discoFrameCounter++;
 
   // draw black background with 0.025 opacity to show the trail
   ctx.font = fontSize + "px 'Consolas', 'Lucida Console'";
-  drawOpaqueRect();
+
+  if (!all4Directions || (all4Directions && passThroughToDraw))
+    drawOpaqueRect();
+
+  // draw all 4 directions
+  let conditionToPass = all4Directions && !passThroughToDraw;
+  if (conditionToPass) {
+    iterateThroughAll4Directions = 4;
+    drawAll4Directions();
+    return;
+  }
 
   // draw strings
-  for (let i = 0; i < words.length; i++) {
-    changeWordCheck(words[i], words[i].word.length);
+  for (let i = 0; i < inputWords.length; i++) {
+    changeWordCheck(inputWords[i], inputWords[i].word.length);
 
     if (direction === "south") {
       destinationPoint = height; // destination point: below the screen
@@ -843,71 +905,93 @@ function draw() {
 
     if (direction === "south") {
       // reset to top of screen if drop off the canvas at bottom of the screen
-      if (words[i].y > height) {
-        words[i].ySpeed = generateSpeed(); // new speed
-        words[i].word = generateWord(generateWordSizeRand()); // generate new random word with random size
-        words[i].fontSize = generateFontSize(); // new font size
-        words[i].y = generateYSouth(words[i].word, words[i].fontSize);
+      if (inputWords[i].y > height) {
+        inputWords[i].ySpeed = generateSpeed(); // new speed
+        inputWords[i].word = generateWord(generateWordSizeRand()); // generate new random word with random size
+        inputWords[i].fontSize = generateFontSize(); // new font size
+        inputWords[i].y = generateYSouth(
+          inputWords[i].word,
+          inputWords[i].fontSize
+        );
       } else {
-        words[i].y = words[i].y + fontSize + words[i].ySpeed;
-        ctx.font = words[i].fontSize + "px 'Consolas', 'Lucida Console'";
+        inputWords[i].y = inputWords[i].y + fontSize + inputWords[i].ySpeed;
+        ctx.font = inputWords[i].fontSize + "px 'Consolas', 'Lucida Console'";
       }
     } else if (direction === "north") {
       // reset to bottom of screen if move off top of the screen
-      if (words[i].y < 0 - height * 1.5) {
-        words[i].y = generateYNorth();
-        words[i].ySpeed = -Math.abs(generateSpeed()); // new speed
-        words[i].word = generateWord(generateWordSizeRand()); // generate new random word with random size
-        words[i].fontSize = generateFontSize(); // new font size
+      if (inputWords[i].y < 0 - height * 1.5) {
+        inputWords[i].y = generateYNorth();
+        inputWords[i].ySpeed = -Math.abs(generateSpeed()); // new speed
+        inputWords[i].word = generateWord(generateWordSizeRand()); // generate new random word with random size
+        inputWords[i].fontSize = generateFontSize(); // new font size
       } else {
-        words[i].y = words[i].y - fontSize - words[i].ySpeed;
-        ctx.font = words[i].fontSize + "px 'Consolas', 'Lucida Console'";
+        inputWords[i].y = inputWords[i].y - fontSize - inputWords[i].ySpeed;
+        ctx.font = inputWords[i].fontSize + "px 'Consolas', 'Lucida Console'";
       }
     } else if (direction === "east") {
-      if (words[i].x < 0 - canvas.width) {
-        words[i].x = generateXEast();
-        words[i].xSpeed = generateSpeed(); // new speed
-        words[i].word = generateWord(generateWordSizeRand()); // generate new random word with random size
-        words[i].fontSize = generateFontSize(); // new font size
+      if (inputWords[i].x < 0 - canvas.width) {
+        inputWords[i].x = generateXEast();
+        inputWords[i].xSpeed = generateSpeed(); // new speed
+        inputWords[i].word = generateWord(generateWordSizeRand()); // generate new random word with random size
+        inputWords[i].fontSize = generateFontSize(); // new font size
       } else {
-        words[i].x = words[i].x - fontSize - words[i].xSpeed;
-        ctx.font = words[i].fontSize + "px 'Consolas', 'Lucida Console'";
+        inputWords[i].x = inputWords[i].x - fontSize - inputWords[i].xSpeed;
+        ctx.font = inputWords[i].fontSize + "px 'Consolas', 'Lucida Console'";
       }
     } else if (direction === "west") {
-      if (words[i].x > canvas.width) {
-        words[i].xSpeed = -Math.abs(generateSpeed()); // new speed
-        words[i].word = generateWord(generateWordSizeRand()); // generate new random word with random size
-        words[i].fontSize = generateFontSize(); // new font size
-        words[i].x = generateXWest(words[i].word, words[i].fontSize); // new x placement
+      if (inputWords[i].x > canvas.width) {
+        inputWords[i].xSpeed = -Math.abs(generateSpeed()); // new speed
+        inputWords[i].word = generateWord(generateWordSizeRand()); // generate new random word with random size
+        inputWords[i].fontSize = generateFontSize(); // new font size
+        inputWords[i].x = generateXWest(
+          inputWords[i].word,
+          inputWords[i].fontSize
+        ); // new x placement
       } else {
-        words[i].x = words[i].x + fontSize + words[i].xSpeed;
-        ctx.font = words[i].fontSize + "px 'Consolas', 'Lucida Console'";
+        inputWords[i].x = inputWords[i].x + fontSize + inputWords[i].xSpeed;
+        ctx.font = inputWords[i].fontSize + "px 'Consolas', 'Lucida Console'";
       }
     }
     // call display method and draw string
-    let millisecondsToWait = words[i].ySpeed * 100;
+    let millisecondsToWait = inputWords[i].ySpeed * 100;
     // code for vertical movement methods
     if (direction === "north" || direction === "south") {
       if (discoOn) {
-        setTimeout(words[i].showDiscoVertical(), millisecondsToWait);
+        setTimeout(inputWords[i].showDiscoVertical(), millisecondsToWait);
       } else {
         setTimeout(
-          words[i].showVertical(colorChoiceArray[chosenColor]),
+          inputWords[i].showVertical(colorChoiceArray[chosenColor]),
           millisecondsToWait
         );
       }
       // code for horizontal movement methods
     } else if (direction === "east" || direction === "west") {
       if (discoOn) {
-        setTimeout(words[i].showDiscoHorizontal(), millisecondsToWait);
+        setTimeout(inputWords[i].showDiscoHorizontal(), millisecondsToWait);
       } else {
         setTimeout(
-          words[i].showHorizontal(colorChoiceArray[chosenColor]),
+          inputWords[i].showHorizontal(colorChoiceArray[chosenColor]),
           millisecondsToWait
         );
       }
     }
   }
+}
+
+let iterateThroughAll4Directions = 0;
+
+function drawAll4Directions() {
+  direction = "east";
+  draw(all4DirectionsArray[2], true);
+
+  direction = "west";
+  draw(all4DirectionsArray[3], true);
+
+  direction = "north";
+  draw(all4DirectionsArray[0], true);
+
+  direction = "south";
+  draw(all4DirectionsArray[1], true);
 }
 
 function changeWordCheck(inputWordObject, inputSize) {
@@ -1330,6 +1414,7 @@ function matchColorToIndex(input) {
 // reset values to null so the program can be ran again
 function reset() {
   words = [];
+  all4DirectionsArray = [];
   direction = null;
   discoOn = null;
   chosenColor = null;
@@ -1374,6 +1459,7 @@ let currentSpeedLevel = speedLevels[middle];
 
 let rapidWordChange = false;
 let hangingWords = true;
+let all4Directions = false;
 
 document.addEventListener("keydown", function (event) {
   iCounter = 0;
@@ -1488,6 +1574,9 @@ document.addEventListener("keydown", function (event) {
     case "u":
       rapidSquareControl();
       break;
+    case "i":
+      all4DirectionsControl();
+      break;
   }
 });
 
@@ -1540,11 +1629,15 @@ function clearScreen() {
 }
 
 function pause() {
+  let pauseBool = !all4Directions;
+
   if (animationOn) {
     clearInterval(intervalValid);
     animationOn = false;
   } else {
-    intervalValid = setInterval(draw, intervalSpeed);
+    intervalValid = setInterval(function () {
+      draw(words, pauseBool);
+    }, intervalSpeed);
     animationOn = true;
   }
 }
@@ -1600,8 +1693,12 @@ function speedController(increase) {
     intervalSpeed = getDecreasedIntervalSpeed(intervalSpeed);
   }
 
+  let speedControllerBool = !all4Directions;
+
   // restart the interval
-  intervalValid = setInterval(draw, intervalSpeed);
+  intervalValid = setInterval(function () {
+    draw(words, speedControllerBool);
+  }, intervalSpeed);
 }
 
 function getIncreasedIntervalSpeed(input) {
@@ -1707,11 +1804,11 @@ function rapidWordChangeControl() {
 function hangingWordsControl() {
   if (hangingWords) {
     hangingWords = false;
-    giveEachWordNewWord();
   } else {
     hangingWords = true;
-    giveEachWordNewWord();
   }
+
+  giveEachWordNewWord();
 }
 
 function switchMode() {
@@ -1765,8 +1862,23 @@ function loadMenuOptions() {
 
   // direction
   direction = document.getElementById("directions").value;
+}
 
-  createMatrixArray(direction);
+function initializeSquareAnimationOn() {
+  newWordSize = getNewWordSize();
+  words.shift();
+  giveEachWordNewWord();
+  resetAllWordsYPositionTo0();
+}
+
+function all4DirectionsControl() {
+  if (all4Directions) {
+    all4Directions = false;
+  } else {
+    all4Directions = true;
+  }
+  console.log(all4Directions);
+  updateAll4DirectionButton();
 }
 
 // this function gets executed upon clicking the start button
@@ -1783,17 +1895,27 @@ function run(original) {
   squareAnimationOn = !original;
 
   if (squareAnimationOn) {
-    newWordSize = getNewWordSize();
-    words.shift();
-    giveEachWordNewWord();
-    resetAllWordsYPositionTo0();
+    createMatrixArray(direction);
+    initializeSquareAnimationOn();
+    console.log("initialize alternative");
+  } else if (all4Directions) {
+    initializeAll4Directions();
+    console.log("initialize all4Directions");
+  } else {
+    createMatrixArray(direction);
+    console.log("initialize normal");
   }
+
+  console.log(words);
+  console.log(all4DirectionsArray);
 
   // run the animation
   intervalValid = setInterval(function () {
-    if (original) {
-      draw();
-    } else {
+    if (original && all4Directions) {
+      draw(words, false);
+    } else if (original && !all4Directions) {
+      draw(words, true);
+    } else if (!original) {
       drawAlternative();
     }
   }, intervalSpeed);
@@ -1821,6 +1943,7 @@ const directionsSelect = document.getElementById("directions");
 const menuDivs = document.getElementsByClassName("menu");
 const button = document.getElementById("button");
 const button2 = document.getElementById("button2");
+const button3 = document.getElementById("button3");
 const buttons = document.getElementsByClassName("button");
 const elems = document.body.getElementsByTagName("*");
 const frameCountElems = document.getElementsByClassName("frameCount");
@@ -1987,6 +2110,8 @@ function menuOnLoad() {
   checkboxFunction();
 
   selectFunction();
+
+  updateAll4DirectionButton();
 }
 
 function matchColorToRGB(entryColor) {
@@ -2088,6 +2213,14 @@ function buttonBorderColorRandom() {
 function buttonBorderColorSelectedColor() {
   for (let i = 0; i < buttons.length; i++) {
     buttons[i].style.border = borderPrefix + selectColor;
+  }
+}
+
+function updateAll4DirectionButton() {
+  if (all4Directions) {
+    button3.style.background = colorRed;
+  } else {
+    button3.style.background = colorBlack;
   }
 }
 
