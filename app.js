@@ -813,7 +813,6 @@ function initializeAll4Directions() {
   let northWords, southWords, eastWords, westWords;
   let inputDirection = "";
   for (let i = 0; i < 4; i++) {
-    console.log(i);
     switch (i) {
       case 0:
         inputDirection = "north";
@@ -1731,8 +1730,6 @@ function controlFontSizeInput(increase) {
       alternativeFontSize--;
     }
   } else return;
-  console.log("defaultFontSize: " + defaultFontSize);
-  console.log("alternativeFontSize: " + alternativeFontSize);
 
   fontSize = defaultFontSize;
 
@@ -1836,7 +1833,6 @@ function switchMode() {
 function rapidSquareControl() {
   if (rapidSquareOn) rapidSquareOn = false;
   else rapidSquareOn = true;
-  console.log(rapidSquareOn);
 }
 
 window.addEventListener("resize", resetWordsArray);
@@ -1854,6 +1850,11 @@ function resetWordsArray() {
     words.shift();
     repositionSquareToNormal();
     if (hangingWords) hangingWordsSetup();
+  }
+
+  if (all4Directions) {
+    words = [];
+    initializeAll4Directions();
   }
 }
 
@@ -1889,8 +1890,8 @@ function all4DirectionsControl() {
   } else {
     all4Directions = true;
   }
-  console.log(all4Directions);
-  updateAll4DirectionButton();
+  resetWordsArray();
+  updateAll4DirectionButtonStyling();
 }
 
 // this function gets executed upon clicking the start button
@@ -1909,17 +1910,11 @@ function run(original) {
   if (squareAnimationOn) {
     createMatrixArray(direction);
     initializeSquareAnimationOn();
-    console.log("initialize alternative");
   } else if (all4Directions) {
     initializeAll4Directions();
-    console.log("initialize all4Directions");
   } else {
     createMatrixArray(direction);
-    console.log("initialize normal");
   }
-
-  console.log(words);
-  console.log(all4DirectionsArray);
 
   // run the animation
   intervalValid = setInterval(function () {
@@ -2013,15 +2008,25 @@ function checkboxFunction() {
 
     buttonBackgroundBlack();
 
+    discoOn = false;
+
+    updateAll4DirectionButtonStyling();
+
     clearInterval(menuInterval);
   } else {
     text.style.display = "none";
     select.style.display = "none";
 
+    button3.style.color = colorBlack;
+
     // show frameCountElems
     frameCountElemsVisibilityFunction();
 
     discoIntervalFunction();
+
+    discoOn = true;
+
+    updateAll4DirectionButtonStyling();
 
     menuInterval = setInterval(discoIntervalFunction, 1000);
   }
@@ -2030,6 +2035,7 @@ function checkboxFunction() {
 function discoIntervalFunction() {
   recolorMenuRandom();
   buttonDiscoBackgroundChangeColor();
+  updateAll4DirectionButtonStyling();
 }
 
 function frameCountElemsVisibilityFunction() {
@@ -2074,6 +2080,14 @@ let borderPrefix = "1px solid ";
 function recolorMenuOneColor(inputColor) {
   for (let i = 0; i < elems.length; i++) {
     elems[i].style.color = inputColor;
+  }
+
+  if (all4Directions) {
+    button3.style.background = inputColor;
+    button3.style.color = colorBlack;
+  } else {
+    button3.style.background = colorBlack;
+    button3.style.color = inputColor;
   }
 
   // button border color
@@ -2123,7 +2137,7 @@ function menuOnLoad() {
 
   selectFunction();
 
-  updateAll4DirectionButton();
+  updateAll4DirectionButtonStyling();
 }
 
 function matchColorToRGB(entryColor) {
@@ -2228,11 +2242,27 @@ function buttonBorderColorSelectedColor() {
   }
 }
 
-function updateAll4DirectionButton() {
+function updateAll4DirectionButtonStyling() {
+  let onText = "All 4 Directions:\nON";
+  let offText = "All 4 Directions:\nOFF";
+
   if (all4Directions) {
-    button3.style.background = colorRed;
+    button3.style.background = selectColor;
+    button3.style.color = colorBlack;
+    button3.innerText = onText;
+    button3.innerHTML = onText;
+    button3.value = onText;
   } else {
     button3.style.background = colorBlack;
+    button3.style.color = selectColor;
+    button3.innerHTML = offText;
+    button3.innerText = offText;
+    button3.value = offText;
+  }
+
+  if (discoOn) {
+    button3.style.background = getRandomColor();
+    button3.style.color = getRandomColor();
   }
 }
 

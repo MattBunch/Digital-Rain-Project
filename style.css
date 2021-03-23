@@ -65,6 +65,16 @@ body {
   margin: 4px 2px;
 }
 
+#button3 {
+  min-height: 100px;
+  min-width: 500px;
+  white-space: nowrap;
+}
+
+#button3.active {
+  padding: 0px;
+}
+
 #footer {
   font-size: 7px;
   text-align: left;
