@@ -169,7 +169,8 @@ function generateRandomNumber(min, max) {
 }
 
 function onePercentChance() {
-  return Math.random() < 0.01;
+  let result = Math.random() < 0.01;
+  return result;
 }
 
 const DEFAULT_STRING_SIZE_MIN = 20;
@@ -739,25 +740,25 @@ function returnAlternativeFadeCondition2(
 
 // declare array of words to hold
 let words = new Array();
-let everyDirectionWordsArray = new Array();
+let all4DirectionsArray = new Array();
 
 let xInput, yInput, xSpeedInput, ySpeedInput, newWord, newFontSize;
 
-function createMatrixArray(directionMatrix) {
+function createMatrixArray(inputDirectionMatrix) {
   // vertical
   // fill words array to number of columns
-  if (directionMatrix === "south" || directionMatrix === "north") {
+  if (inputDirectionMatrix === "south" || inputDirectionMatrix === "north") {
     for (let i = 0; i < columns; i++) {
       // matrixString xInput value
       xInput = fontSize * i;
       newWord = generateWord(generateWordSizeRand());
       newFontSize = generateFontSize();
 
-      if (directionMatrix === "south") {
+      if (inputDirectionMatrix === "south") {
         yInput = generateYSouth(newWord, newFontSize);
         xSpeedInput = null;
         ySpeedInput = generateSpeed();
-      } else if (directionMatrix === "north") {
+      } else if (inputDirectionMatrix === "north") {
         yInput = generateYNorth();
         xSpeedInput = null;
         ySpeedInput = -Math.abs(generateSpeed());
@@ -775,16 +776,19 @@ function createMatrixArray(directionMatrix) {
       );
     }
     // horizontal
-  } else if (directionMatrix === "east" || directionMatrix === "west") {
+  } else if (
+    inputDirectionMatrix === "east" ||
+    inputDirectionMatrix === "west"
+  ) {
     for (let i = 0; i < rows; i++) {
       yInput = fontSize * i;
       newWord = generateWord(generateWordSizeRand());
       newFontSize = generateFontSize();
-      if (directionMatrix === "east") {
+      if (inputDirectionMatrix === "east") {
         xInput = generateXEast(); // goal: negative / moving from left of the screen to right / need to generate this later
         xSpeedInput = generateSpeed(); // positive / updating position to the right
         ySpeedInput = null;
-      } else if (directionMatrix === "west") {
+      } else if (inputDirectionMatrix === "west") {
         xInput = generateXWest(newWord, newFontSize); // goal: positive / moving from the right of the screen to the left
         xSpeedInput = -Math.abs(generateSpeed()); // negative / updating position to the left
         ySpeedInput = null;
@@ -851,9 +855,7 @@ function initializeAll4Directions() {
   console.log(eastWords);
   console.log(westWords);
 
-  words = northWords.concat(southWords, eastWords, westWords);
-
-  console.log(words);
+  all4DirectionsArray = [northWords, southWords, eastWords, westWords];
 }
 
 /*###########################################################################################
@@ -875,21 +877,24 @@ let xDirection; // direction of x points (west and east)
 let fromHorizontalDirection; // boolean value for setting horizontal  direction
 let fromVerticalDirection; // boolean value for setting vertical direction
 
-let passThroughToDraw = false;
+// let passThroughToDraw = false;
 
 // draw direction going south
 // show the characters in animation.
-function draw(inputWords) {
+function draw(inputWords, passThroughToDraw) {
   if (discoOn) discoFrameCounter++;
 
   // draw black background with 0.025 opacity to show the trail
   ctx.font = fontSize + "px 'Consolas', 'Lucida Console'";
-  drawOpaqueRect();
+
+  if (!all4Directions || (all4Directions && passThroughToDraw))
+    drawOpaqueRect();
 
   // draw all 4 directions
-  if (all4Directions && !passThroughToDraw) {
+  let conditionToPass = all4Directions && !passThroughToDraw;
+  if (conditionToPass) {
+    iterateThroughAll4Directions = 4;
     drawAll4Directions();
-    passThroughToDraw = true;
     return;
   }
 
@@ -978,7 +983,25 @@ function draw(inputWords) {
   }
 }
 
-function drawAll4Directions() {}
+let iterateThroughAll4Directions = 0;
+
+function drawAll4Directions() {
+  direction = "north";
+  draw(all4DirectionsArray[0], true);
+
+  direction = "south";
+  draw(all4DirectionsArray[1], true);
+
+  direction = "east";
+  draw(all4DirectionsArray[2], true);
+
+  direction = "west";
+  draw(all4DirectionsArray[3], true);
+
+  // all4DirectionsArray.forEach(function (directionArray) {
+  //   draw(directionArray, true);
+  // });
+}
 
 function changeWordCheck(inputWordObject, inputSize) {
   inputWordObject.wordChangeCounter++;
@@ -1444,7 +1467,7 @@ let currentSpeedLevel = speedLevels[middle];
 
 let rapidWordChange = false;
 let hangingWords = true;
-let all4Directions = true;
+let all4Directions = false;
 
 document.addEventListener("keydown", function (event) {
   iCounter = 0;
@@ -1559,6 +1582,9 @@ document.addEventListener("keydown", function (event) {
     case "u":
       rapidSquareControl();
       break;
+    case "i":
+      all4DirectionsControl();
+      break;
   }
 });
 
@@ -1611,11 +1637,15 @@ function clearScreen() {
 }
 
 function pause() {
+  let pauseBool = !all4Directions;
+
   if (animationOn) {
     clearInterval(intervalValid);
     animationOn = false;
   } else {
-    intervalValid = setInterval(draw, intervalSpeed);
+    intervalValid = setInterval(function () {
+      draw(words, pauseBool);
+    }, intervalSpeed);
     animationOn = true;
   }
 }
@@ -1671,8 +1701,12 @@ function speedController(increase) {
     intervalSpeed = getDecreasedIntervalSpeed(intervalSpeed);
   }
 
+  let speedControllerBool = !all4Directions;
+
   // restart the interval
-  intervalValid = setInterval(draw, intervalSpeed);
+  intervalValid = setInterval(function () {
+    draw(words, speedControllerBool);
+  }, intervalSpeed);
 }
 
 function getIncreasedIntervalSpeed(input) {
@@ -1847,6 +1881,12 @@ function initializeSquareAnimationOn() {
   resetAllWordsYPositionTo0();
 }
 
+function all4DirectionsControl() {
+  if (all4Directions) all4Directions = false;
+  else all4Directions = true;
+  console.log(all4Directions);
+}
+
 // this function gets executed upon clicking the start button
 function run(original) {
   // set up canvas
@@ -1864,30 +1904,24 @@ function run(original) {
     initializeSquareAnimationOn();
   } else if (all4Directions) {
     initializeAll4Directions();
+    console.log("drawing all4Directions");
+  } else {
+    console.log("drawing normal");
   }
 
   // run the animation
   intervalValid = setInterval(function () {
     if (original) {
-      draw(words);
+      if (all4Directions) {
+        draw(words, false);
+      } else {
+        draw(words, true);
+      }
     } else {
       drawAlternative();
     }
   }, intervalSpeed);
   animationOn = true;
-}
-
-function runAll4Directions() {
-  // initial setup
-  run(true);
-  clearInterval(intervalValid);
-
-  initializeAll4Directions();
-
-  // run the animation
-  intervalValid = setInterval(function () {
-    // drawAll4Directions();
-  }, intervalSpeed);
 }
 
 /* ***********************************************************************
