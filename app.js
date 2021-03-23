@@ -635,96 +635,6 @@ function returnAlternativeFadeCondition(inputNum, xCoordinate, yCoordinate) {
   return con1 || con2 || con3 || con4;
 }
 
-// FIXME: entire function does not work
-function returnAlternativeFadeCondition2(
-  currentXCoordinate,
-  currentYCoordinate,
-  topXCoordinate,
-  topYCoordinate,
-  bottomXCoordinate,
-  bottomYCoordinate,
-  previousObj,
-  followingObj
-) {
-  if (
-    topXCoordinate == null ||
-    topYCoordinate == null ||
-    bottomXCoordinate == null ||
-    bottomYCoordinate == null
-  ) {
-    console.log("null object");
-    return false;
-  }
-
-  // get XYCoordinates
-  // let currentXYCoordinatesArray = currentObj.XYCoordinates;
-  // let previousXYCoordinatesArray = previousObj.XYCoordinates;
-  // let followingXYCoordinatesArray = followingObj.XYCoordinates;
-
-  // declare conditions
-  let con1 = false;
-  let con2 = false;
-  let con3 = false;
-  let con4 = false;
-
-  let notOutsideBoxX = !(currentXCoordinate < x1 || currentXCoordinate > x2);
-  let notOutsideBoxY = !(currentYCoordinate < y1 || currentYCoordinate > y2);
-
-  // right
-  // compare currentobject to previous Obj (mirrored screen)
-  previousXYCoordinatesArray.forEach(function (prevXYObj) {
-    if (currentXCoordinate == prevXYObj.xCoordinate && notOutsideBoxY) {
-      console.log("con1 true");
-      con1 = true;
-    }
-  });
-
-  // left
-  // compare currentobject to following Obj (mirrored screen)
-  followingXYCoordinatesArray.forEach(function (followingXYObj) {
-    if (currentXCoordinate == followingXYObj.xCoordinate && notOutsideBoxY) {
-      console.log("con2 true");
-      con2 = true;
-    }
-  });
-
-  // top
-  // compare currentobject to current Obj's previous letter coordinate (mirrored screen)
-  if (
-    currentXCoordinate == topXCoordinate &&
-    currentYCoordinate == topYCoordinate &&
-    notOutsideBoxX
-  ) {
-    console.log("con3 true");
-    con3 = true;
-  }
-  // currentXYCoordinatesArray.forEach(function (currXYObj) {
-  //   if (currentYCoordinate == currXYObj.yCoordinate) {
-  //     con3 = true;
-  //   }
-  // });
-
-  // bottom
-  // compare to current obj following coordinate
-  if (
-    currentXCoordinate == bottomXCoordinate &&
-    currentYCoordinate == bottomYCoordinate &&
-    notOutsideBoxX
-  ) {
-    console.log("con4 true");
-    con4 = true;
-  }
-  // currentXYCoordinatesArray.forEach(function (currXYObj) {
-  //   if (currentYCoordinate == currXYObj.yCoordinate) {
-  //     con4 = true;
-  //   }
-  // });
-
-  // corners
-
-  return con1 || con2 || con3 || con4;
-}
-
 /*
 ##################################################################################################
                                    _____                _   _             
@@ -1052,12 +962,11 @@ function drawAlternative() {
   // alternative method: input "south" as direction and empty array after forEach loop
   createMatrixArray();
 
-  if (squareCounter > 50) {
-    randomSquareCoordinates = returnRandomSquareCoordinates();
+  // TODO: make squareCounter turnover point moveable
+  if (squareCounter > 5 && rapidSquareOn) {
     squareCounter = 0;
+    generateRandomSquarePositions();
   }
-
-  if (rapidSquareOn) generateRandomSquarePositions();
 
   newWordSize = getNewWordSize();
 
@@ -1157,23 +1066,7 @@ function resetAllWordsYPositionTo0() {
   
  */
 
-// TODO: not being used, can be deleted
-function returnRandomSquareCoordinates() {
-  let num = Math.floor(generateRandomNumber(0, 4));
-  switch (num) {
-    case 0:
-      return [250, 500, 250, 500];
-    case 1:
-      return [500, 750, 500, 750];
-    case 2:
-      return [750, 1000, 750, 1000];
-    case 3:
-      return [1000, 1250, 1000, 1250];
-  }
-}
-
 let squareCounter = 0;
-let randomSquareCoordinates = returnRandomSquareCoordinates();
 
 let squareAnimationOn;
 let x1 = 250;
@@ -1276,7 +1169,6 @@ function forceSquare(inputNum) {
 }
 
 function repositionSquareToNormal() {
-  // check corners first:
   if (returnTopRightCollision()) {
     forceSquare(4);
   } else if (returnTopLeftCollision()) {
@@ -1810,6 +1702,7 @@ function rapidWordChangeControl() {
   else rapidWordChange = true;
 }
 
+// TODO: adjust hanging words angle based on direction
 function hangingWordsControl() {
   if (hangingWords) {
     hangingWords = false;
@@ -2309,9 +2202,9 @@ function updateSelectBox(input) {
 function directionFunction() {}
 
 const helpText = `
-  ## Keyboard inputs:
+Keyboard Inputs
   
-  ### Normal Mode:
+  Normal Mode:
   
   - Arrowkeys: Switch directions
   - Spacebar: Pause
@@ -2339,7 +2232,7 @@ const helpText = `
   - 8: Change colour to random
   - Escape: Quit to menu
   
-  ### Move Square Mode:
+  Move Square Mode:
   
   Same as Normal Mode except:
   
@@ -2348,4 +2241,4 @@ const helpText = `
   - Altering string length disabled
   - Altering font size disabled.
   - G: Toggle fixed word length.
-`;
+  `;
