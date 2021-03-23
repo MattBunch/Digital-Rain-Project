@@ -739,6 +739,7 @@ function returnAlternativeFadeCondition2(
 
 // declare array of words to hold
 let words = new Array();
+let everyDirectionWordsArray = new Array();
 
 let xInput, yInput, xSpeedInput, ySpeedInput, newWord, newFontSize;
 
@@ -874,18 +875,27 @@ let xDirection; // direction of x points (west and east)
 let fromHorizontalDirection; // boolean value for setting horizontal  direction
 let fromVerticalDirection; // boolean value for setting vertical direction
 
+let passThroughToDraw = false;
+
 // draw direction going south
 // show the characters in animation.
-function draw() {
+function draw(inputWords) {
   if (discoOn) discoFrameCounter++;
 
   // draw black background with 0.025 opacity to show the trail
   ctx.font = fontSize + "px 'Consolas', 'Lucida Console'";
   drawOpaqueRect();
 
+  // draw all 4 directions
+  if (all4Directions && !passThroughToDraw) {
+    drawAll4Directions();
+    passThroughToDraw = true;
+    return;
+  }
+
   // draw strings
-  for (let i = 0; i < words.length; i++) {
-    changeWordCheck(words[i], words[i].word.length);
+  for (let i = 0; i < inputWords.length; i++) {
+    changeWordCheck(inputWords[i], inputWords[i].word.length);
 
     if (direction === "south") {
       destinationPoint = height; // destination point: below the screen
@@ -895,72 +905,80 @@ function draw() {
 
     if (direction === "south") {
       // reset to top of screen if drop off the canvas at bottom of the screen
-      if (words[i].y > height) {
-        words[i].ySpeed = generateSpeed(); // new speed
-        words[i].word = generateWord(generateWordSizeRand()); // generate new random word with random size
-        words[i].fontSize = generateFontSize(); // new font size
-        words[i].y = generateYSouth(words[i].word, words[i].fontSize);
+      if (inputWords[i].y > height) {
+        inputWords[i].ySpeed = generateSpeed(); // new speed
+        inputWords[i].word = generateWord(generateWordSizeRand()); // generate new random word with random size
+        inputWords[i].fontSize = generateFontSize(); // new font size
+        inputWords[i].y = generateYSouth(
+          inputWords[i].word,
+          inputWords[i].fontSize
+        );
       } else {
-        words[i].y = words[i].y + fontSize + words[i].ySpeed;
-        ctx.font = words[i].fontSize + "px 'Consolas', 'Lucida Console'";
+        inputWords[i].y = inputWords[i].y + fontSize + inputWords[i].ySpeed;
+        ctx.font = inputWords[i].fontSize + "px 'Consolas', 'Lucida Console'";
       }
     } else if (direction === "north") {
       // reset to bottom of screen if move off top of the screen
-      if (words[i].y < 0 - height * 1.5) {
-        words[i].y = generateYNorth();
-        words[i].ySpeed = -Math.abs(generateSpeed()); // new speed
-        words[i].word = generateWord(generateWordSizeRand()); // generate new random word with random size
-        words[i].fontSize = generateFontSize(); // new font size
+      if (inputWords[i].y < 0 - height * 1.5) {
+        inputWords[i].y = generateYNorth();
+        inputWords[i].ySpeed = -Math.abs(generateSpeed()); // new speed
+        inputWords[i].word = generateWord(generateWordSizeRand()); // generate new random word with random size
+        inputWords[i].fontSize = generateFontSize(); // new font size
       } else {
-        words[i].y = words[i].y - fontSize - words[i].ySpeed;
-        ctx.font = words[i].fontSize + "px 'Consolas', 'Lucida Console'";
+        inputWords[i].y = inputWords[i].y - fontSize - inputWords[i].ySpeed;
+        ctx.font = inputWords[i].fontSize + "px 'Consolas', 'Lucida Console'";
       }
     } else if (direction === "east") {
-      if (words[i].x < 0 - canvas.width) {
-        words[i].x = generateXEast();
-        words[i].xSpeed = generateSpeed(); // new speed
-        words[i].word = generateWord(generateWordSizeRand()); // generate new random word with random size
-        words[i].fontSize = generateFontSize(); // new font size
+      if (inputWords[i].x < 0 - canvas.width) {
+        inputWords[i].x = generateXEast();
+        inputWords[i].xSpeed = generateSpeed(); // new speed
+        inputWords[i].word = generateWord(generateWordSizeRand()); // generate new random word with random size
+        inputWords[i].fontSize = generateFontSize(); // new font size
       } else {
-        words[i].x = words[i].x - fontSize - words[i].xSpeed;
-        ctx.font = words[i].fontSize + "px 'Consolas', 'Lucida Console'";
+        inputWords[i].x = inputWords[i].x - fontSize - inputWords[i].xSpeed;
+        ctx.font = inputWords[i].fontSize + "px 'Consolas', 'Lucida Console'";
       }
     } else if (direction === "west") {
-      if (words[i].x > canvas.width) {
-        words[i].xSpeed = -Math.abs(generateSpeed()); // new speed
-        words[i].word = generateWord(generateWordSizeRand()); // generate new random word with random size
-        words[i].fontSize = generateFontSize(); // new font size
-        words[i].x = generateXWest(words[i].word, words[i].fontSize); // new x placement
+      if (inputWords[i].x > canvas.width) {
+        inputWords[i].xSpeed = -Math.abs(generateSpeed()); // new speed
+        inputWords[i].word = generateWord(generateWordSizeRand()); // generate new random word with random size
+        inputWords[i].fontSize = generateFontSize(); // new font size
+        inputWords[i].x = generateXWest(
+          inputWords[i].word,
+          inputWords[i].fontSize
+        ); // new x placement
       } else {
-        words[i].x = words[i].x + fontSize + words[i].xSpeed;
-        ctx.font = words[i].fontSize + "px 'Consolas', 'Lucida Console'";
+        inputWords[i].x = inputWords[i].x + fontSize + inputWords[i].xSpeed;
+        ctx.font = inputWords[i].fontSize + "px 'Consolas', 'Lucida Console'";
       }
     }
     // call display method and draw string
-    let millisecondsToWait = words[i].ySpeed * 100;
+    let millisecondsToWait = inputWords[i].ySpeed * 100;
     // code for vertical movement methods
     if (direction === "north" || direction === "south") {
       if (discoOn) {
-        setTimeout(words[i].showDiscoVertical(), millisecondsToWait);
+        setTimeout(inputWords[i].showDiscoVertical(), millisecondsToWait);
       } else {
         setTimeout(
-          words[i].showVertical(colorChoiceArray[chosenColor]),
+          inputWords[i].showVertical(colorChoiceArray[chosenColor]),
           millisecondsToWait
         );
       }
       // code for horizontal movement methods
     } else if (direction === "east" || direction === "west") {
       if (discoOn) {
-        setTimeout(words[i].showDiscoHorizontal(), millisecondsToWait);
+        setTimeout(inputWords[i].showDiscoHorizontal(), millisecondsToWait);
       } else {
         setTimeout(
-          words[i].showHorizontal(colorChoiceArray[chosenColor]),
+          inputWords[i].showHorizontal(colorChoiceArray[chosenColor]),
           millisecondsToWait
         );
       }
     }
   }
 }
+
+function drawAll4Directions() {}
 
 function changeWordCheck(inputWordObject, inputSize) {
   inputWordObject.wordChangeCounter++;
@@ -1844,16 +1862,14 @@ function run(original) {
 
   if (squareAnimationOn) {
     initializeSquareAnimationOn();
-  }
-
-  if (all4Directions) {
+  } else if (all4Directions) {
     initializeAll4Directions();
   }
 
   // run the animation
   intervalValid = setInterval(function () {
     if (original) {
-      draw();
+      draw(words);
     } else {
       drawAlternative();
     }
