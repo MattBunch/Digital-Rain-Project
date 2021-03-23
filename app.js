@@ -1543,10 +1543,10 @@ document.addEventListener("keydown", function (event) {
       numkeyFunction("random");
       break;
     case "w":
-      controlFontSize(true);
+      controlFontSizeInput(true);
       break;
     case "s":
-      controlFontSize(false);
+      controlFontSizeInput(false);
       break;
     case "q":
       controlStringSize(true);
@@ -1718,7 +1718,7 @@ function switchColor(input) {
   chosenColor = matchColorToIndex(input.toLowerCase());
 }
 
-function controlFontSize(increase) {
+function controlFontSizeInput(increase) {
   // disables ability to adjust font size in square animation mode
   if (squareAnimationOn) return;
 
@@ -1731,17 +1731,29 @@ function controlFontSize(increase) {
       alternativeFontSize--;
     }
   } else return;
+  console.log("defaultFontSize: " + defaultFontSize);
+  console.log("alternativeFontSize: " + alternativeFontSize);
 
   fontSize = defaultFontSize;
 
-  for (let i = 0; i < words.length; i++) {
-    let x = words[i].fontSize;
+  let increaseOrDecrease = increase;
+
+  if (all4Directions) {
+    all4DirectionsArray.forEach(function (directionArray) {
+      controlFontSize(directionArray, increaseOrDecrease);
+    });
+  } else controlFontSize(words, increaseOrDecrease);
+}
+
+function controlFontSize(inputWords, increase) {
+  for (let i = 0; i < inputWords.length; i++) {
+    let x = inputWords[i].fontSize;
     if (increase) {
       x++;
     } else {
       x--;
     }
-    words[i].fontSize = x;
+    inputWords[i].fontSize = x;
   }
 
   if (squareAnimationOn) resetWordsArray();
