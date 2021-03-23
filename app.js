@@ -803,6 +803,58 @@ function createMatrixArray(directionMatrix) {
   }
 }
 
+function initializeAll4Directions() {
+  words = [];
+  let northWords, southWords, eastWords, westWords;
+  let inputDirection = "";
+  for (let i = 0; i < 4; i++) {
+    console.log(i);
+    switch (i) {
+      case 0:
+        inputDirection = "north";
+        break;
+      case 1:
+        inputDirection = "south";
+        break;
+      case 2:
+        inputDirection = "east";
+        break;
+      case 3:
+        inputDirection = "west";
+        break;
+    }
+    createMatrixArray(inputDirection);
+
+    switch (i) {
+      case 0:
+        northWords = words;
+        words = [];
+        break;
+      case 1:
+        southWords = words;
+        words = [];
+        break;
+      case 2:
+        eastWords = words;
+        words = [];
+        break;
+      case 3:
+        westWords = words;
+        words = [];
+        break;
+    }
+  }
+
+  console.log(northWords);
+  console.log(southWords);
+  console.log(eastWords);
+  console.log(westWords);
+
+  words = northWords.concat(southWords, eastWords, westWords);
+
+  console.log(words);
+}
+
 /*###########################################################################################
   _____                      ____    ______                _   _             
  |  __ \                    / /\ \  |  ____|              | | (_)            
@@ -1374,6 +1426,7 @@ let currentSpeedLevel = speedLevels[middle];
 
 let rapidWordChange = false;
 let hangingWords = true;
+let all4Directions = true;
 
 document.addEventListener("keydown", function (event) {
   iCounter = 0;
@@ -1769,6 +1822,13 @@ function loadMenuOptions() {
   createMatrixArray(direction);
 }
 
+function initializeSquareAnimationOn() {
+  newWordSize = getNewWordSize();
+  words.shift();
+  giveEachWordNewWord();
+  resetAllWordsYPositionTo0();
+}
+
 // this function gets executed upon clicking the start button
 function run(original) {
   // set up canvas
@@ -1783,10 +1843,11 @@ function run(original) {
   squareAnimationOn = !original;
 
   if (squareAnimationOn) {
-    newWordSize = getNewWordSize();
-    words.shift();
-    giveEachWordNewWord();
-    resetAllWordsYPositionTo0();
+    initializeSquareAnimationOn();
+  }
+
+  if (all4Directions) {
+    initializeAll4Directions();
   }
 
   // run the animation
@@ -1798,6 +1859,19 @@ function run(original) {
     }
   }, intervalSpeed);
   animationOn = true;
+}
+
+function runAll4Directions() {
+  // initial setup
+  run(true);
+  clearInterval(intervalValid);
+
+  initializeAll4Directions();
+
+  // run the animation
+  intervalValid = setInterval(function () {
+    // drawAll4Directions();
+  }, intervalSpeed);
 }
 
 /* ***********************************************************************
