@@ -992,10 +992,6 @@ function drawAll4Directions() {
 
   direction = "south";
   draw(all4DirectionsArray[1], true);
-
-  // all4DirectionsArray.forEach(function (directionArray) {
-  //   draw(directionArray, true);
-  // });
 }
 
 function changeWordCheck(inputWordObject, inputSize) {
@@ -1418,6 +1414,7 @@ function matchColorToIndex(input) {
 // reset values to null so the program can be ran again
 function reset() {
   words = [];
+  all4DirectionsArray = [];
   direction = null;
   discoOn = null;
   chosenColor = null;
@@ -1807,11 +1804,11 @@ function rapidWordChangeControl() {
 function hangingWordsControl() {
   if (hangingWords) {
     hangingWords = false;
-    giveEachWordNewWord();
   } else {
     hangingWords = true;
-    giveEachWordNewWord();
   }
+
+  giveEachWordNewWord();
 }
 
 function switchMode() {
@@ -1875,9 +1872,13 @@ function initializeSquareAnimationOn() {
 }
 
 function all4DirectionsControl() {
-  if (all4Directions) all4Directions = false;
-  else all4Directions = true;
+  if (all4Directions) {
+    all4Directions = false;
+  } else {
+    all4Directions = true;
+  }
   console.log(all4Directions);
+  updateAll4DirectionButton();
 }
 
 // this function gets executed upon clicking the start button
@@ -1894,24 +1895,27 @@ function run(original) {
   squareAnimationOn = !original;
 
   if (squareAnimationOn) {
+    createMatrixArray(direction);
     initializeSquareAnimationOn();
+    console.log("initialize alternative");
   } else if (all4Directions) {
     initializeAll4Directions();
-    console.log("drawing all4Directions");
+    console.log("initialize all4Directions");
   } else {
     createMatrixArray(direction);
-    console.log("drawing normal");
+    console.log("initialize normal");
   }
+
+  console.log(words);
+  console.log(all4DirectionsArray);
 
   // run the animation
   intervalValid = setInterval(function () {
-    if (original) {
-      if (all4Directions) {
-        draw(words, false);
-      } else {
-        draw(words, true);
-      }
-    } else {
+    if (original && all4Directions) {
+      draw(words, false);
+    } else if (original && !all4Directions) {
+      draw(words, true);
+    } else if (!original) {
       drawAlternative();
     }
   }, intervalSpeed);
@@ -1939,6 +1943,7 @@ const directionsSelect = document.getElementById("directions");
 const menuDivs = document.getElementsByClassName("menu");
 const button = document.getElementById("button");
 const button2 = document.getElementById("button2");
+const button3 = document.getElementById("button3");
 const buttons = document.getElementsByClassName("button");
 const elems = document.body.getElementsByTagName("*");
 const frameCountElems = document.getElementsByClassName("frameCount");
@@ -2105,6 +2110,8 @@ function menuOnLoad() {
   checkboxFunction();
 
   selectFunction();
+
+  updateAll4DirectionButton();
 }
 
 function matchColorToRGB(entryColor) {
@@ -2206,6 +2213,14 @@ function buttonBorderColorRandom() {
 function buttonBorderColorSelectedColor() {
   for (let i = 0; i < buttons.length; i++) {
     buttons[i].style.border = borderPrefix + selectColor;
+  }
+}
+
+function updateAll4DirectionButton() {
+  if (all4Directions) {
+    button3.style.background = colorRed;
+  } else {
+    button3.style.background = colorBlack;
   }
 }
 
