@@ -508,8 +508,17 @@ class MatrixString {
 
     for (let i = 0; i < this.word.length; i++) {
       let letter = this.word.substring(i, i + 1);
+
+      // for vertical movements
       let xCoordinate = this.x;
-      let yCoordinate = this.y + i * this.fontSize;
+      let yCoordinate = this.getYCoordinateFromDirection(i);
+
+      /**  for horizontal movements
+       *  if (direction == "east" || direction == "west"){
+       *  XCoordinate = this.getXCoordinateFromDirection(i)
+       *  yCcordinate = this.y;
+       * }
+       */
 
       if (onePercentChance() && !rapidWordChange && i != 0)
         letter = getRandomChar();
@@ -558,6 +567,25 @@ class MatrixString {
     }
   }
 
+  getYCoordinateFromDirection(i) {
+    switch (direction) {
+      case "south":
+        return this.y + i * this.fontSize;
+      case "north":
+        return this.y - i * this.fontSize;
+    }
+  }
+
+  // TODO: for East and West directions
+  getXCoordinateFromDirection(i) {
+    switch (direction) {
+      case "east":
+        return this.x + i * this.fontSize;
+      case "west":
+        return this.x - i * this.fontSize;
+    }
+  }
+
   // only returns for vertical
   generateXYCoordinates() {
     let output = new Array();
@@ -569,16 +597,6 @@ class MatrixString {
     }
 
     return output;
-  }
-
-  // returns bottom starting position for the word
-  returnBottomYPosition() {
-    let bottomOfScreen = canvas.height;
-    let distanceFromBottomOfScreen = 0;
-    for (let i = 0; i < this.word.length; i++) {
-      distanceFromBottomOfScreen += this.fontSize;
-    }
-    return bottomOfScreen - distanceFromBottomOfScreen;
   }
 }
 
@@ -1060,8 +1078,8 @@ function resetAllWordsYPositions() {
         break;
       case "north":
         // TODO: calculate each starting point on bottom of screen for each word
-        // arrayItem.y = 50;
-        arrayItem.y = arrayItem.returnBottomYPosition();
+        arrayItem.y = canvas.height;
+        // arrayItem.y = arrayItem.returnBottomYPosition();
         break;
       case "east":
         // TODO: calculate east starting positions
