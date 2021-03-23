@@ -850,11 +850,6 @@ function initializeAll4Directions() {
     }
   }
 
-  console.log(northWords);
-  console.log(southWords);
-  console.log(eastWords);
-  console.log(westWords);
-
   all4DirectionsArray = [northWords, southWords, eastWords, westWords];
 }
 
@@ -986,17 +981,17 @@ function draw(inputWords, passThroughToDraw) {
 let iterateThroughAll4Directions = 0;
 
 function drawAll4Directions() {
-  direction = "north";
-  draw(all4DirectionsArray[0], true);
-
-  direction = "south";
-  draw(all4DirectionsArray[1], true);
-
   direction = "east";
   draw(all4DirectionsArray[2], true);
 
   direction = "west";
   draw(all4DirectionsArray[3], true);
+
+  direction = "north";
+  draw(all4DirectionsArray[0], true);
+
+  direction = "south";
+  draw(all4DirectionsArray[1], true);
 
   // all4DirectionsArray.forEach(function (directionArray) {
   //   draw(directionArray, true);
@@ -1870,8 +1865,6 @@ function loadMenuOptions() {
 
   // direction
   direction = document.getElementById("directions").value;
-
-  createMatrixArray(direction);
 }
 
 function initializeSquareAnimationOn() {
@@ -1906,6 +1899,7 @@ function run(original) {
     initializeAll4Directions();
     console.log("drawing all4Directions");
   } else {
+    createMatrixArray(direction);
     console.log("drawing normal");
   }
 
