@@ -570,6 +570,16 @@ class MatrixString {
 
     return output;
   }
+
+  // returns bottom starting position for the word
+  returnBottomYPosition() {
+    let bottomOfScreen = canvas.height;
+    let distanceFromBottomOfScreen = 0;
+    for (let i = 0; i < this.word.length; i++) {
+      distanceFromBottomOfScreen += this.fontSize;
+    }
+    return bottomOfScreen - distanceFromBottomOfScreen;
+  }
 }
 
 let testWord = new MatrixString("1234567890", 50, 50, 50, 50, 25);
@@ -1042,9 +1052,24 @@ function isScreenSmall() {
   return window.innerHeight < 1000;
 }
 
-function resetAllWordsYPositionTo0() {
+function resetAllWordsYPositions() {
   words.forEach(function (arrayItem) {
-    arrayItem.y = 0;
+    switch (direction) {
+      case "south":
+        arrayItem.y = 0;
+        break;
+      case "north":
+        // TODO: calculate each starting point on bottom of screen for each word
+        // arrayItem.y = 50;
+        arrayItem.y = arrayItem.returnBottomYPosition();
+        break;
+      case "east":
+        // TODO: calculate east starting positions
+        break;
+      case "west":
+        // TODO: calculate west starting positions;
+        break;
+    }
   });
 }
 
@@ -1703,11 +1728,18 @@ function rapidWordChangeControl() {
 }
 
 // TODO: adjust hanging words angle based on direction
+// TODO: fix non-hanging words for north direction
+// if non-hanging words, just create array with south direction and display that
 function hangingWordsControl() {
   if (hangingWords) {
     hangingWords = false;
+    if (direction != "south") {
+      // destroy array and recreate with south array
+    }
   } else {
     hangingWords = true;
+    // if saved hanging direction isn't south
+    // recreate array in original direction
   }
 
   giveEachWordNewWord();
@@ -1753,7 +1785,7 @@ function resetWordsArray() {
 
 function hangingWordsSetup() {
   giveEachWordNewWord();
-  resetAllWordsYPositionTo0();
+  resetAllWordsYPositions();
 }
 
 // get menu information
@@ -1774,7 +1806,7 @@ function initializeSquareAnimationOn() {
   newWordSize = getNewWordSize();
   words.shift();
   giveEachWordNewWord();
-  resetAllWordsYPositionTo0();
+  resetAllWordsYPositions();
 }
 
 function all4DirectionsControl() {
