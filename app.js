@@ -1951,6 +1951,7 @@ const menuDivs = document.getElementsByClassName("menu");
 const button = document.getElementById("button");
 const button2 = document.getElementById("button2");
 const button3 = document.getElementById("button3");
+const button4 = document.getElementById("button4");
 const buttons = document.getElementsByClassName("button");
 const elems = document.body.getElementsByTagName("*");
 const frameCountElems = document.getElementsByClassName("frameCount");
@@ -2180,6 +2181,22 @@ button2.addEventListener("mouseout", function () {
   buttonMouseOut(2);
 });
 
+button3.addEventListener("mouseover", function () {
+  if (!all4Directions) buttonMouseOver(3);
+});
+
+button3.addEventListener("mouseout", function () {
+  if (!all4Directions) buttonMouseOut(3);
+});
+
+button4.addEventListener("mouseover", function () {
+  buttonMouseOver(4);
+});
+
+button4.addEventListener("mouseout", function () {
+  buttonMouseOut(4);
+});
+
 function buttonMouseOver(input) {
   if (buttonDiscoChecked()) {
     for (let i = 0; i < buttons.length; i++) {
@@ -2188,13 +2205,8 @@ function buttonMouseOver(input) {
     buttonDiscoBackgroundChangeColor();
     buttonBorderColorRandom();
   } else {
-    if (input == 1) {
-      button.style.color = colorBlack;
-      button.style.background = selectColor;
-    } else if (input == 2) {
-      button2.style.color = colorBlack;
-      button2.style.background = selectColor;
-    }
+    intToButton(input).style.color = colorBlack;
+    intToButton(input).style.background = selectColor;
   }
 }
 
@@ -2204,13 +2216,21 @@ function buttonMouseOut(input) {
     buttonDiscoBackgroundChangeColor();
     buttonBorderColorRandom();
   } else {
-    if (input === 1) {
-      button.style.color = selectColor;
-      button.style.background = colorBlack;
-    } else if (input === 2) {
-      button2.style.background = colorBlack;
-      button2.style.color = selectColor;
-    }
+    intToButton(input).style.color = selectColor;
+    intToButton(input).style.background = colorBlack;
+  }
+}
+
+function intToButton(input) {
+  switch (input) {
+    case 1:
+      return button;
+    case 2:
+      return button2;
+    case 3:
+      return button3;
+    case 4:
+      return button4;
   }
 }
 
@@ -2287,3 +2307,45 @@ function updateSelectBox(input) {
 }
 
 function directionFunction() {}
+
+const helpText = `
+  ## Keyboard inputs:
+  
+  ### Normal Mode:
+  
+  - Arrowkeys: Switch directions
+  - Spacebar: Pause
+  - C: Clear screen
+  - D: Toggle disco
+  - W: Increase font size
+  - S: Decrease font size
+  - Q: Increase string length
+  - A: Decrease string length
+  - T: Increase disco speed
+  - G: Decrease disco speed
+  - R: Toggle rapid word change
+  - M: Switch between modes
+  - U: Toggle rapid square change
+  - I: Toggle all 4 directions at once
+  - PageUp: Speed up
+  - PageDown: Slow down
+  - 1: Change colour to green
+  - 2: Change colour to red
+  - 3: Change colour to yellow
+  - 4: Change colour to blue
+  - 5: Change colour to orange
+  - 6: Change colour to pink
+  - 7: Change colour to cyan
+  - 8: Change colour to random
+  - Escape: Quit to menu
+  
+  ### Move Square Mode:
+  
+  Same as Normal Mode except:
+  
+  - Arrowkeys: move box directions
+  - Altering speed disabled
+  - Altering string length disabled
+  - Altering font size disabled.
+  - G: Toggle fixed word length.
+`;
