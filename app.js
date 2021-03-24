@@ -513,6 +513,14 @@ class MatrixString {
 
     return output;
   }
+
+  increaseStringSize() {
+    this.word = this.word.concat(getRandomChar());
+  }
+
+  decreaseStringSize() {
+    this.word = this.word.slice(0, -1);
+  }
 }
 
 let testWord = new MatrixString("1234567890", 50, 50, 50, 50, 25);
@@ -857,11 +865,11 @@ function drawAll4Directions() {
   direction = "east";
   draw(all4DirectionsArray[2], true);
 
-  direction = "west";
-  draw(all4DirectionsArray[3], true);
-
   direction = "north";
   draw(all4DirectionsArray[0], true);
+
+  direction = "west";
+  draw(all4DirectionsArray[3], true);
 
   direction = "south";
   draw(all4DirectionsArray[1], true);
@@ -1441,7 +1449,7 @@ document.addEventListener("keydown", function (event) {
       rapidSquareControl();
       break;
     case "i":
-      all4DirectionsControl();
+      if (!squareAnimationOn) all4DirectionsControl();
       break;
   }
 });
@@ -1630,14 +1638,15 @@ function printFontSizeDebugInfo() {
 }
 
 function controlStringSize(increase) {
+  console.log(stringSizeMin);
+
   if (increase & (stringSizeMax < 150)) {
     stringSizeMin++;
     stringSizeMax++;
 
     // increase the length of each word in array.
     for (let i = 0; i < words.length; i++) {
-      let randomChar = getRandomChar();
-      words[i].word = words[i].word.concat(randomChar);
+      words[i].increaseStringSize();
     }
   } else if (!increase & (stringSizeMin > 1)) {
     stringSizeMin--;
@@ -1645,7 +1654,7 @@ function controlStringSize(increase) {
 
     // decrease the length of each word in array.
     for (let i = 0; i < words.length; i++) {
-      words[i].word = words[i].word.slice(0, -1);
+      words[i].decreaseStringSize();
     }
   } else return;
 }
@@ -1677,19 +1686,11 @@ function rapidWordChangeControl() {
   else rapidWordChange = true;
 }
 
-// TODO: adjust hanging words angle based on direction
-// TODO: fix non-hanging words for north direction
-// if non-hanging words, just create array with south direction and display that
 function hangingWordsControl() {
   if (hangingWords) {
     hangingWords = false;
-    if (direction != "south") {
-      // destroy array and recreate with south array
-    }
   } else {
     hangingWords = true;
-    // if saved hanging direction isn't south
-    // recreate array in original direction
   }
 
   giveEachWordNewWord();

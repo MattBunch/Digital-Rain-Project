@@ -63,11 +63,12 @@ body {
   display: inline-block;
   border-radius: 0px;
   margin: 4px 2px;
+  min-height: 50px;
+  min-width: 450px;
 }
 
 #button3 {
   min-height: 100px;
-  min-width: 500px;
   white-space: nowrap;
 }
 
