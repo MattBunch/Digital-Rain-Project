@@ -1638,25 +1638,41 @@ function printFontSizeDebugInfo() {
 }
 
 function controlStringSize(increase) {
-  console.log(stringSizeMin);
-
+  let increaseOrDecreaseInput;
   if (increase & (stringSizeMax < 150)) {
     stringSizeMin++;
     stringSizeMax++;
-
-    // increase the length of each word in array.
-    for (let i = 0; i < words.length; i++) {
-      words[i].increaseStringSize();
-    }
+    increaseOrDecreaseInput = true;
   } else if (!increase & (stringSizeMin > 1)) {
     stringSizeMin--;
     stringSizeMax--;
-
-    // decrease the length of each word in array.
-    for (let i = 0; i < words.length; i++) {
-      words[i].decreaseStringSize();
-    }
+    increaseOrDecreaseInput = false;
   } else return;
+  console.log(stringSizeMin);
+
+  all4DirectionsToStringSize(increaseOrDecreaseInput);
+}
+
+function all4DirectionsToStringSize(increase) {
+  if (all4Directions) {
+    all4DirectionsArray.forEach(function (individualDirectionArray) {
+      individualDirectionArray.forEach(function (matrixWordObj) {
+        increaseOrDecreaseControl(matrixWordObj);
+      });
+    });
+  } else {
+    words.forEach(function (matrixWordObj) {
+      increaseOrDecreaseControl(matrixWordObj);
+    });
+  }
+
+  function increaseOrDecreaseControl(matrixWordObj) {
+    if (increase) {
+      matrixWordObj.increaseStringSize();
+    } else {
+      matrixWordObj.decreaseStringSize();
+    }
+  }
 }
 
 function printStringSizeDebugInfo() {
