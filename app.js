@@ -355,6 +355,12 @@ class MatrixString {
     this.XYCoordinates = this.generateXYCoordinates();
   }
 
+  // TODO:
+  /** now only difference between the showVertical and showHorizontal is xCoordinate and yCoordinate
+   *  however the current getXCoordinateFromDirection(i) and getYCoordinateFromDirection(i) are written for
+   *  the showAlternative and would be incorrect for north and west directions
+   */
+
   // method for displaying text to the screen, default method
   showVertical(inputColorArray) {
     // for changing the string to a different string with the same size every frame
@@ -382,6 +388,8 @@ class MatrixString {
     // for changing the string to a different string with the same size every frame
     if (rapidWordChange) this.word = generateWord(this.word.length);
 
+    if (discoOn) discoColorCounterCheck();
+
     for (let i = 0; i < this.word.length - 1; i++) {
       let letter = this.word.substring(i, i + 1);
       const xCoordinate = this.x + i * this.fontSize;
@@ -391,7 +399,7 @@ class MatrixString {
         letter = getRandomChar();
       }
 
-      this.setColors(i, inputColorArray);
+      if (!discoOn) this.setColors(i, inputColorArray);
 
       ctx.fillText(
         // reversal of above text for moving horizontal
@@ -399,21 +407,6 @@ class MatrixString {
         xCoordinate,
         yCoordinate
       );
-    }
-  }
-
-  // disco mode horizontal, each letter will be a different color on each frame
-  showDiscoHorizontal() {
-    if (rapidWordChange) this.word = generateWord(this.word.length);
-
-    discoColorCounterCheck();
-
-    for (let i = 0; i < this.word.length - 1; i++) {
-      let letter = this.word.substring(i, i + 1);
-      if (onePercentChance() && !rapidWordChange) {
-        letter = getRandomChar();
-      }
-      ctx.fillText(letter, this.x + i * this.fontSize, this.y);
     }
   }
 
@@ -520,7 +513,6 @@ class MatrixString {
     }
   }
 
-  // TODO: for East and West directions
   getXCoordinateFromDirection(i) {
     switch (direction) {
       case "south":
@@ -797,10 +789,6 @@ let xDirection; // direction of x points (west and east)
 let fromHorizontalDirection; // boolean value for setting horizontal  direction
 let fromVerticalDirection; // boolean value for setting vertical direction
 
-// let passThroughToDraw = false;
-
-// draw direction going south
-// show the characters in animation.
 function draw(inputWords, passThroughToDraw) {
   if (discoOn) discoFrameCounter++;
 
@@ -880,6 +868,7 @@ function draw(inputWords, passThroughToDraw) {
     // call display method and draw string
     let millisecondsToWait = inputWords[i].ySpeed * 100;
     // code for vertical movement methods
+
     if (direction === "north" || direction === "south") {
       setTimeout(
         inputWords[i].showVertical(colorChoiceArray[chosenColor]),
@@ -887,14 +876,10 @@ function draw(inputWords, passThroughToDraw) {
       );
       // code for horizontal movement methods
     } else if (direction === "east" || direction === "west") {
-      if (discoOn) {
-        setTimeout(inputWords[i].showDiscoHorizontal(), millisecondsToWait);
-      } else {
-        setTimeout(
-          inputWords[i].showHorizontal(colorChoiceArray[chosenColor]),
-          millisecondsToWait
-        );
-      }
+      setTimeout(
+        inputWords[i].showHorizontal(colorChoiceArray[chosenColor]),
+        millisecondsToWait
+      );
     }
   }
 }
