@@ -360,6 +360,8 @@ class MatrixString {
     // for changing the string to a different string with the same size every frame
     if (rapidWordChange) this.word = generateWord(this.word.length);
 
+    if (discoOn) discoColorCounterCheck();
+
     for (let i = 0; i < this.word.length - 1; i++) {
       let letter = this.word.substring(i, i + 1);
       const xCoordinate = this.x;
@@ -367,28 +369,12 @@ class MatrixString {
 
       if (onePercentChance() && !rapidWordChange) letter = getRandomChar();
 
-      this.setColors(i, inputColorArray);
+      if (!discoOn) this.setColors(i, inputColorArray);
 
       ctx.fillText(letter, xCoordinate, yCoordinate);
 
       this.XYCoordinates = this.generateXYCoordinates();
     }
-  }
-
-  // disco mode vertical, each letter will be a different color on each frame
-  showDiscoVertical() {
-    if (rapidWordChange) this.word = generateWord(this.word.length);
-
-    discoColorCounterCheck();
-
-    for (let i = 0; i < this.word.length - 1; i++) {
-      let letter = this.word.substring(i, i + 1);
-      if (onePercentChance() && !rapidWordChange) letter = getRandomChar();
-
-      ctx.fillText(letter, this.x, this.y + i * this.fontSize);
-    }
-
-    this.XYCoordinates = this.generateXYCoordinates();
   }
 
   // for horizontal movements (east and west)
@@ -895,14 +881,10 @@ function draw(inputWords, passThroughToDraw) {
     let millisecondsToWait = inputWords[i].ySpeed * 100;
     // code for vertical movement methods
     if (direction === "north" || direction === "south") {
-      if (discoOn) {
-        setTimeout(inputWords[i].showDiscoVertical(), millisecondsToWait);
-      } else {
-        setTimeout(
-          inputWords[i].showVertical(colorChoiceArray[chosenColor]),
-          millisecondsToWait
-        );
-      }
+      setTimeout(
+        inputWords[i].showVertical(colorChoiceArray[chosenColor]),
+        millisecondsToWait
+      );
       // code for horizontal movement methods
     } else if (direction === "east" || direction === "west") {
       if (discoOn) {
