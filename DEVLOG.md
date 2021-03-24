@@ -184,3 +184,8 @@ Added `buttonDiscoChecked()` to the button mouseover functionality for changing 
 - Fixed random square position and hanging words on screen resize.
 - All four direction at a time implemented, third button implemented.
 - Help button implemented.
+
+### 24/03/2021
+
+- All directions implemented for hanging words.
+- Cleaned up repeating draw() methods in MatrixStringClass.
