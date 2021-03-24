@@ -1382,12 +1382,12 @@ document.addEventListener("keydown", function (event) {
       discoControl();
       break;
     case "PageUp":
-      if (ctx != null && !squareAnimationOn) {
+      if (ctx != null || !squareAnimationOn) {
         speedController(true);
       }
       break;
     case "PageDown":
-      if (ctx != null && !squareAnimationOn) {
+      if (ctx != null || !squareAnimationOn) {
         speedController(false);
       }
       break;
@@ -1545,6 +1545,8 @@ function toggleDiscoMenu() {
 }
 
 function speedController(increase) {
+  if (isMenuShown()) return;
+
   // check if current speed level is at 0 or 7
   if (currentSpeedLevel === speedLevels[0] && !increase) return;
   if (currentSpeedLevel === speedLevels[speedLevels.length - 1] && increase)
@@ -1883,6 +1885,10 @@ function isMenuHidden() {
     }
   }
   return output;
+}
+
+function isMenuShown() {
+  return !isMenuHidden();
 }
 
 // for checkbox hiding
