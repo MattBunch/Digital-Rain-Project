@@ -355,14 +355,8 @@ class MatrixString {
     this.XYCoordinates = this.generateXYCoordinates();
   }
 
-  // TODO:
-  /** now only difference between the showVertical and showHorizontal is xCoordinate and yCoordinate
-   *  however the current getXCoordinateFromDirection(i) and getYCoordinateFromDirection(i) are written for
-   *  the showAlternative and would be incorrect for north and west directions
-   */
-
   // method for displaying text to the screen, default method
-  showVertical(inputColorArray) {
+  show(inputColorArray) {
     // for changing the string to a different string with the same size every frame
     if (rapidWordChange) this.word = generateWord(this.word.length);
 
@@ -370,8 +364,8 @@ class MatrixString {
 
     for (let i = 0; i < this.word.length - 1; i++) {
       let letter = this.word.substring(i, i + 1);
-      const xCoordinate = this.x;
-      const yCoordinate = this.y + i * this.fontSize;
+      const xCoordinate = this.getXCoordinateFromDirection(i, false);
+      const yCoordinate = this.getYCoordinateFromDirection(i, false);
 
       if (onePercentChance() && !rapidWordChange) letter = getRandomChar();
 
@@ -383,86 +377,63 @@ class MatrixString {
     }
   }
 
-  // for horizontal movements (east and west)
-  showHorizontal(inputColorArray) {
-    // for changing the string to a different string with the same size every frame
-    if (rapidWordChange) this.word = generateWord(this.word.length);
-
-    if (discoOn) discoColorCounterCheck();
-
-    for (let i = 0; i < this.word.length - 1; i++) {
-      let letter = this.word.substring(i, i + 1);
-      const xCoordinate = this.x + i * this.fontSize;
-      const yCoordinate = this.y;
-
-      if (onePercentChance() && !rapidWordChange) {
-        letter = getRandomChar();
-      }
-
-      if (!discoOn) this.setColors(i, inputColorArray);
-
-      ctx.fillText(
-        // reversal of above text for moving horizontal
-        letter,
-        xCoordinate,
-        yCoordinate
-      );
-    }
-  }
-
   showAlternative(inputColorArray) {
     if (rapidWordChange) this.word = generateWord(this.word.length);
 
     for (let i = 0; i < this.word.length; i++) {
       let letter = this.word.substring(i, i + 1);
 
-      let xCoordinate = this.getXCoordinateFromDirection(i);
-      let yCoordinate = this.getYCoordinateFromDirection(i);
+      let xCoordinate = this.getXCoordinateFromDirection(i, true);
+      let yCoordinate = this.getYCoordinateFromDirection(i, true);
 
       if (onePercentChance() && !rapidWordChange && i != 0)
         letter = getRandomChar();
 
       if (i == 0) letter = " ";
 
-      let primaryColorCondition =
-        xCoordinate < x1 ||
-        xCoordinate > x2 ||
-        yCoordinate < y1 ||
-        yCoordinate > y2;
-
-      let alternativeFade1Condition = returnAlternativeFadeCondition(
-        0,
-        xCoordinate,
-        yCoordinate
-      );
-
-      let alternativeFade2Condition = returnAlternativeFadeCondition(
-        1,
-        xCoordinate,
-        yCoordinate
-      );
-
-      if (primaryColorCondition) {
-        if (discoOn) {
-          discoColorCounterCheck();
-        } else if (alternativeFade1Condition) {
-          ctx.fillStyle = inputColorArray[0];
-        } else if (alternativeFade2Condition) {
-          ctx.fillStyle = inputColorArray[1];
-        } else {
-          ctx.fillStyle = inputColorArray[2];
-        }
-      } else {
-        if (discoOn) {
-          ctx.fillStyle = getRandomColor();
-        } else {
-          ctx.fillStyle = colorWhite;
-        }
-      }
+      this.drawSquare(xCoordinate, yCoordinate, inputColorArray);
 
       ctx.fillText(letter, xCoordinate, yCoordinate);
 
       this.XYCoordinates = this.generateXYCoordinates();
+    }
+  }
+
+  drawSquare(xCoordinate, yCoordinate, inputColorArray) {
+    let primaryColorCondition =
+      xCoordinate < x1 ||
+      xCoordinate > x2 ||
+      yCoordinate < y1 ||
+      yCoordinate > y2;
+
+    let alternativeFade1Condition = returnAlternativeFadeCondition(
+      0,
+      xCoordinate,
+      yCoordinate
+    );
+
+    let alternativeFade2Condition = returnAlternativeFadeCondition(
+      1,
+      xCoordinate,
+      yCoordinate
+    );
+
+    if (primaryColorCondition) {
+      if (discoOn) {
+        discoColorCounterCheck();
+      } else if (alternativeFade1Condition) {
+        ctx.fillStyle = inputColorArray[0];
+      } else if (alternativeFade2Condition) {
+        ctx.fillStyle = inputColorArray[1];
+      } else {
+        ctx.fillStyle = inputColorArray[2];
+      }
+    } else {
+      if (discoOn) {
+        ctx.fillStyle = getRandomColor();
+      } else {
+        ctx.fillStyle = colorWhite;
+      }
     }
   }
 
@@ -500,11 +471,13 @@ class MatrixString {
     }
   }
 
-  getYCoordinateFromDirection(i) {
+  getYCoordinateFromDirection(i, alternative) {
+    let defaultYCoordinate = this.y + i * this.fontSize;
     switch (direction) {
       case "south":
-        return this.y + i * this.fontSize;
+        return defaultYCoordinate;
       case "north":
+        if (!alternative) return defaultYCoordinate;
         return this.y - i * this.fontSize;
       case "east":
         return this.y;
@@ -513,15 +486,17 @@ class MatrixString {
     }
   }
 
-  getXCoordinateFromDirection(i) {
+  getXCoordinateFromDirection(i, alternative) {
+    let defaultXCoordinate = this.x + i * this.fontSize;
     switch (direction) {
       case "south":
         return this.x;
       case "north":
         return this.x;
       case "east":
-        return this.x + i * this.fontSize;
+        return defaultXCoordinate;
       case "west":
+        if (!alternative) return defaultXCoordinate;
         return this.x - i * this.fontSize;
     }
   }
@@ -869,18 +844,10 @@ function draw(inputWords, passThroughToDraw) {
     let millisecondsToWait = inputWords[i].ySpeed * 100;
     // code for vertical movement methods
 
-    if (direction === "north" || direction === "south") {
-      setTimeout(
-        inputWords[i].showVertical(colorChoiceArray[chosenColor]),
-        millisecondsToWait
-      );
-      // code for horizontal movement methods
-    } else if (direction === "east" || direction === "west") {
-      setTimeout(
-        inputWords[i].showHorizontal(colorChoiceArray[chosenColor]),
-        millisecondsToWait
-      );
-    }
+    setTimeout(
+      inputWords[i].show(colorChoiceArray[chosenColor]),
+      millisecondsToWait
+    );
   }
 }
 
