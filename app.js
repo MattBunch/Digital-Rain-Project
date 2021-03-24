@@ -291,8 +291,6 @@ function debugStartingPosition(minNum, maxNum, output) {
     console.log("canvas.height: " + canvas.height);
     console.log("canvas.width: " + canvas.width);
     console.log("starting position: " + output);
-  } else {
-    // printAverage();
   }
 }
 
@@ -362,51 +360,19 @@ class MatrixString {
     // for changing the string to a different string with the same size every frame
     if (rapidWordChange) this.word = generateWord(this.word.length);
 
-    if (direction === "south") {
-      for (let i = 0; i < this.word.length - 1; i++) {
-        let letter = this.word.substring(i, i + 1);
-        if (onePercentChance() && !rapidWordChange) letter = getRandomChar();
+    for (let i = 0; i < this.word.length - 1; i++) {
+      let letter = this.word.substring(i, i + 1);
+      const xCoordinate = this.x;
+      const yCoordinate = this.y + i * this.fontSize;
 
-        if (i == this.word.length - 2) {
-          // set first letter color to white
-          ctx.fillStyle = colorWhite;
-        } else if (i == this.word.length - 3) {
-          // set second letter color to 95% white, 5% matrix color
-          ctx.fillStyle = inputColorArray[0];
-        } else if (i == this.word.length - 4) {
-          // set third letter color to 90% white, 10% matrix color
-          ctx.fillStyle = inputColorArray[1];
-        } else {
-          // set rest of the string to color
-          // extension? fade out of darker colors
-          ctx.fillStyle = inputColorArray[2];
-        }
-        ctx.fillText(letter, this.x, this.y + i * this.fontSize);
-      }
-    } else if (direction === "north") {
-      for (let i = 0; i < this.word.length; i++) {
-        let letter = this.word.substring(i, i + 1);
+      if (onePercentChance() && !rapidWordChange) letter = getRandomChar();
 
-        if (onePercentChance() && !rapidWordChange) letter = getRandomChar();
+      this.setColors(i, inputColorArray);
 
-        if (i == 0) {
-          // set first letter color to white
-          ctx.fillStyle = colorWhite;
-        } else if (i == 1) {
-          // set second letter color to 95% white, 5% matrix color
-          ctx.fillStyle = inputColorArray[0];
-        } else if (i == 2) {
-          // set third letter color to 90% white, 10% matrix color
-          ctx.fillStyle = inputColorArray[1];
-        } else {
-          // set rest of the string to color
-          // extension? fade out of darker colors
-          ctx.fillStyle = inputColorArray[2];
-        }
-        ctx.fillText(letter, this.x, this.y + i * this.fontSize);
-      }
+      ctx.fillText(letter, xCoordinate, yCoordinate);
+
+      this.XYCoordinates = this.generateXYCoordinates();
     }
-    this.XYCoordinates = this.generateXYCoordinates();
   }
 
   // disco mode vertical, each letter will be a different color on each frame
@@ -429,62 +395,24 @@ class MatrixString {
   showHorizontal(inputColorArray) {
     // for changing the string to a different string with the same size every frame
     if (rapidWordChange) this.word = generateWord(this.word.length);
-    // east
-    if (direction === "east") {
-      for (let i = 0; i < this.word.length - 1; i++) {
-        let letter = this.word.substring(i, i + 1);
-        if (onePercentChance() && !rapidWordChange) {
-          letter = getRandomChar();
-        }
 
-        if (i == 0) {
-          // set first letter color to white
-          ctx.fillStyle = colorWhite;
-        } else if (i == 1) {
-          // set second letter color to 95% white, 5% matrix color
-          ctx.fillStyle = inputColorArray[0];
-        } else if (i == 2) {
-          // set third letter color to 90% white, 10% matrix color
-          ctx.fillStyle = inputColorArray[1];
-        } else {
-          // set rest of the string to color
-          ctx.fillStyle = inputColorArray[2];
-        }
+    for (let i = 0; i < this.word.length - 1; i++) {
+      let letter = this.word.substring(i, i + 1);
+      const xCoordinate = this.x + i * this.fontSize;
+      const yCoordinate = this.y;
 
-        ctx.fillText(
-          // reversal of above text for moving horizontal
-          letter,
-          this.x + i * this.fontSize,
-          this.y
-        );
+      if (onePercentChance() && !rapidWordChange) {
+        letter = getRandomChar();
       }
-    } else if (direction === "west") {
-      for (let i = 0; i < this.word.length - 1; i++) {
-        let letter = this.word.substring(i, i + 1);
-        if (onePercentChance() && !rapidWordChange) {
-          letter = getRandomChar();
-        }
 
-        if (i == this.word.length - 2) {
-          // set first letter color to white
-          ctx.fillStyle = colorWhite;
-        } else if (i == this.word.length - 3) {
-          // set second letter color to 95% white, 5% matrix color
-          ctx.fillStyle = inputColorArray[0];
-        } else if (i == this.word.length - 4) {
-          // set third letter color to 90% white, 10% matrix color
-          ctx.fillStyle = inputColorArray[1];
-        } else {
-          // set rest of the string to color
-          ctx.fillStyle = inputColorArray[2];
-        }
-        ctx.fillText(
-          // reversal of above text for moving horizontal
-          letter,
-          this.x + i * this.fontSize,
-          this.y
-        );
-      }
+      this.setColors(i, inputColorArray);
+
+      ctx.fillText(
+        // reversal of above text for moving horizontal
+        letter,
+        xCoordinate,
+        yCoordinate
+      );
     }
   }
 
@@ -509,16 +437,8 @@ class MatrixString {
     for (let i = 0; i < this.word.length; i++) {
       let letter = this.word.substring(i, i + 1);
 
-      // for vertical movements
-      let xCoordinate = this.x;
+      let xCoordinate = this.getXCoordinateFromDirection(i);
       let yCoordinate = this.getYCoordinateFromDirection(i);
-
-      /**  for horizontal movements
-       *  if (direction == "east" || direction == "west"){
-       *  XCoordinate = this.getXCoordinateFromDirection(i)
-       *  yCcordinate = this.y;
-       * }
-       */
 
       if (onePercentChance() && !rapidWordChange && i != 0)
         letter = getRandomChar();
@@ -567,18 +487,60 @@ class MatrixString {
     }
   }
 
+  setColors(i, inputColorArray) {
+    if (direction == "south" || direction == "west") {
+      if (i == this.word.length - 2) {
+        // set first letter color to white
+        ctx.fillStyle = colorWhite;
+      } else if (i == this.word.length - 3) {
+        // set second letter color to 95% white, 5% matrix color
+        ctx.fillStyle = inputColorArray[0];
+      } else if (i == this.word.length - 4) {
+        // set third letter color to 90% white, 10% matrix color
+        ctx.fillStyle = inputColorArray[1];
+      } else {
+        // set rest of the string to color
+        // extension? fade out of darker colors
+        ctx.fillStyle = inputColorArray[2];
+      }
+    } else if (direction == "north" || direction == "east") {
+      if (i == 0) {
+        // set first letter color to white
+        ctx.fillStyle = colorWhite;
+      } else if (i == 1) {
+        // set second letter color to 95% white, 5% matrix color
+        ctx.fillStyle = inputColorArray[0];
+      } else if (i == 2) {
+        // set third letter color to 90% white, 10% matrix color
+        ctx.fillStyle = inputColorArray[1];
+      } else {
+        // set rest of the string to color
+        // extension? fade out of darker colors
+        ctx.fillStyle = inputColorArray[2];
+      }
+    }
+  }
+
   getYCoordinateFromDirection(i) {
     switch (direction) {
       case "south":
         return this.y + i * this.fontSize;
       case "north":
         return this.y - i * this.fontSize;
+      case "east":
+        return this.y;
+      case "west":
+        return this.y;
     }
   }
 
   // TODO: for East and West directions
   getXCoordinateFromDirection(i) {
     switch (direction) {
+      case "south":
+        return this.x;
+      case "north":
+        return this.x;
       case "east":
         return this.x + i * this.fontSize;
       case "west":
@@ -650,8 +612,6 @@ function returnAlternativeFadeCondition(inputNum, xCoordinate, yCoordinate) {
   );
 
   // top
-
-  // south
   let topCon1 = yCoordinate == yPos1;
   let topCon2 = !(
     xCoordinate < x1 - alternativeFontSize ||
@@ -1028,8 +988,6 @@ function drawAlternative() {
   ctx.font = alternativeFontSize + "px Arial";
   // ctx.font = fontSize + "px 'Consolas', 'Lucida Console'";
 
-  // no direction input, very important
-  // alternative method: input "south" as direction and empty array after forEach loop
   createMatrixArray();
 
   // TODO: make squareCounter turnover point moveable
@@ -1119,15 +1077,13 @@ function resetAllWordsYPositions() {
         arrayItem.y = 0;
         break;
       case "north":
-        // TODO: calculate each starting point on bottom of screen for each word
         arrayItem.y = canvas.height;
-        // arrayItem.y = arrayItem.returnBottomYPosition();
         break;
       case "east":
-        // TODO: calculate east starting positions
+        arrayItem.x = 0;
         break;
       case "west":
-        // TODO: calculate west starting positions;
+        arrayItem.x = canvas.width;
         break;
     }
   });
