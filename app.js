@@ -629,38 +629,80 @@ function returnAlternativeFadeCondition(inputNum, xCoordinate, yCoordinate) {
   let xPos1 = x1 - coordinateNum + alteredNum;
 
   // right
-  let con1 =
+  let rightCon =
     xCoordinate == xPos1 &&
     (!(yCoordinate < y1 || yCoordinate > y2) ||
       !(yCoordinate < y1 - coordinateNum || yCoordinate > y2 + coordinateNum));
 
   // left
-  let con2 =
+  let leftCon =
     xCoordinate == x2 + coordinateNum &&
     (!(yCoordinate < y1 || yCoordinate > y2) ||
       !(yCoordinate < y1 - coordinateNum || yCoordinate > y2 + coordinateNum));
 
-  let yPos1 = y1 - coordinateNum + 10;
+  // ###
+  // Top & Bottom
+  // ###
+  let yPos1 = y1 - coordinateNum + alteredNum;
+
+  let yCon3 = !(
+    xCoordinate < x1 - coordinateNum || xCoordinate > x2 + coordinateNum
+  );
 
   // top
-  let con3 =
-    yCoordinate == yPos1 &&
-    (!(
-      xCoordinate < x1 - alternativeFontSize ||
-      xCoordinate > x2 + alternativeFontSize
-    ) ||
-      !(xCoordinate < x1 - coordinateNum || xCoordinate > x2 + coordinateNum));
+
+  // south
+  let topCon1 = yCoordinate == yPos1;
+  let topCon2 = !(
+    xCoordinate < x1 - alternativeFontSize ||
+    xCoordinate > x2 + alternativeFontSize
+  );
+
+  if (direction === "north") {
+    topCon1 = yCoordinate - 6 == yPos1;
+  }
+
+  let topCon = topCon1 && (topCon2 || yCon3);
 
   // bottom
-  let con4 =
-    yCoordinate == y2 + coordinateNum &&
-    (!(
-      xCoordinate < x1 - alternativeFontSize ||
-      xCoordinate > x2 + alternativeFontSize
-    ) ||
-      !(xCoordinate < x1 - coordinateNum || xCoordinate > x2 + coordinateNum));
+  let bottomCon1 = yCoordinate == y2 + coordinateNum;
+  let bottomCon2 = !(
+    xCoordinate < x1 - alternativeFontSize ||
+    xCoordinate > x2 + alternativeFontSize
+  );
 
-  return con1 || con2 || con3 || con4;
+  if (direction === "north") {
+    bottomCon1 = yCoordinate + 14 == y2 + coordinateNum;
+  }
+
+  let bottomCon = bottomCon1 && (bottomCon2 || yCon3);
+
+  printTopBottomDebug(false);
+
+  return rightCon || leftCon || topCon || bottomCon;
+
+  function printTopBottomDebug(continueToDebug) {
+    if (!continueToDebug) return;
+
+    if (topCon) {
+      console.log("---");
+      console.log(inputNum);
+      console.log("topCon: " + topCon);
+      console.log("topCon1: " + topCon1);
+      console.log("topCon2: " + topCon2);
+      console.log("bottomCon: " + bottomCon);
+      console.log("bottomCon1: " + bottomCon1);
+      console.log("bottomCon2: " + bottomCon2);
+      console.log("yCon3: " + yCon3);
+      printSquarePositionInfo();
+      console.log("xCoordinate: " + xCoordinate);
+      console.log("yCoordinate: " + yCoordinate);
+      console.log("xPos1: " + xPos1);
+      console.log("yPos1: " + yPos1);
+
+      console.log("---");
+    }
+  }
 }
 
 /*
@@ -1264,19 +1306,19 @@ function returnBottomRightCollision() {
 
 // for debugging
 function printSquarePositionInfo() {
-  console.log("---");
+  // console.log("---");
   console.log("x1: " + x1);
-  console.log("rightEdge: " + rightEdge);
-  console.log("---");
+  // console.log("rightEdge: " + rightEdge);
+  // console.log("---");
   console.log("x2: " + x2);
-  console.log("leftEdge: " + leftEdge);
-  console.log("---");
+  // console.log("leftEdge: " + leftEdge);
+  // console.log("---");
   console.log("y1: " + y1);
-  console.log("topEdge: " + topEdge);
-  console.log("---");
+  // console.log("topEdge: " + topEdge);
+  // console.log("---");
   console.log("y2: " + y2);
-  console.log("bottomEdge: " + bottomEdge);
-  console.log("---");
+  // console.log("bottomEdge: " + bottomEdge);
+  // console.log("---");
 }
 
 function resetSquarePosition() {
