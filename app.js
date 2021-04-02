@@ -799,7 +799,7 @@ function draw(inputWords, passThroughToDraw) {
 
   let all4DirectionsDrawBackground;
 
-  if (all4Directions && !drawBackgroundOn) {
+  if (all4Directions && drawBackgroundOn) {
     // increment background counter
     drawBackgroundAll4DirectionsCounter++;
 
@@ -1554,7 +1554,7 @@ function arrowDirectionControl(newDirection, oppositeDirection) {
     if (direction === oppositeDirection) direction = newDirection;
     else {
       direction = newDirection;
-      resetWordsArray();
+      if (drawBackgroundOn) resetWordsArray();
     }
   }
 }
@@ -2055,6 +2055,7 @@ let borderPrefix = "1px solid ";
 function recolorMenuOneColor(inputColor) {
   for (let i = 0; i < elems.length; i++) {
     elems[i].style.color = inputColor;
+    buttonBackgroundBlack();
   }
 
   if (all4Directions) {
@@ -2215,6 +2216,12 @@ function buttonDiscoChecked() {
 function buttonBackgroundBlack() {
   for (let i = 0; i < buttons.length; i++) {
     buttons[i].style.background = colorBlack;
+  }
+}
+
+function buttonBackgroundSelectedColor(inputColor) {
+  for (let i = 0; i < buttons.length; i++) {
+    buttons[i].style.background = inputColor;
   }
 }
 
