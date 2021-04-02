@@ -772,14 +772,19 @@ let xDirection; // direction of x points (west and east)
 let fromHorizontalDirection; // boolean value for setting horizontal  direction
 let fromVerticalDirection; // boolean value for setting vertical direction
 
+let drawBackgroundOn = true;
+
 function draw(inputWords, passThroughToDraw) {
   if (discoOn) discoFrameCounter++;
 
   // draw black background with 0.025 opacity to show the trail
   ctx.font = fontSize + "px 'Consolas', 'Lucida Console'";
 
-  if (!all4Directions || (all4Directions && passThroughToDraw))
+  let drawBackgroundAlternativeCondition =
+    !all4Directions || (all4Directions && passThroughToDraw);
+  if (!drawBackgroundOn) {
     drawOpaqueRect();
+  }
 
   // draw all 4 directions
   let conditionToPass = all4Directions && !passThroughToDraw;
@@ -858,6 +863,14 @@ function draw(inputWords, passThroughToDraw) {
   }
 }
 
+/**  current direction order:
+
+/1. East
+ 2. North
+ 3. West
+ 4. South 
+*/
+
 const eastDirection = 2;
 const northDirection = 0;
 const westDirection = 3;
@@ -870,8 +883,8 @@ function drawAll4Directions() {
     draw(all4DirectionsArray[inputDirection], true);
   }
 
-  function assignDirection(i) {
-    switch (i) {
+  function assignDirection(input) {
+    switch (input) {
       case 0:
         makeDirectionEast();
         break;
@@ -906,17 +919,6 @@ function drawAll4Directions() {
       inputDirection = eastDirection;
     }
   }
-  // direction = "east";
-  // draw(all4DirectionsArray[2], true);
-
-  // direction = "north";
-  // draw(all4DirectionsArray[0], true);
-
-  // direction = "west";
-  // draw(all4DirectionsArray[3], true);
-
-  // direction = "south";
-  // draw(all4DirectionsArray[1], true);
 }
 
 function changeWordCheck(inputWordObject, inputSize) {
@@ -977,7 +979,7 @@ function drawAlternative() {
   createMatrixArray();
 
   // TODO: make squareCounter turnover point moveable
-  if (squareCounter > 5 && rapidSquareOn) {
+  if (squareCounter > squareCounterMax && rapidSquareOn) {
     squareCounter = 0;
     generateRandomSquarePositions();
   }
@@ -1094,6 +1096,8 @@ function resetAllWordsYPositions() {
  */
 
 let squareCounter = 0;
+// TODO: allow user to change value of sqaureCounterMax
+let squareCounterMax = 5;
 
 let squareAnimationOn;
 let x1 = 250;
@@ -1495,6 +1499,9 @@ document.addEventListener("keydown", function (event) {
     case "i":
       if (!squareAnimationOn) all4DirectionsControl();
       break;
+    case "o":
+      drawBackgroundControl();
+      break;
   }
 });
 
@@ -1579,11 +1586,7 @@ function toggleDisco() {
 }
 
 function toggleDiscoMenu() {
-  if (checkBox.checked == true) {
-    checkBox.checked = false;
-  } else {
-    checkBox.checked = true;
-  }
+  checkBox.checked = !checkBox.checked;
 
   checkboxFunction();
 }
@@ -1742,8 +1745,7 @@ function discoIntervalSpeedControl(increase) {
 }
 
 function rapidWordChangeControl() {
-  if (rapidWordChange) rapidWordChange = false;
-  else rapidWordChange = true;
+  rapidWordChange = !rapidWordChange;
 }
 
 function hangingWordsControl() {
@@ -1767,8 +1769,12 @@ function switchMode() {
 }
 
 function rapidSquareControl() {
-  if (rapidSquareOn) rapidSquareOn = false;
-  else rapidSquareOn = true;
+  rapidSquareOn = !rapidSquareOn;
+}
+
+function drawBackgroundControl() {
+  drawBackgroundOn = !drawBackgroundOn;
+  console.log(drawBackgroundOn);
 }
 
 window.addEventListener("resize", resetWordsArray);
