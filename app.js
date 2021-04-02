@@ -799,12 +799,15 @@ function draw(inputWords, passThroughToDraw) {
 
   let all4DirectionsDrawBackground;
 
-  if (all4Directions) {
+  if (all4Directions && !drawBackgroundOn) {
+    // increment background counter
     drawBackgroundAll4DirectionsCounter++;
 
+    // only returns true once every 4 calls  of draw()
     all4DirectionsDrawBackground =
       all4Directions && getAll4DirectionsDrawBackground();
 
+    // if counter is over the max limit, reset
     checkBackgroundCounter();
   }
 
@@ -2298,6 +2301,7 @@ Keyboard Inputs
   - M: Switch between modes
   - U: Toggle rapid square change
   - I: Toggle all 4 directions at once
+  - O: Toggle drawing background
   - PageUp: Speed up
   - PageDown: Slow down
   - 1: Change colour to green

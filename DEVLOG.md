@@ -189,3 +189,8 @@ Added `buttonDiscoChecked()` to the button mouseover functionality for changing 
 
 - All directions implemented for hanging words.
 - Cleaned up repeating draw() methods in MatrixStringClass.
+
+### 03/04/2021
+
+- Toggle background added.
+- Trails fixed for all 4 directions.
