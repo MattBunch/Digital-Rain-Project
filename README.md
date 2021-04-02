@@ -25,6 +25,8 @@ This program displays a digital rain animation within the window browser, as see
 - U: Toggle rapid square change
 - I: Toggle all 4 directions at once
 - O: Toggle drawing background
+- P: Increase random square speed
+- ;: Decrease random square speed
 - PageUp: Speed up
 - PageDown: Slow down
 - 1: Change colour to green

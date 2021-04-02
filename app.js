@@ -1010,8 +1010,7 @@ function drawAlternative() {
 
   createMatrixArray();
 
-  // TODO: make squareCounter turnover point moveable
-  if (squareCounter > squareCounterMax && rapidSquareOn) {
+  if (squareCounter > squareCounterTurnoverPoint && rapidSquareOn) {
     squareCounter = 0;
     generateRandomSquarePositions();
   }
@@ -1128,8 +1127,11 @@ function resetAllWordsYPositions() {
  */
 
 let squareCounter = 0;
-// TODO: allow user to change value of sqaureCounterMax
-let squareCounterMax = 5;
+const amountOfSquareCounterLevels = 21;
+let squareCounterLevels = Array.from(Array(amountOfSquareCounterLevels).keys());
+let middleSquareCounterLevels =
+  squareCounterLevels[Math.round((squareCounterLevels.length - 1) / 2)];
+let squareCounterTurnoverPoint = middleSquareCounterLevels;
 
 let squareAnimationOn;
 let x1 = 250;
@@ -1284,7 +1286,7 @@ function returnBottomRightCollision() {
 
 // for debugging
 function printSquarePositionInfo() {
-  // console.log("---");
+  console.log("---");
   console.log("x1: " + x1);
   // console.log("rightEdge: " + rightEdge);
   // console.log("---");
@@ -1296,7 +1298,7 @@ function printSquarePositionInfo() {
   // console.log("---");
   console.log("y2: " + y2);
   // console.log("bottomEdge: " + bottomEdge);
-  // console.log("---");
+  console.log("---");
 }
 
 function resetSquarePosition() {
@@ -1306,6 +1308,7 @@ function resetSquarePosition() {
   y2 = 500;
 }
 
+// FIXME: create an array of available positions and then select random point
 function generateRandomSquarePositions() {
   x1 = generateRandomNumber(0, canvas.width - SQUARE_SIZE);
 
@@ -1375,7 +1378,7 @@ function reset() {
   resetRandomColor();
   discoFrameCounter = 0;
   intervalSpeed = DEFAULT_SPEED;
-  currentSpeedLevel = speedLevels[middle];
+  currentSpeedLevel = speedLevels[middleSpeedLevels];
   iCounter = 0;
   defaultFontSize = 20;
   resetStringSizes();
@@ -1408,8 +1411,8 @@ const DEFAULT_SPEED = 50;
 const amountOfSpeedLevels = 7;
 let intervalSpeed = DEFAULT_SPEED;
 let speedLevels = Array.from(Array(amountOfSpeedLevels).keys());
-let middle = speedLevels[Math.round((speedLevels.length - 1) / 2)];
-let currentSpeedLevel = speedLevels[middle];
+let middleSpeedLevels = speedLevels[Math.round((speedLevels.length - 1) / 2)];
+let currentSpeedLevel = speedLevels[middleSpeedLevels];
 
 let rapidWordChange = false;
 let hangingWords = true;
@@ -1533,6 +1536,15 @@ document.addEventListener("keydown", function (event) {
       break;
     case "o":
       drawBackgroundControl();
+      break;
+  }
+
+  switch (event.key) {
+    case "p":
+      squareCounterControl(true);
+      break;
+    case ";":
+      squareCounterControl(false);
       break;
   }
 });
@@ -1806,7 +1818,28 @@ function rapidSquareControl() {
 
 function drawBackgroundControl() {
   drawBackgroundOn = !drawBackgroundOn;
-  console.log(drawBackgroundOn);
+}
+
+function squareCounterControl(increase) {
+  if (returnMinCon()) return;
+
+  if (returnMaxCon()) return;
+
+  if (increase) squareCounterTurnoverPoint++;
+  else squareCounterTurnoverPoint--;
+
+  console.log(squareCounterTurnoverPoint);
+
+  function returnMinCon() {
+    return squareCounterTurnoverPoint === squareCounterLevels[0] && !increase;
+  }
+
+  function returnMaxCon() {
+    return (
+      squareCounterTurnoverPoint ===
+        squareCounterLevels[squareCounterLevels.length - 1] && increase
+    );
+  }
 }
 
 window.addEventListener("resize", resetWordsArray);
@@ -2309,6 +2342,8 @@ Keyboard Inputs
   - U: Toggle rapid square change
   - I: Toggle all 4 directions at once
   - O: Toggle drawing background
+  - P: Increase random square speed
+  - ;: Decrease random square speed
   - PageUp: Speed up
   - PageDown: Slow down
   - 1: Change colour to green
