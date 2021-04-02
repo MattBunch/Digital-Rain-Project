@@ -173,6 +173,11 @@ function onePercentChance() {
   return result;
 }
 
+function twentyfivePercentChance() {
+  let result = Math.random() < 0.25;
+  return result;
+}
+
 const DEFAULT_STRING_SIZE_MIN = 20;
 const DEFAULT_STRING_SIZE_MAX = 48;
 let stringSizeMin = DEFAULT_STRING_SIZE_MIN;
@@ -774,17 +779,11 @@ let fromVerticalDirection; // boolean value for setting vertical direction
 
 let drawBackgroundOn = true;
 
+let drawBackgroundAll4DirectionsCounter = 0;
+const drawBackgroundAll4DirectionsCounterMax = 3;
+
 function draw(inputWords, passThroughToDraw) {
   if (discoOn) discoFrameCounter++;
-
-  // draw black background with 0.025 opacity to show the trail
-  ctx.font = fontSize + "px 'Consolas', 'Lucida Console'";
-
-  let drawBackgroundAlternativeCondition =
-    !all4Directions || (all4Directions && passThroughToDraw);
-  if (!drawBackgroundOn) {
-    drawOpaqueRect();
-  }
 
   // draw all 4 directions
   let conditionToPass = all4Directions && !passThroughToDraw;
@@ -792,6 +791,24 @@ function draw(inputWords, passThroughToDraw) {
     drawAll4Directions();
     return;
   }
+
+  // draw black background with 0.025 opacity to show the trail
+  ctx.font = fontSize + "px 'Consolas', 'Lucida Console'";
+
+  let normalDrawBackground = drawBackgroundOn && !all4Directions;
+
+  let all4DirectionsDrawBackground;
+
+  if (all4Directions) {
+    drawBackgroundAll4DirectionsCounter++;
+
+    all4DirectionsDrawBackground =
+      all4Directions && getAll4DirectionsDrawBackground();
+
+    checkBackgroundCounter();
+  }
+
+  if (normalDrawBackground || all4DirectionsDrawBackground) drawOpaqueRect();
 
   // draw strings
   for (let i = 0; i < inputWords.length; i++) {
@@ -921,6 +938,18 @@ function drawAll4Directions() {
   }
 }
 
+function checkBackgroundCounter() {
+  if (getAll4DirectionsDrawBackground()) {
+    drawBackgroundAll4DirectionsCounter = 0;
+  }
+}
+
+function getAll4DirectionsDrawBackground() {
+  return (
+    drawBackgroundAll4DirectionsCounter > drawBackgroundAll4DirectionsCounterMax
+  );
+}
+
 function changeWordCheck(inputWordObject, inputSize) {
   inputWordObject.wordChangeCounter++;
   let changeOverCondition =
@@ -970,7 +999,7 @@ function drawAlternative() {
 
   squareCounter++;
 
-  drawOpaqueRect();
+  if (drawBackgroundOn) drawOpaqueRect();
   ctx.fillStyle = colorWhite;
 
   ctx.font = alternativeFontSize + "px Arial";
@@ -2215,8 +2244,8 @@ function updateAll4DirectionButtonStyling() {
     button3.innerHTML = onText;
     button3.value = onText;
   } else {
-    button3.style.background = colorBlack;
-    button3.style.color = selectColor;
+    // button3.style.background = colorBlack;
+    // button3.style.color = selectColor;
     button3.innerHTML = offText;
     button3.innerText = offText;
     button3.value = offText;
