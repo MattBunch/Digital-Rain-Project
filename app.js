@@ -1308,15 +1308,51 @@ function resetSquarePosition() {
   y2 = 500;
 }
 
-// FIXME: create an array of available positions and then select random point
 function generateRandomSquarePositions() {
-  x1 = generateRandomNumber(0, canvas.width - SQUARE_SIZE);
+  x1 = generateRandomX1Position();
 
   x2 = x1 + 250;
 
-  y1 = generateRandomNumber(0, canvas.height - SQUARE_SIZE);
+  y1 = generateRandomY1Position();
 
   y2 = y1 + 250;
+
+  function generateRandomX1Position() {
+    return generateRandomPosition(getMinX1Point(), getMaxX1Point());
+  }
+
+  function generateRandomY1Position() {
+    return generateRandomPosition(getMinY1Point(), getMaxY1Point());
+  }
+
+  function generateRandomPosition(startingPoint, finishingPoint) {
+    let availablePositions = new Array();
+    let loopLength = Math.floor(finishingPoint / startingPoint);
+
+    for (let i = 0; i < loopLength; i++) {
+      availablePositions.push((startingPoint += 20));
+    }
+
+    return availablePositions[
+      Math.floor(Math.random() * availablePositions.length)
+    ];
+  }
+
+  function getMinX1Point() {
+    return 50;
+  }
+
+  function getMaxX1Point() {
+    return 1110;
+  }
+
+  function getMinY1Point() {
+    return 50;
+  }
+
+  function getMaxY1Point() {
+    return 710;
+  }
 }
 
 /*###########################################################################################
@@ -1547,6 +1583,8 @@ document.addEventListener("keydown", function (event) {
       squareCounterControl(false);
       break;
   }
+
+  printSquarePositionInfo();
 });
 
 // on mouse click
