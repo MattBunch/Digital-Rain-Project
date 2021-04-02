@@ -784,7 +784,6 @@ function draw(inputWords, passThroughToDraw) {
   // draw all 4 directions
   let conditionToPass = all4Directions && !passThroughToDraw;
   if (conditionToPass) {
-    iterateThroughAll4Directions = 4;
     drawAll4Directions();
     return;
   }
@@ -859,20 +858,65 @@ function draw(inputWords, passThroughToDraw) {
   }
 }
 
-let iterateThroughAll4Directions = 0;
+const eastDirection = 2;
+const northDirection = 0;
+const westDirection = 3;
+const southDirection = 1;
 
 function drawAll4Directions() {
-  direction = "east";
-  draw(all4DirectionsArray[2], true);
+  let inputDirection;
+  for (let i = 0; i < 4; i++) {
+    assignDirection(i);
+    draw(all4DirectionsArray[inputDirection], true);
+  }
 
-  direction = "north";
-  draw(all4DirectionsArray[0], true);
+  function assignDirection(i) {
+    switch (i) {
+      case 0:
+        makeDirectionEast();
+        break;
+      case 1:
+        makeDirectionNorth();
+        break;
+      case 2:
+        makeDirectionWest();
+        break;
+      case 3:
+        makeDirectionSouth();
+        break;
+    }
 
-  direction = "west";
-  draw(all4DirectionsArray[3], true);
+    function makeDirectionSouth() {
+      direction = "south";
+      inputDirection = southDirection;
+    }
 
-  direction = "south";
-  draw(all4DirectionsArray[1], true);
+    function makeDirectionWest() {
+      direction = "west";
+      inputDirection = westDirection;
+    }
+
+    function makeDirectionNorth() {
+      direction = "north";
+      inputDirection = northDirection;
+    }
+
+    function makeDirectionEast() {
+      direction = "east";
+      inputDirection = eastDirection;
+    }
+  }
+  // direction = "east";
+  // draw(all4DirectionsArray[2], true);
+
+  // direction = "north";
+  // draw(all4DirectionsArray[0], true);
+
+  // direction = "west";
+  // draw(all4DirectionsArray[3], true);
+
+  // direction = "south";
+  // draw(all4DirectionsArray[1], true);
 }
 
 function changeWordCheck(inputWordObject, inputSize) {
