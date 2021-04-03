@@ -1583,8 +1583,6 @@ document.addEventListener("keydown", function (event) {
       squareCounterControl(false);
       break;
   }
-
-  printSquarePositionInfo();
 });
 
 // on mouse click
@@ -1894,7 +1892,7 @@ function resetWordsArray() {
   if (squareAnimationOn) {
     words.shift();
     repositionSquareToNormal();
-    if (hangingWords) hangingWordsSetup();
+    squareAnimationWordsSetup();
   }
 
   if (all4Directions) {
@@ -1903,7 +1901,7 @@ function resetWordsArray() {
   }
 }
 
-function hangingWordsSetup() {
+function squareAnimationWordsSetup() {
   giveEachWordNewWord();
   resetAllWordsYPositions();
 }
