@@ -1323,6 +1323,8 @@ function generateRandomSquarePositions() {
 
   y2 = y1 + 250;
 
+  printSquarePositionInfo();
+
   function generateRandomX1Position() {
     return generateRandomPosition(getMinX1Point(), getMaxX1Point());
   }
@@ -1332,6 +1334,8 @@ function generateRandomSquarePositions() {
   }
 
   function generateRandomPosition(startingPoint, finishingPoint) {
+    console.log("starting point: " + startingPoint);
+    console.log("finishing point: " + finishingPoint);
     let availablePositions = new Array();
 
     while (startingPoint < finishingPoint) {
@@ -1343,14 +1347,12 @@ function generateRandomSquarePositions() {
     ];
   }
 
-  // TODO: calculate these positions based on screen size and not fixed.
-
   function getMinX1Point() {
     return 50;
   }
 
   function getMaxX1Point() {
-    return 1110;
+    return getMaxPoint(true);
   }
 
   function getMinY1Point() {
@@ -1358,7 +1360,18 @@ function generateRandomSquarePositions() {
   }
 
   function getMaxY1Point() {
-    return 710;
+    return getMaxPoint(false);
+  }
+
+  function getMaxPoint(maxX1) {
+    let heightOrWidth;
+    if (maxX1) heightOrWidth = canvas.width;
+    else heightOrWidth = canvas.height;
+
+    let maxRange = heightOrWidth - SQUARE_SIZE - 60;
+    if (!maxX1) maxRange += 10;
+
+    return Math.round(maxRange / 10) * 10;
   }
 }
 
