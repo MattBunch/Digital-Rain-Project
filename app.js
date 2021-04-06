@@ -316,6 +316,14 @@ function calculateAverageStartingPosition(inputArray, inputDirection) {
   return total / counter;
 }
 
+function getMiddleElementOfArray(inputArray) {
+  return inputArray[Math.round((inputArray.length - 1) / 2)];
+}
+
+function getMiddleLevel(inputArray) {
+  return inputArray[getMiddleElementOfArray(inputArray)];
+}
+
 /* 
 ##################################################################################################
    __  __       _        _         _____ _        _                _____ _               
@@ -1129,9 +1137,7 @@ function resetAllWordsYPositions() {
 let squareCounter = 0;
 const amountOfSquareCounterLevels = 21;
 let squareCounterLevels = Array.from(Array(amountOfSquareCounterLevels).keys());
-let middleSquareCounterLevels =
-  squareCounterLevels[Math.round((squareCounterLevels.length - 1) / 2)];
-let squareCounterTurnoverPoint = middleSquareCounterLevels;
+let squareCounterTurnoverPoint = getMiddleLevel(squareCounterLevels);
 
 let squareAnimationOn;
 let x1 = 250;
@@ -1414,7 +1420,7 @@ function reset() {
   resetRandomColor();
   discoFrameCounter = 0;
   intervalSpeed = DEFAULT_SPEED;
-  currentSpeedLevel = speedLevels[middleSpeedLevels];
+  currentSpeedLevel = getMiddleLevel(speedLevels);
   iCounter = 0;
   defaultFontSize = 20;
   resetStringSizes();
@@ -1447,8 +1453,7 @@ const DEFAULT_SPEED = 50;
 const amountOfSpeedLevels = 7;
 let intervalSpeed = DEFAULT_SPEED;
 let speedLevels = Array.from(Array(amountOfSpeedLevels).keys());
-let middleSpeedLevels = speedLevels[Math.round((speedLevels.length - 1) / 2)];
-let currentSpeedLevel = speedLevels[middleSpeedLevels];
+let currentSpeedLevel = getMiddleLevel(speedLevels);
 
 let rapidWordChange = false;
 let hangingWords = true;
@@ -1863,8 +1868,6 @@ function squareCounterControl(increase) {
 
   if (increase) squareCounterTurnoverPoint++;
   else squareCounterTurnoverPoint--;
-
-  console.log(squareCounterTurnoverPoint);
 
   function returnMinCon() {
     return squareCounterTurnoverPoint === squareCounterLevels[0] && !increase;
