@@ -1333,9 +1333,8 @@ function generateRandomSquarePositions() {
 
   function generateRandomPosition(startingPoint, finishingPoint) {
     let availablePositions = new Array();
-    let loopLength = Math.floor(finishingPoint / startingPoint);
 
-    for (let i = 0; i < loopLength; i++) {
+    while (startingPoint < finishingPoint) {
       availablePositions.push((startingPoint += 20));
     }
 
@@ -1343,6 +1342,8 @@ function generateRandomSquarePositions() {
       Math.floor(Math.random() * availablePositions.length)
     ];
   }
+
+  // TODO: calculate these positions based on screen size and not fixed.
 
   function getMinX1Point() {
     return 50;
