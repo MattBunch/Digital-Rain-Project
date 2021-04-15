@@ -173,6 +173,11 @@ function onePercentChance() {
   return result;
 }
 
+function twentyfivePercentChance() {
+  let result = Math.random() < 0.25;
+  return result;
+}
+
 const DEFAULT_STRING_SIZE_MIN = 20;
 const DEFAULT_STRING_SIZE_MAX = 48;
 let stringSizeMin = DEFAULT_STRING_SIZE_MIN;
@@ -309,6 +314,14 @@ function calculateAverageStartingPosition(inputArray, inputDirection) {
   }
 
   return total / counter;
+}
+
+function getMiddleElementOfArray(inputArray) {
+  return inputArray[Math.round((inputArray.length - 1) / 2)];
+}
+
+function getMiddleLevel(inputArray) {
+  return inputArray[getMiddleElementOfArray(inputArray)];
 }
 
 /* 
@@ -772,22 +785,41 @@ let xDirection; // direction of x points (west and east)
 let fromHorizontalDirection; // boolean value for setting horizontal  direction
 let fromVerticalDirection; // boolean value for setting vertical direction
 
+let drawBackgroundOn = true;
+
+let drawBackgroundAll4DirectionsCounter = 0;
+const drawBackgroundAll4DirectionsCounterMax = 3;
+
 function draw(inputWords, passThroughToDraw) {
   if (discoOn) discoFrameCounter++;
-
-  // draw black background with 0.025 opacity to show the trail
-  ctx.font = fontSize + "px 'Consolas', 'Lucida Console'";
-
-  if (!all4Directions || (all4Directions && passThroughToDraw))
-    drawOpaqueRect();
 
   // draw all 4 directions
   let conditionToPass = all4Directions && !passThroughToDraw;
   if (conditionToPass) {
-    iterateThroughAll4Directions = 4;
     drawAll4Directions();
     return;
   }
+
+  // draw black background with 0.025 opacity to show the trail
+  ctx.font = fontSize + "px 'Consolas', 'Lucida Console'";
+
+  let normalDrawBackground = drawBackgroundOn && !all4Directions;
+
+  let all4DirectionsDrawBackground;
+
+  if (all4Directions && drawBackgroundOn) {
+    // increment background counter
+    drawBackgroundAll4DirectionsCounter++;
+
+    // only returns true once every 4 calls  of draw()
+    all4DirectionsDrawBackground =
+      all4Directions && getAll4DirectionsDrawBackground();
+
+    // if counter is over the max limit, reset
+    checkBackgroundCounter();
+  }
+
+  if (normalDrawBackground || all4DirectionsDrawBackground) drawOpaqueRect();
 
   // draw strings
   for (let i = 0; i < inputWords.length; i++) {
@@ -859,20 +891,74 @@ function draw(inputWords, passThroughToDraw) {
   }
 }
 
-let iterateThroughAll4Directions = 0;
+/**  current direction order:
+
+/1. East
+ 2. North
+ 3. West
+ 4. South 
+*/
+
+const eastDirection = 2;
+const northDirection = 0;
+const westDirection = 3;
+const southDirection = 1;
 
 function drawAll4Directions() {
-  direction = "east";
-  draw(all4DirectionsArray[2], true);
+  let inputDirection;
+  for (let i = 0; i < 4; i++) {
+    assignDirection(i);
+    draw(all4DirectionsArray[inputDirection], true);
+  }
 
-  direction = "north";
-  draw(all4DirectionsArray[0], true);
+  function assignDirection(input) {
+    switch (input) {
+      case 0:
+        makeDirectionEast();
+        break;
+      case 1:
+        makeDirectionNorth();
+        break;
+      case 2:
+        makeDirectionWest();
+        break;
+      case 3:
+        makeDirectionSouth();
+        break;
+    }
 
-  direction = "west";
-  draw(all4DirectionsArray[3], true);
+    function makeDirectionSouth() {
+      direction = "south";
+      inputDirection = southDirection;
+    }
 
-  direction = "south";
-  draw(all4DirectionsArray[1], true);
+    function makeDirectionWest() {
+      direction = "west";
+      inputDirection = westDirection;
+    }
+
+    function makeDirectionNorth() {
+      direction = "north";
+      inputDirection = northDirection;
+    }
+
+    function makeDirectionEast() {
+      direction = "east";
+      inputDirection = eastDirection;
+    }
+  }
+}
+
+function checkBackgroundCounter() {
+  if (getAll4DirectionsDrawBackground()) {
+    drawBackgroundAll4DirectionsCounter = 0;
+  }
+}
+
+function getAll4DirectionsDrawBackground() {
+  return (
+    drawBackgroundAll4DirectionsCounter > drawBackgroundAll4DirectionsCounterMax
+  );
 }
 
 function changeWordCheck(inputWordObject, inputSize) {
@@ -924,7 +1010,7 @@ function drawAlternative() {
 
   squareCounter++;
 
-  drawOpaqueRect();
+  if (drawBackgroundOn) drawOpaqueRect();
   ctx.fillStyle = colorWhite;
 
   ctx.font = alternativeFontSize + "px Arial";
@@ -932,8 +1018,7 @@ function drawAlternative() {
 
   createMatrixArray();
 
-  // TODO: make squareCounter turnover point moveable
-  if (squareCounter > 5 && rapidSquareOn) {
+  if (squareCounter > squareCounterTurnoverPoint && rapidSquareOn) {
     squareCounter = 0;
     generateRandomSquarePositions();
   }
@@ -1050,6 +1135,9 @@ function resetAllWordsYPositions() {
  */
 
 let squareCounter = 0;
+const amountOfSquareCounterLevels = 21;
+let squareCounterLevels = Array.from(Array(amountOfSquareCounterLevels).keys());
+let squareCounterTurnoverPoint = getMiddleLevel(squareCounterLevels);
 
 let squareAnimationOn;
 let x1 = 250;
@@ -1204,7 +1292,7 @@ function returnBottomRightCollision() {
 
 // for debugging
 function printSquarePositionInfo() {
-  // console.log("---");
+  console.log("---");
   console.log("x1: " + x1);
   // console.log("rightEdge: " + rightEdge);
   // console.log("---");
@@ -1216,7 +1304,7 @@ function printSquarePositionInfo() {
   // console.log("---");
   console.log("y2: " + y2);
   // console.log("bottomEdge: " + bottomEdge);
-  // console.log("---");
+  console.log("---");
 }
 
 function resetSquarePosition() {
@@ -1227,13 +1315,64 @@ function resetSquarePosition() {
 }
 
 function generateRandomSquarePositions() {
-  x1 = generateRandomNumber(0, canvas.width - SQUARE_SIZE);
+  x1 = generateRandomX1Position();
 
   x2 = x1 + 250;
 
-  y1 = generateRandomNumber(0, canvas.height - SQUARE_SIZE);
+  y1 = generateRandomY1Position();
 
   y2 = y1 + 250;
+
+  printSquarePositionInfo();
+
+  function generateRandomX1Position() {
+    return generateRandomPosition(getMinX1Point(), getMaxX1Point());
+  }
+
+  function generateRandomY1Position() {
+    return generateRandomPosition(getMinY1Point(), getMaxY1Point());
+  }
+
+  function generateRandomPosition(startingPoint, finishingPoint) {
+    console.log("starting point: " + startingPoint);
+    console.log("finishing point: " + finishingPoint);
+    let availablePositions = new Array();
+
+    while (startingPoint < finishingPoint) {
+      availablePositions.push((startingPoint += 20));
+    }
+
+    return availablePositions[
+      Math.floor(Math.random() * availablePositions.length)
+    ];
+  }
+
+  function getMinX1Point() {
+    return 50;
+  }
+
+  function getMaxX1Point() {
+    return getMaxPoint(true);
+  }
+
+  function getMinY1Point() {
+    return 50;
+  }
+
+  function getMaxY1Point() {
+    return getMaxPoint(false);
+  }
+
+  function getMaxPoint(maxX1) {
+    let heightOrWidth;
+    if (maxX1) heightOrWidth = canvas.width;
+    else heightOrWidth = canvas.height;
+
+    let maxRange = heightOrWidth - SQUARE_SIZE - 60;
+    if (!maxX1) maxRange += 10;
+
+    return Math.round(maxRange / 10) * 10;
+  }
 }
 
 /*###########################################################################################
@@ -1295,7 +1434,7 @@ function reset() {
   resetRandomColor();
   discoFrameCounter = 0;
   intervalSpeed = DEFAULT_SPEED;
-  currentSpeedLevel = speedLevels[middle];
+  currentSpeedLevel = getMiddleLevel(speedLevels);
   iCounter = 0;
   defaultFontSize = 20;
   resetStringSizes();
@@ -1328,8 +1467,7 @@ const DEFAULT_SPEED = 50;
 const amountOfSpeedLevels = 7;
 let intervalSpeed = DEFAULT_SPEED;
 let speedLevels = Array.from(Array(amountOfSpeedLevels).keys());
-let middle = speedLevels[Math.round((speedLevels.length - 1) / 2)];
-let currentSpeedLevel = speedLevels[middle];
+let currentSpeedLevel = getMiddleLevel(speedLevels);
 
 let rapidWordChange = false;
 let hangingWords = true;
@@ -1451,6 +1589,18 @@ document.addEventListener("keydown", function (event) {
     case "i":
       if (!squareAnimationOn) all4DirectionsControl();
       break;
+    case "o":
+      drawBackgroundControl();
+      break;
+  }
+
+  switch (event.key) {
+    case "p":
+      squareCounterControl(true);
+      break;
+    case ";":
+      squareCounterControl(false);
+      break;
   }
 });
 
@@ -1471,7 +1621,7 @@ function arrowDirectionControl(newDirection, oppositeDirection) {
     if (direction === oppositeDirection) direction = newDirection;
     else {
       direction = newDirection;
-      resetWordsArray();
+      if (drawBackgroundOn) resetWordsArray();
     }
   }
 }
@@ -1535,11 +1685,7 @@ function toggleDisco() {
 }
 
 function toggleDiscoMenu() {
-  if (checkBox.checked == true) {
-    checkBox.checked = false;
-  } else {
-    checkBox.checked = true;
-  }
+  checkBox.checked = !checkBox.checked;
 
   checkboxFunction();
 }
@@ -1700,8 +1846,7 @@ function discoIntervalSpeedControl(increase) {
 }
 
 function rapidWordChangeControl() {
-  if (rapidWordChange) rapidWordChange = false;
-  else rapidWordChange = true;
+  rapidWordChange = !rapidWordChange;
 }
 
 function hangingWordsControl() {
@@ -1725,8 +1870,31 @@ function switchMode() {
 }
 
 function rapidSquareControl() {
-  if (rapidSquareOn) rapidSquareOn = false;
-  else rapidSquareOn = true;
+  rapidSquareOn = !rapidSquareOn;
+}
+
+function drawBackgroundControl() {
+  drawBackgroundOn = !drawBackgroundOn;
+}
+
+function squareCounterControl(increase) {
+  if (returnMinCon()) return;
+
+  if (returnMaxCon()) return;
+
+  if (increase) squareCounterTurnoverPoint++;
+  else squareCounterTurnoverPoint--;
+
+  function returnMinCon() {
+    return squareCounterTurnoverPoint === squareCounterLevels[0] && !increase;
+  }
+
+  function returnMaxCon() {
+    return (
+      squareCounterTurnoverPoint ===
+        squareCounterLevels[squareCounterLevels.length - 1] && increase
+    );
+  }
 }
 
 window.addEventListener("resize", resetWordsArray);
@@ -1743,7 +1911,7 @@ function resetWordsArray() {
   if (squareAnimationOn) {
     words.shift();
     repositionSquareToNormal();
-    if (hangingWords) hangingWordsSetup();
+    squareAnimationWordsSetup();
   }
 
   if (all4Directions) {
@@ -1752,7 +1920,7 @@ function resetWordsArray() {
   }
 }
 
-function hangingWordsSetup() {
+function squareAnimationWordsSetup() {
   giveEachWordNewWord();
   resetAllWordsYPositions();
 }
@@ -1979,6 +2147,7 @@ let borderPrefix = "1px solid ";
 function recolorMenuOneColor(inputColor) {
   for (let i = 0; i < elems.length; i++) {
     elems[i].style.color = inputColor;
+    buttonBackgroundBlack();
   }
 
   if (all4Directions) {
@@ -2142,6 +2311,12 @@ function buttonBackgroundBlack() {
   }
 }
 
+function buttonBackgroundSelectedColor(inputColor) {
+  for (let i = 0; i < buttons.length; i++) {
+    buttons[i].style.background = inputColor;
+  }
+}
+
 function buttonDiscoBackgroundChangeColor() {
   for (let i = 0; i < buttons.length; i++) {
     buttons[i].style.background = getRandomColor();
@@ -2171,8 +2346,8 @@ function updateAll4DirectionButtonStyling() {
     button3.innerHTML = onText;
     button3.value = onText;
   } else {
-    button3.style.background = colorBlack;
-    button3.style.color = selectColor;
+    // button3.style.background = colorBlack;
+    // button3.style.color = selectColor;
     button3.innerHTML = offText;
     button3.innerText = offText;
     button3.value = offText;
@@ -2225,6 +2400,7 @@ Keyboard Inputs
   - M: Switch between modes
   - U: Toggle rapid square change
   - I: Toggle all 4 directions at once
+  - O: Toggle drawing background
   - PageUp: Speed up
   - PageDown: Slow down
   - 1: Change colour to green
@@ -2246,4 +2422,6 @@ Keyboard Inputs
   - Altering string length disabled
   - Altering font size disabled.
   - G: Toggle fixed word length.
+  - P: Increase random square speed
+  - ;: Decrease random square speed
   `;
