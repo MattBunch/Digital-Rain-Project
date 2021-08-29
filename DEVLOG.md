@@ -1,6 +1,6 @@
-## Devlog:
+# Devlog:
 
-### 19/08/2020
+## 19/08/2020
 
 The core of this program was written while I was learning JS with a few days experience coming from a background in Java, mostly completed on 18/08/20 and 19/08/20.
 I took a project I had written in Java and converted it into JS, this is why the program is very OOP-orientated with the `MatrixString` class, rather than drawing strings in a functional programming style. I even had the `MatrixString` class written like a Java class with getters and setters. This really created complication because I forgot to add the brackets to the get methods in my `show()` function within the matrixString objects and it wasn't animating for a long time.
@@ -11,7 +11,7 @@ That being said there are some improvements made over the original version I mad
 
 Eventually I would like to expand this project to include more user options and make it a more functional program rather than just a demonstration.
 
-### 22/08/2020
+## 22/08/2020
 
 Today, added multiple colour options. This was pretty straightforward. Added parameter to the `show()` function which takes in the array, the different colour options are stored in an array of arrays called `colorChoiceArray[]` and this array is passed into the `show()` function in `draw()`. When I expand this program to include menus, the `loadColor()` function will work something like as follows:
 
@@ -34,7 +34,7 @@ For a while I was unhappy with the distribution of the y axis for my matrix stri
 
 Implemented a temporary menu system with window prompts, in the future, this will be replaced with a user interface that can be faded away in the main menu but I will need to research more HTML/CSS stuff to figure out how to implement that and work on my front-end development skills. It looks like for getting the text to move left, right and upwards will be a real pain, I don't even know if it can be done diagonally the way I have programmed it.
 
-### 23/08/2020
+## 23/08/2020
 
 Updated the screen coordinates to be updated every frame within the `show()` method. I still worry about having to repeat this code over and over again. However, this lost the opacity effect and wasn't worth it. Currently the program creates the height and size upon the original window size, this isn't a problem if the program had a fixed window size and was running like downloadable executable which only ran in full screen, but for a browser or resizeable screen this becomes a big problem. If you expand the screen size after you start the program, the canvas doesn't update the position. if you include the following lines in the `show()` method:
 
@@ -125,11 +125,11 @@ Added `buttonDiscoChecked()` to the button mouseover functionality for changing 
 - HTML elements made global to cut down on useless variable declarations in almost every html formatting-related function.
 - Counter added to stop disco function from being so rapid causing epilepsy. Could add disco speed in the menu? Possible future addition to add right here.
 
-### 25/02/2021
+## 25/02/2021
 
 - ToggleDisco added.
 
-### 26/02/2021
+## 26/02/2021
 
 - Speedup and Slowdown added.
 - North and South starting point generating function fixed to be a wider range to look more spread out.
@@ -137,30 +137,30 @@ Added `buttonDiscoChecked()` to the button mouseover functionality for changing 
 - Event.KeyCode is deprecated. Should look at replacing this with a newer method.
 - Disco toggle added to menu.
 
-### 28/02/2021
+## 28/02/2021
 
 - Check for screen size added to vertical directions.
 - New branch added to experiment with calculating the height of the string and generating a starting point from there.
 
-### 13/03/2021
+## 13/03/2021
 
 - Change fontsize added with "a" and "s" keys.
 - Deprecated KeyCodes replaced.
 
-### 15/03/2021
+## 15/03/2021
 
 - Starting position generator functions editted for North and South.
 - Debug info editted, average calculator added.
 - generateXEast fixed, west direction adjusted for taking in word size and font size parameters but still requires some calculations.
 - Change string length added with "q" and "a" keys.
 
-### 18/03/2021
+## 18/03/2021
 
 - Switched to switch case for key presses.
 - More elaborate switch direction keys: resets arrow when switching to a different angle.
 - Disco speed keyboard input added.
 
-### 20/03/2021
+## 20/03/2021
 
 - Lots accomplished today:
 - Square Mode added.
@@ -168,29 +168,33 @@ Added `buttonDiscoChecked()` to the button mouseover functionality for changing 
 - Switching between Rapid Switching and slower switching added to both modes.
 - Fading borders of white square in Square Mode only work consistently for default alternative font size, will need serious overhaul to work for other font sizes.
 
-### 21/03/2021
+## 21/03/2021
 
 - Switch Mode button added.
 - Alternative fading method using X and Y coordinates attempted. Did not work because the other Matrix String Objects were not defined.
 - Fading corning in alternative mode achieved through perseverance through original function (doubled number of returning conditions just to account for a few squares). Only works so one font size so disabled adjusting the font size with the keyboard for the alternative mode.
 - Created a method of looping through all the Coordinates in an array and comparing the x and y of each string object inside of the Words array to those coordinates. This method worked and matched up, but unfortunately, it slows down the browser too much because of the o(n^2) time complexity of having to loop through both arrays every second and isn't worth implementing.
 
-### 22/03/2021
+## 22/03/2021
 
 - Forcing square back into canvas upon switching from disco to normal mode solved.
 
-### 23/03/2021
+## 23/03/2021
 
 - Fixed random square position and hanging words on screen resize.
 - All four direction at a time implemented, third button implemented.
 - Help button implemented.
 
-### 24/03/2021
+## 24/03/2021
 
 - All directions implemented for hanging words.
 - Cleaned up repeating draw() methods in MatrixStringClass.
 
-### 03/04/2021
+## 03/04/2021
 
 - Toggle background added.
 - Trails fixed for all 4 directions.
+
+## 29/08/2021
+
+- Formatting fixed for this DEVLOG.md file.
