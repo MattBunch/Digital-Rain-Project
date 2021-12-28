@@ -52,7 +52,6 @@ Same as Normal Mode except:
 ## Possible extensions in further versions:
 
 - Music.
-- All four directions at the same time.
 - Colour wheel selector.
 
 ## Misc
