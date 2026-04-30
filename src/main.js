@@ -1,48 +1,67 @@
 // src/main.js
 import './style.css';
-import { COLORS, DEFAULT_CONFIG } from './constants/matrix.js';
-// We will eventually move everything out of app.js, but for now we import the legacy logic
-// To make it work as a module, we might need to export functions from app.js or refactor them here.
+import { CoreEngine } from './engine/CoreEngine.js';
+import { UIManager } from './ui/UIManager.js';
+import { InputHandler } from './controllers/InputHandler.js';
+import { canvasSetup } from './utils/CoordinateUtils.js';
 
-// For now, let's implement the event listeners as requested in the plan.
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Digital Rain Initialized');
+  const engine = new CoreEngine();
+  const ui = new UIManager(engine);
+  const input = new InputHandler(engine, ui);
 
-  // Targeting buttons
-  const startBtn = document.getElementById('button');
-  const squareBtn = document.getElementById('button2');
-  const directionsBtn = document.getElementById('button3');
-  const helpBtn = document.getElementById('button4');
+  const canvas = document.getElementById('myCanvas');
+  const ctx = canvas.getContext('2d');
+  engine.setContext(canvas, ctx);
 
-  // Targeting selects and inputs
-  const colorSelect = document.getElementById('colors');
-  const directionSelect = document.getElementById('directions');
-  const discoCheckbox = document.getElementById('disco');
-  const frameCountInput = document.getElementById('frameCount');
+  const setup = () => {
+    canvasSetup(window.innerWidth, window.innerHeight, canvas, ctx, engine.defaultFontSize);
+  };
 
-  // Event Listeners (mapping to legacy functions for now)
-  if (startBtn) startBtn.addEventListener('click', () => window.run(true));
-  if (squareBtn) squareBtn.addEventListener('click', () => window.run(false));
-  if (directionsBtn) directionsBtn.addEventListener('click', () => window.all4DirectionsControl());
-  if (helpBtn) helpBtn.addEventListener('click', () => alert(window.helpText));
+  window.addEventListener('resize', () => {
+    setup();
+    engine.resetWordsArray();
+  });
 
-  if (colorSelect) colorSelect.addEventListener('change', () => window.selectFunction());
-  if (directionSelect) directionSelect.addEventListener('change', () => window.directionFunction());
-  if (discoCheckbox) {
-    discoCheckbox.addEventListener('change', () => window.checkboxFunction());
-    // Also trigger on load for initial state
-    window.checkboxFunction();
-  }
-  if (frameCountInput) {
-    frameCountInput.addEventListener('change', () => window.frameCountFunctionOnChange());
-    window.frameCountFunctionOnLoad();
-  }
+  // Connect UI Listeners manually for better control
+  document.getElementById('button').addEventListener('click', () => {
+    setup();
+    engine.run(true);
+    ui.hideMenu();
+  });
 
-  // Initial UI Setup
-  window.menuOnLoad();
+  document.getElementById('button2').addEventListener('click', () => {
+    setup();
+    engine.run(false);
+    ui.hideMenu();
+  });
+
+  document.getElementById('button3').addEventListener('click', () => {
+    engine.all4Directions = !engine.all4Directions;
+    engine.resetWordsArray();
+    ui.updateAll4DirectionButtonStyling();
+  });
+
+  document.getElementById('button4').addEventListener('click', () => {
+    import('./constants/Assets.js').then(m => alert(m.helpText));
+  });
+
+  document.getElementById('colors').addEventListener('change', (e) => {
+    ui.selectFunction();
+    engine.switchColor(e.target.value);
+  });
+
+  document.getElementById('directions').addEventListener('change', (e) => {
+    engine.direction = e.target.value;
+  });
+
+  document.getElementById('disco').addEventListener('change', () => {
+    ui.checkboxFunction();
+  });
+
+  document.getElementById('frameCount').addEventListener('change', () => {
+    ui.frameCountFunctionOnChange();
+  });
+
+  console.log('Digital Rain: Fixed Modularization Initialized');
 });
-
-// Since app.js functions are now in a module, they aren't global.
-// We need to either export them from app.js and import them here,
-// or temporarily attach them to window if we want to keep the legacy structure working during transition.
-import './app.js';

@@ -6,3 +6,7 @@
     *   Only use `let` when you explicitly intend to reassign the variable. 
     *   Never use `var`.
 *   **Object/Array Mutability:** Note that `const` allows modifying properties/elements; use this for objects and arrays unless the entire reference must change.
+
+
+## project structure
+Do **not** delete `src/app.js` so you can use it as a reference for how the functionality is supposed to work - (legacy file) - don't write unit tests for it either.

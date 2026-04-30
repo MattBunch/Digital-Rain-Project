@@ -198,3 +198,7 @@ Added `buttonDiscoChecked()` to the button mouseover functionality for changing 
 ## 29/08/2021
 
 - Formatting fixed for this DEVLOG.md file.
+
+## 30/04/2025
+
+- Decided to try getting Gemini CLI to refactor this repo - started in the early stages

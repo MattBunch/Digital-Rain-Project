@@ -51,7 +51,14 @@ Same as Normal Mode except:
 
 ## Possible extensions in further versions:
 
-- Music.
+- Test coverage - v8 library (npm install -D vitest @vitest/coverage-v8)
+- 100% unit test coverage
+- fix broken square mode movement - no left or down movement working
+- all 4 directions - left & right aren't working 
+- eslint - make sure gemini/ai agents follow it
+- adapt values to work with any size monitor for consistent views no matter the screen size
+- migrate to typescript
+
 - Colour wheel selector.
 - Up and down arrows in menu.
 - bugs in main menu - colours mismatching, highlight staying on.
