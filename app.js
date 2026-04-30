@@ -34,12 +34,12 @@ let defaultFontSize = 20;
 function canvasSetup() {
   width = window.innerWidth;
   height = window.innerHeight;
-  canvas = document.getElementById("myCanvas"); // canvas object
-  ctx = canvas.getContext("2d"); // context object
+  canvas = document.getElementById('myCanvas'); // canvas object
+  ctx = canvas.getContext('2d'); // context object
   fontSize = defaultFontSize;
   resetStringSizes();
   ctx.font = fontSize + "px 'Consolas', 'Lucida Console'";
-  ctx.fillStyle = "#00FF41";
+  ctx.fillStyle = '#00FF41';
 
   ctx.canvas.width = width;
   ctx.canvas.height = height;
@@ -73,49 +73,49 @@ colors ordered in array from brightest to darkest.
 */
 
 // white:
-const colorWhite = "#ffffff"; // white, yes I know white is a shade not a color
-const colorBlack = "#000000"; // black
+const colorWhite = '#ffffff'; // white, yes I know white is a shade not a color
+const colorBlack = '#000000'; // black
 
 // Green:
-const colorMatrixGreen = "#00ff41"; // matrix green
-const color90White10Green = "#ccffd9"; // color 95% white, 5% matrix green
-const color70White30Green = "#80ff9f"; // color 70% white, 30% matrix green
+const colorMatrixGreen = '#00ff41'; // matrix green
+const color90White10Green = '#ccffd9'; // color 95% white, 5% matrix green
+const color70White30Green = '#80ff9f'; // color 70% white, 30% matrix green
 const greenArray = [color90White10Green, color70White30Green, colorMatrixGreen];
 
 // Red:
-const color90White10Red = "#ffcccc"; // color 95% white, 5% red
-const color70White30Red = "#ff6666"; // color 70% white, 30% red
-const colorRed = "#e60000"; // red
+const color90White10Red = '#ffcccc'; // color 95% white, 5% red
+const color70White30Red = '#ff6666'; // color 70% white, 30% red
+const colorRed = '#e60000'; // red
 const redArray = [color90White10Red, color70White30Red, colorRed];
 
 // Yellow:
-const color95White5Yellow = "#ffffe6"; // color 95% white, 5% yellow
-const color70White30Yellow = "#ffff66"; // color 70% white, 30% yellow
-const colorYellow = "#ffff00"; // yellow
+const color95White5Yellow = '#ffffe6'; // color 95% white, 5% yellow
+const color70White30Yellow = '#ffff66'; // color 70% white, 30% yellow
+const colorYellow = '#ffff00'; // yellow
 const yellowArray = [color95White5Yellow, color70White30Yellow, colorYellow];
 
 // Blue:
-const color95White5Blue = "#e6e6ff"; // color 95% white, 5% blue
-const color70White30Blue = "#6666ff"; // color 70% white, 30% blue
-const colorBlue = "#0000ff"; // blue
+const color95White5Blue = '#e6e6ff'; // color 95% white, 5% blue
+const color70White30Blue = '#6666ff'; // color 70% white, 30% blue
+const colorBlue = '#0000ff'; // blue
 const blueArray = [color95White5Blue, color70White30Blue, colorBlue];
 
 // Orange:
-const color95White5Orange = "#fff5e6"; // color 95% white, 5% orange
-const color70White30Orange = "#ffc266"; // color 70% white, 30% orange
-const colorOrange = "#ff9900"; // orange
+const color95White5Orange = '#fff5e6'; // color 95% white, 5% orange
+const color70White30Orange = '#ffc266'; // color 70% white, 30% orange
+const colorOrange = '#ff9900'; // orange
 const orangeArray = [color95White5Orange, color70White30Orange, colorOrange];
 
 // Pink
-const color95White5Pink = "#ffe6ff"; // color 95% white, 5% pink
-const color70White30Pink = "#ff66ff"; // color 70% white, 30% pink
-const colorPink = "#ff00ff"; // pink
+const color95White5Pink = '#ffe6ff'; // color 95% white, 5% pink
+const color70White30Pink = '#ff66ff'; // color 70% white, 30% pink
+const colorPink = '#ff00ff'; // pink
 const pinkArray = [color95White5Pink, color70White30Pink, colorPink];
 
 // Cyan
-const color95White5Cyan = "#e6ffff"; // color 95% white, 5% cyan
-const color70White30Cyan = "#66ffff"; // color 70% white, 30% cyan
-const colorCyan = "#00ffff"; // cyan
+const color95White5Cyan = '#e6ffff'; // color 95% white, 5% cyan
+const color70White30Cyan = '#66ffff'; // color 70% white, 30% cyan
+const colorCyan = '#00ffff'; // cyan
 const cyanArray = [color95White5Cyan, color70White30Cyan, colorCyan];
 
 // random colors
@@ -134,8 +134,8 @@ const colorChoiceArray = [
 ];
 
 function getRandomColor() {
-  let letters = "0123456789ABCDEF";
-  let color = "#";
+  let letters = '0123456789ABCDEF';
+  let color = '#';
   for (let i = 0; i < 6; i++) {
     color += letters[Math.floor(Math.random() * 16)];
   }
@@ -195,7 +195,7 @@ function generateWordSizeRand() {
 
 function generateWordSizeRandHanging() {
   return Math.floor(
-    generateRandomNumber(stringSizeMin - 10, stringSizeMax + 3)
+    generateRandomNumber(stringSizeMin - 10, stringSizeMax + 3),
   );
 }
 
@@ -211,12 +211,12 @@ function generateSpeed() {
 
 // string of the alphabet
 const alphabet =
-  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ｦｧｨｩｪｫｬｭｮｯｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ";
+  'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ｦｧｨｩｪｫｬｭｮｯｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ';
 
 // function to generate a random word based on this string.
 function generateWord(wordSize) {
   // word declaration as empty
-  let word = "";
+  let word = '';
 
   // get random letter from the alphabet and add it to the word
   for (let i = 0; i < wordSize; i++) {
@@ -262,7 +262,7 @@ function generateXWest(word, inputFontSize) {
 function generateYNorth() {
   let minNum = canvas.height + 2;
   let maxNum = Math.round(
-    canvas.height + canvas.height * 2 + canvas.height * 0.7021
+    canvas.height + canvas.height * 2 + canvas.height * 0.7021,
   );
 
   return generateStartingPointInput(minNum, maxNum);
@@ -283,25 +283,25 @@ function doubleInt(input) {
   return input * 2;
 }
 
-const vertical = "vertical";
-const horizontal = "horizontal";
+const vertical = 'vertical';
+const horizontal = 'horizontal';
 
 function debugStartingPosition(minNum, maxNum, output) {
   if (iCounter < 1) {
     iCounter++;
-    console.log("min: " + minNum);
-    console.log("max: " + maxNum);
+    console.log('min: ' + minNum);
+    console.log('max: ' + maxNum);
     let difference = maxNum - minNum;
-    console.log("difference: " + difference);
-    console.log("canvas.height: " + canvas.height);
-    console.log("canvas.width: " + canvas.width);
-    console.log("starting position: " + output);
+    console.log('difference: ' + difference);
+    console.log('canvas.height: ' + canvas.height);
+    console.log('canvas.width: ' + canvas.width);
+    console.log('starting position: ' + output);
   }
 }
 
 function printAverage() {
   let average = calculateAverageStartingPosition(words, horizontal);
-  console.log("average starting position: " + average);
+  console.log('average starting position: ' + average);
 }
 
 function calculateAverageStartingPosition(inputArray, inputDirection) {
@@ -338,7 +338,7 @@ function getMiddleLevel(inputArray) {
 */
 
 // disco frame counters
-const discoFrameElement = document.getElementById("frameCount");
+const discoFrameElement = document.getElementById('frameCount');
 let discoFrameCounter = 0; // counter for determining frame which colors change
 
 let discoFrameCounterTurnoverPoint = discoFrameElement.value; // counter maximum for when counter goes back to 0
@@ -402,7 +402,7 @@ class MatrixString {
       if (onePercentChance() && !rapidWordChange && i != 0)
         letter = getRandomChar();
 
-      if (i == 0) letter = " ";
+      if (i == 0) letter = ' ';
 
       this.drawSquare(xCoordinate, yCoordinate, inputColorArray);
 
@@ -422,13 +422,13 @@ class MatrixString {
     let alternativeFade1Condition = returnAlternativeFadeCondition(
       0,
       xCoordinate,
-      yCoordinate
+      yCoordinate,
     );
 
     let alternativeFade2Condition = returnAlternativeFadeCondition(
       1,
       xCoordinate,
-      yCoordinate
+      yCoordinate,
     );
 
     if (primaryColorCondition) {
@@ -451,7 +451,7 @@ class MatrixString {
   }
 
   setColors(i, inputColorArray) {
-    if (direction == "south" || direction == "west") {
+    if (direction == 'south' || direction == 'west') {
       if (i == this.word.length - 2) {
         // set first letter color to white
         ctx.fillStyle = colorWhite;
@@ -466,7 +466,7 @@ class MatrixString {
         // extension? fade out of darker colors
         ctx.fillStyle = inputColorArray[2];
       }
-    } else if (direction == "north" || direction == "east") {
+    } else if (direction == 'north' || direction == 'east') {
       if (i == 0) {
         // set first letter color to white
         ctx.fillStyle = colorWhite;
@@ -487,14 +487,14 @@ class MatrixString {
   getYCoordinateFromDirection(i, alternative) {
     let defaultYCoordinate = this.y + i * this.fontSize;
     switch (direction) {
-      case "south":
+      case 'south':
         return defaultYCoordinate;
-      case "north":
+      case 'north':
         if (!alternative) return defaultYCoordinate;
         return this.y - i * this.fontSize;
-      case "east":
+      case 'east':
         return this.y;
-      case "west":
+      case 'west':
         return this.y;
     }
   }
@@ -502,13 +502,13 @@ class MatrixString {
   getXCoordinateFromDirection(i, alternative) {
     let defaultXCoordinate = this.x + i * this.fontSize;
     switch (direction) {
-      case "south":
+      case 'south':
         return this.x;
-      case "north":
+      case 'north':
         return this.x;
-      case "east":
+      case 'east':
         return defaultXCoordinate;
-      case "west":
+      case 'west':
         if (!alternative) return defaultXCoordinate;
         return this.x - i * this.fontSize;
     }
@@ -536,7 +536,7 @@ class MatrixString {
   }
 }
 
-let testWord = new MatrixString("1234567890", 50, 50, 50, 50, 25);
+let testWord = new MatrixString('1234567890', 50, 50, 50, 50, 25);
 
 function discoColorCounterCheck() {
   if (discoFrameCounter > discoFrameCounterTurnoverPoint) {
@@ -592,7 +592,7 @@ function returnAlternativeFadeCondition(inputNum, xCoordinate, yCoordinate) {
     xCoordinate > x2 + alternativeFontSize
   );
 
-  if (direction === "north") {
+  if (direction === 'north') {
     topCon1 = yCoordinate - 6 == yPos1;
   }
 
@@ -605,7 +605,7 @@ function returnAlternativeFadeCondition(inputNum, xCoordinate, yCoordinate) {
     xCoordinate > x2 + alternativeFontSize
   );
 
-  if (direction === "north") {
+  if (direction === 'north') {
     bottomCon1 = yCoordinate + 14 == y2 + coordinateNum;
   }
 
@@ -619,22 +619,22 @@ function returnAlternativeFadeCondition(inputNum, xCoordinate, yCoordinate) {
     if (!continueToDebug) return;
 
     if (topCon) {
-      console.log("---");
+      console.log('---');
       console.log(inputNum);
-      console.log("topCon: " + topCon);
-      console.log("topCon1: " + topCon1);
-      console.log("topCon2: " + topCon2);
-      console.log("bottomCon: " + bottomCon);
-      console.log("bottomCon1: " + bottomCon1);
-      console.log("bottomCon2: " + bottomCon2);
-      console.log("yCon3: " + yCon3);
+      console.log('topCon: ' + topCon);
+      console.log('topCon1: ' + topCon1);
+      console.log('topCon2: ' + topCon2);
+      console.log('bottomCon: ' + bottomCon);
+      console.log('bottomCon1: ' + bottomCon1);
+      console.log('bottomCon2: ' + bottomCon2);
+      console.log('yCon3: ' + yCon3);
       printSquarePositionInfo();
-      console.log("xCoordinate: " + xCoordinate);
-      console.log("yCoordinate: " + yCoordinate);
-      console.log("xPos1: " + xPos1);
-      console.log("yPos1: " + yPos1);
+      console.log('xCoordinate: ' + xCoordinate);
+      console.log('yCoordinate: ' + yCoordinate);
+      console.log('xPos1: ' + xPos1);
+      console.log('yPos1: ' + yPos1);
 
-      console.log("---");
+      console.log('---');
     }
   }
 }
@@ -661,18 +661,18 @@ let xInput, yInput, xSpeedInput, ySpeedInput, newWord, newFontSize;
 function createMatrixArray(inputDirectionMatrix) {
   // vertical
   // fill words array to number of columns
-  if (inputDirectionMatrix === "south" || inputDirectionMatrix === "north") {
+  if (inputDirectionMatrix === 'south' || inputDirectionMatrix === 'north') {
     for (let i = 0; i < columns; i++) {
       // matrixString xInput value
       xInput = fontSize * i;
       newWord = generateWord(generateWordSizeRand());
       newFontSize = generateFontSize();
 
-      if (inputDirectionMatrix === "south") {
+      if (inputDirectionMatrix === 'south') {
         yInput = generateYSouth(newWord, newFontSize);
         xSpeedInput = null;
         ySpeedInput = generateSpeed();
-      } else if (inputDirectionMatrix === "north") {
+      } else if (inputDirectionMatrix === 'north') {
         yInput = generateYNorth();
         xSpeedInput = null;
         ySpeedInput = -Math.abs(generateSpeed());
@@ -685,24 +685,24 @@ function createMatrixArray(inputDirectionMatrix) {
           yInput,
           xSpeedInput,
           ySpeedInput,
-          newFontSize
-        )
+          newFontSize,
+        ),
       );
     }
     // horizontal
   } else if (
-    inputDirectionMatrix === "east" ||
-    inputDirectionMatrix === "west"
+    inputDirectionMatrix === 'east' ||
+    inputDirectionMatrix === 'west'
   ) {
     for (let i = 0; i < rows; i++) {
       yInput = fontSize * i;
       newWord = generateWord(generateWordSizeRand());
       newFontSize = generateFontSize();
-      if (inputDirectionMatrix === "east") {
+      if (inputDirectionMatrix === 'east') {
         xInput = generateXEast(); // goal: negative / moving from left of the screen to right / need to generate this later
         xSpeedInput = generateSpeed(); // positive / updating position to the right
         ySpeedInput = null;
-      } else if (inputDirectionMatrix === "west") {
+      } else if (inputDirectionMatrix === 'west') {
         xInput = generateXWest(newWord, newFontSize); // goal: positive / moving from the right of the screen to the left
         xSpeedInput = -Math.abs(generateSpeed()); // negative / updating position to the left
         ySpeedInput = null;
@@ -715,8 +715,8 @@ function createMatrixArray(inputDirectionMatrix) {
           yInput,
           xSpeedInput,
           ySpeedInput,
-          newFontSize
-        )
+          newFontSize,
+        ),
       );
     }
   }
@@ -725,20 +725,20 @@ function createMatrixArray(inputDirectionMatrix) {
 function initializeAll4Directions() {
   words = [];
   let northWords, southWords, eastWords, westWords;
-  let inputDirection = "";
+  let inputDirection = '';
   for (let i = 0; i < 4; i++) {
     switch (i) {
       case 0:
-        inputDirection = "north";
+        inputDirection = 'north';
         break;
       case 1:
-        inputDirection = "south";
+        inputDirection = 'south';
         break;
       case 2:
-        inputDirection = "east";
+        inputDirection = 'east';
         break;
       case 3:
-        inputDirection = "west";
+        inputDirection = 'west';
         break;
     }
     createMatrixArray(inputDirection);
@@ -791,7 +791,9 @@ let drawBackgroundAll4DirectionsCounter = 0;
 const drawBackgroundAll4DirectionsCounterMax = 3;
 
 function draw(inputWords, passThroughToDraw) {
-  if (discoOn) discoFrameCounter++;
+  if (discoOn) {
+    discoFrameCounter++;
+  }
 
   // draw all 4 directions
   let conditionToPass = all4Directions && !passThroughToDraw;
@@ -825,13 +827,13 @@ function draw(inputWords, passThroughToDraw) {
   for (let i = 0; i < inputWords.length; i++) {
     changeWordCheck(inputWords[i], inputWords[i].word.length);
 
-    if (direction === "south") {
+    if (direction === 'south') {
       destinationPoint = height; // destination point: below the screen
-    } else if (direction === "north") {
+    } else if (direction === 'north') {
       destinationPoint = 0;
     }
 
-    if (direction === "south") {
+    if (direction === 'south') {
       // reset to top of screen if drop off the canvas at bottom of the screen
       if (inputWords[i].y > height) {
         inputWords[i].ySpeed = generateSpeed(); // new speed
@@ -839,13 +841,13 @@ function draw(inputWords, passThroughToDraw) {
         inputWords[i].fontSize = generateFontSize(); // new font size
         inputWords[i].y = generateYSouth(
           inputWords[i].word,
-          inputWords[i].fontSize
+          inputWords[i].fontSize,
         );
       } else {
         inputWords[i].y = inputWords[i].y + fontSize + inputWords[i].ySpeed;
         ctx.font = inputWords[i].fontSize + "px 'Consolas', 'Lucida Console'";
       }
-    } else if (direction === "north") {
+    } else if (direction === 'north') {
       // reset to bottom of screen if move off top of the screen
       if (inputWords[i].y < 0 - height * 1.5) {
         inputWords[i].y = generateYNorth();
@@ -856,7 +858,7 @@ function draw(inputWords, passThroughToDraw) {
         inputWords[i].y = inputWords[i].y - fontSize - inputWords[i].ySpeed;
         ctx.font = inputWords[i].fontSize + "px 'Consolas', 'Lucida Console'";
       }
-    } else if (direction === "east") {
+    } else if (direction === 'east') {
       if (inputWords[i].x < 0 - canvas.width) {
         inputWords[i].x = generateXEast();
         inputWords[i].xSpeed = generateSpeed(); // new speed
@@ -866,14 +868,14 @@ function draw(inputWords, passThroughToDraw) {
         inputWords[i].x = inputWords[i].x - fontSize - inputWords[i].xSpeed;
         ctx.font = inputWords[i].fontSize + "px 'Consolas', 'Lucida Console'";
       }
-    } else if (direction === "west") {
+    } else if (direction === 'west') {
       if (inputWords[i].x > canvas.width) {
         inputWords[i].xSpeed = -Math.abs(generateSpeed()); // new speed
         inputWords[i].word = generateWord(generateWordSizeRand()); // generate new random word with random size
         inputWords[i].fontSize = generateFontSize(); // new font size
         inputWords[i].x = generateXWest(
           inputWords[i].word,
-          inputWords[i].fontSize
+          inputWords[i].fontSize,
         ); // new x placement
       } else {
         inputWords[i].x = inputWords[i].x + fontSize + inputWords[i].xSpeed;
@@ -886,7 +888,7 @@ function draw(inputWords, passThroughToDraw) {
 
     setTimeout(
       inputWords[i].show(colorChoiceArray[chosenColor]),
-      millisecondsToWait
+      millisecondsToWait,
     );
   }
 }
@@ -928,22 +930,22 @@ function drawAll4Directions() {
     }
 
     function makeDirectionSouth() {
-      direction = "south";
+      direction = 'south';
       inputDirection = southDirection;
     }
 
     function makeDirectionWest() {
-      direction = "west";
+      direction = 'west';
       inputDirection = westDirection;
     }
 
     function makeDirectionNorth() {
-      direction = "north";
+      direction = 'north';
       inputDirection = northDirection;
     }
 
     function makeDirectionEast() {
-      direction = "east";
+      direction = 'east';
       inputDirection = eastDirection;
     }
   }
@@ -971,17 +973,18 @@ function changeWordCheck(inputWordObject, inputSize) {
     let replacementWord = generateWord(inputSize);
     inputWordObject.word = replacementWord;
     inputWordObject.wordChangeCounter = 0;
-    inputWordObject.wordChangeCounterTurnoverPoint = generateWordChangeTurnoverNumber();
+    inputWordObject.wordChangeCounterTurnoverPoint =
+      generateWordChangeTurnoverNumber();
   }
 }
 
 function drawOpaqueRect() {
-  ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
   ctx.fillRect(0, 0, width, height);
 }
 
 function drawSolidRect() {
-  ctx.fillStyle = "rgba(0, 0, 0, 1)";
+  ctx.fillStyle = 'rgba(0, 0, 0, 1)';
   ctx.fillRect(0, 0, width, height);
 }
 
@@ -1013,7 +1016,7 @@ function drawAlternative() {
   if (drawBackgroundOn) drawOpaqueRect();
   ctx.fillStyle = colorWhite;
 
-  ctx.font = alternativeFontSize + "px Arial";
+  ctx.font = alternativeFontSize + 'px Arial';
   // ctx.font = fontSize + "px 'Consolas', 'Lucida Console'";
 
   createMatrixArray();
@@ -1100,16 +1103,16 @@ function isScreenSmall() {
 function resetAllWordsYPositions() {
   words.forEach(function (arrayItem) {
     switch (direction) {
-      case "south":
+      case 'south':
         arrayItem.y = 0;
         break;
-      case "north":
+      case 'north':
         arrayItem.y = canvas.height;
         break;
-      case "east":
+      case 'east':
         arrayItem.x = 0;
         break;
-      case "west":
+      case 'west':
         arrayItem.x = canvas.width;
         break;
     }
@@ -1292,19 +1295,19 @@ function returnBottomRightCollision() {
 
 // for debugging
 function printSquarePositionInfo() {
-  console.log("---");
-  console.log("x1: " + x1);
+  console.log('---');
+  console.log('x1: ' + x1);
   // console.log("rightEdge: " + rightEdge);
   // console.log("---");
-  console.log("x2: " + x2);
+  console.log('x2: ' + x2);
   // console.log("leftEdge: " + leftEdge);
   // console.log("---");
-  console.log("y1: " + y1);
+  console.log('y1: ' + y1);
   // console.log("topEdge: " + topEdge);
   // console.log("---");
-  console.log("y2: " + y2);
+  console.log('y2: ' + y2);
   // console.log("bottomEdge: " + bottomEdge);
-  console.log("---");
+  console.log('---');
 }
 
 function resetSquarePosition() {
@@ -1334,8 +1337,8 @@ function generateRandomSquarePositions() {
   }
 
   function generateRandomPosition(startingPoint, finishingPoint) {
-    console.log("starting point: " + startingPoint);
-    console.log("finishing point: " + finishingPoint);
+    console.log('starting point: ' + startingPoint);
+    console.log('finishing point: ' + finishingPoint);
     let availablePositions = new Array();
 
     while (startingPoint < finishingPoint) {
@@ -1403,21 +1406,21 @@ let chosenColor = null;
 
 function matchColorToIndex(input) {
   switch (input) {
-    case "green":
+    case 'green':
       return 0;
-    case "red":
+    case 'red':
       return 1;
-    case "yellow":
+    case 'yellow':
       return 2;
-    case "blue":
+    case 'blue':
       return 3;
-    case "orange":
+    case 'orange':
       return 4;
-    case "pink":
+    case 'pink':
       return 5;
-    case "cyan":
+    case 'cyan':
       return 6;
-    case "random":
+    case 'random':
       return 7;
     default:
       return null;
@@ -1473,139 +1476,139 @@ let rapidWordChange = false;
 let hangingWords = true;
 let all4Directions = false;
 
-document.addEventListener("keydown", function (event) {
+document.addEventListener('keydown', function (event) {
   iCounter = 0;
 
   switch (event.key) {
-    case "Escape":
+    case 'Escape':
       resetToMenu();
       break;
-    case "ArrowLeft":
+    case 'ArrowLeft':
       if (squareAnimationOn) {
         moveSquareLeft(false);
       } else {
-        arrowDirectionControl("west", "east");
+        arrowDirectionControl('west', 'east');
       }
       break;
-    case "ArrowUp":
+    case 'ArrowUp':
       if (squareAnimationOn) {
         moveSquareUp(false);
       } else {
-        arrowDirectionControl("north", "south");
+        arrowDirectionControl('north', 'south');
       }
       break;
-    case "ArrowRight":
+    case 'ArrowRight':
       if (squareAnimationOn) {
         moveSquareRight(false);
       } else {
-        arrowDirectionControl("east", "west");
+        arrowDirectionControl('east', 'west');
       }
       break;
-    case "ArrowDown":
+    case 'ArrowDown':
       if (squareAnimationOn) {
         moveSquareDown(false);
       } else {
-        arrowDirectionControl("south", "north");
+        arrowDirectionControl('south', 'north');
       }
       break;
-    case " ":
+    case ' ':
       if (ctx != null) {
         pause();
       }
       break;
-    case "c":
+    case 'c':
       clearScreen();
       break;
-    case "d":
+    case 'd':
       discoControl();
       break;
-    case "PageUp":
+    case 'PageUp':
       if (ctx != null || !squareAnimationOn) {
         speedController(true);
       }
       break;
-    case "PageDown":
+    case 'PageDown':
       if (ctx != null || !squareAnimationOn) {
         speedController(false);
       }
       break;
-    case "1":
-      numkeyFunction("green");
+    case '1':
+      numkeyFunction('green');
       break;
-    case "2":
-      numkeyFunction("red");
+    case '2':
+      numkeyFunction('red');
       break;
-    case "3":
-      numkeyFunction("yellow");
+    case '3':
+      numkeyFunction('yellow');
       break;
-    case "4":
-      numkeyFunction("blue");
+    case '4':
+      numkeyFunction('blue');
       break;
-    case "5":
-      numkeyFunction("orange");
+    case '5':
+      numkeyFunction('orange');
       break;
-    case "6":
-      numkeyFunction("pink");
+    case '6':
+      numkeyFunction('pink');
       break;
-    case "7":
-      numkeyFunction("cyan");
+    case '7':
+      numkeyFunction('cyan');
       break;
-    case "8":
+    case '8':
       resetRandomColor();
-      numkeyFunction("random");
+      numkeyFunction('random');
       break;
-    case "w":
+    case 'w':
       controlFontSizeInput(true);
       break;
-    case "s":
+    case 's':
       controlFontSizeInput(false);
       break;
-    case "q":
+    case 'q':
       controlStringSize(true);
       break;
-    case "a":
+    case 'a':
       controlStringSize(false);
       break;
-    case "t":
+    case 't':
       discoIntervalSpeedControl(true);
       break;
-    case "g":
+    case 'g':
       discoIntervalSpeedControl(false);
       break;
-    case "r":
+    case 'r':
       rapidWordChangeControl();
       break;
-    case "h":
+    case 'h':
       if (squareAnimationOn) {
         hangingWordsControl();
       }
       break;
-    case "m":
+    case 'm':
       if (ctx != undefined) switchMode();
       break;
-    case "u":
+    case 'u':
       rapidSquareControl();
       break;
-    case "i":
+    case 'i':
       if (!squareAnimationOn) all4DirectionsControl();
       break;
-    case "o":
+    case 'o':
       drawBackgroundControl();
       break;
   }
 
   switch (event.key) {
-    case "p":
+    case 'p':
       squareCounterControl(true);
       break;
-    case ";":
+    case ';':
       squareCounterControl(false);
       break;
   }
 });
 
 // on mouse click
-document.getElementById("myCanvas").addEventListener("click", resetToMenu);
+document.getElementById('myCanvas').addEventListener('click', resetToMenu);
 
 function resetToMenu() {
   clearInterval(intervalValid); // stop draw from running in interval
@@ -1630,22 +1633,22 @@ function clearScreen() {
   for (let i = 0; i < words.length; i++) {
     switch (direction) {
       // if south
-      case "south":
+      case 'south':
         words[i].y = generateYSouth(words[i].word, words[i].fontSize);
         break;
 
       // if north
-      case "north":
+      case 'north':
         words[i].y = generateYNorth();
         break;
 
       // if east
-      case "east":
+      case 'east':
         words[i].x = generateXEast();
         break;
 
       // if west
-      case "west":
+      case 'west':
         words[i].x = generateXWest(words[i].word, words[i].fontSize);
         break;
     }
@@ -1780,9 +1783,9 @@ function controlFontSize(inputWords, increase) {
 }
 
 function printFontSizeDebugInfo() {
-  console.log("defaultFontSize: " + defaultFontSize);
+  console.log('defaultFontSize: ' + defaultFontSize);
 
-  console.log("fontSize: " + fontSize);
+  console.log('fontSize: ' + fontSize);
 }
 
 function controlStringSize(increase) {
@@ -1824,8 +1827,8 @@ function all4DirectionsToStringSize(increase) {
 }
 
 function printStringSizeDebugInfo() {
-  console.log("stringSizeMin: " + stringSizeMin);
-  console.log("stringSizeMax: " + stringSizeMax);
+  console.log('stringSizeMin: ' + stringSizeMin);
+  console.log('stringSizeMax: ' + stringSizeMax);
 }
 
 const DISCO_FRAME_COUNTER_DEFAULT_MAX = 100;
@@ -1897,7 +1900,7 @@ function squareCounterControl(increase) {
   }
 }
 
-window.addEventListener("resize", resetWordsArray);
+window.addEventListener('resize', resetWordsArray);
 
 function resetWordsArray() {
   clearScreen();
@@ -1928,15 +1931,15 @@ function squareAnimationWordsSetup() {
 // get menu information
 function loadMenuOptions() {
   // disco
-  discoOn = document.getElementById("disco").checked;
+  discoOn = document.getElementById('disco').checked;
 
-  let userColor = document.getElementById("colors").value;
+  let userColor = document.getElementById('colors').value;
 
   // color
   chosenColor = matchColorToIndex(userColor.toLowerCase());
 
   // direction
-  direction = document.getElementById("directions").value;
+  direction = document.getElementById('directions').value;
 }
 
 function initializeSquareAnimationOn() {
@@ -2005,18 +2008,18 @@ function run(original) {
 */
 
 // list of html elements here
-const checkBox = document.getElementById("disco");
-const text = document.getElementById("colorsLabel");
-const select = document.getElementById("colors");
-const directionsSelect = document.getElementById("directions");
-const menuDivs = document.getElementsByClassName("menu");
-const button = document.getElementById("button");
-const button2 = document.getElementById("button2");
-const button3 = document.getElementById("button3");
-const button4 = document.getElementById("button4");
-const buttons = document.getElementsByClassName("button");
-const elems = document.body.getElementsByTagName("*");
-const frameCountElems = document.getElementsByClassName("frameCount");
+const checkBox = document.getElementById('disco');
+const text = document.getElementById('colorsLabel');
+const select = document.getElementById('colors');
+const directionsSelect = document.getElementById('directions');
+const menuDivs = document.getElementsByClassName('menu');
+const button = document.getElementById('button');
+const button2 = document.getElementById('button2');
+const button3 = document.getElementById('button3');
+const button4 = document.getElementById('button4');
+const buttons = document.getElementsByClassName('button');
+const elems = document.body.getElementsByTagName('*');
+const frameCountElems = document.getElementsByClassName('frameCount');
 
 let menuInterval;
 let selectColor;
@@ -2024,23 +2027,23 @@ let selectColor;
 // show and hide menu
 function showMenu() {
   for (let i = 0; i < menuDivs.length; i++) {
-    menuDivs[i].style.display = "block";
+    menuDivs[i].style.display = 'block';
   }
 
   menuOnLoad();
 
   // canvas functionality
-  if ((canvas = document.getElementById("canvas") != null)) {
-    canvas.style.display = "none";
+  if ((canvas = document.getElementById('canvas') != null)) {
+    canvas.style.display = 'none';
   }
 }
 
 function hideMenu() {
   for (let i = 0; i < menuDivs.length; i++) {
-    menuDivs[i].style.display = "none";
+    menuDivs[i].style.display = 'none';
   }
 
-  canvas.style.display = "block";
+  canvas.style.display = 'block';
 
   clearInterval(menuInterval);
 }
@@ -2048,7 +2051,7 @@ function hideMenu() {
 function isMenuHidden() {
   let output = false;
   for (let i = 0; i < menuDivs.length; i++) {
-    if (menuDivs[i].style.display === "none") {
+    if (menuDivs[i].style.display === 'none') {
       output = true;
     }
   }
@@ -2065,8 +2068,8 @@ function checkboxFunction() {
   // show disco frame input
 
   if (!checkBox.checked) {
-    text.style.display = "inline-block";
-    select.style.display = "inline-block";
+    text.style.display = 'inline-block';
+    select.style.display = 'inline-block';
 
     // hide frameCountElems
     frameCountElemsVisibilityFunction();
@@ -2081,8 +2084,8 @@ function checkboxFunction() {
 
     clearInterval(menuInterval);
   } else {
-    text.style.display = "none";
-    select.style.display = "none";
+    text.style.display = 'none';
+    select.style.display = 'none';
 
     button3.style.color = colorBlack;
 
@@ -2108,9 +2111,9 @@ function discoIntervalFunction() {
 function frameCountElemsVisibilityFunction() {
   for (let i = 0; i < frameCountElems.length; i++) {
     if (checkBox.checked) {
-      frameCountElems[i].style.display = "inline-block";
+      frameCountElems[i].style.display = 'inline-block';
     } else {
-      frameCountElems[i].style.display = "none";
+      frameCountElems[i].style.display = 'none';
     }
   }
 }
@@ -2122,11 +2125,11 @@ function selectFunction() {
 
   if (!checkBox.checked) {
     recolorMenuOneColor(selectColor);
-    button.style.border = "1px solid " + selectColor;
+    button.style.border = '1px solid ' + selectColor;
   }
 
   // Store
-  localStorage.setItem("key", selectColor);
+  localStorage.setItem('key', selectColor);
 }
 
 // dropdown menu
@@ -2135,14 +2138,14 @@ function selectFunction() {
 // below method only works when hovering over the main opton, will have to create own select option
 // if you want to have a dropdown recolor itself
 document
-  .getElementById("directions")
-  .addEventListener("mouseover", function () {
+  .getElementById('directions')
+  .addEventListener('mouseover', function () {
     // do nothing
   });
 
 // call selectionFunction on page loading
 
-let borderPrefix = "1px solid ";
+let borderPrefix = '1px solid ';
 
 function recolorMenuOneColor(inputColor) {
   for (let i = 0; i < elems.length; i++) {
@@ -2199,7 +2202,7 @@ selectBackgroundColorFunction();
 
 function menuOnLoad() {
   // Retrieve
-  selectColor = localStorage.getItem("key");
+  selectColor = localStorage.getItem('key');
 
   checkboxFunction();
 
@@ -2210,21 +2213,21 @@ function menuOnLoad() {
 
 function matchColorToRGB(entryColor) {
   switch (entryColor) {
-    case "green":
+    case 'green':
       return colorMatrixGreen;
-    case "red":
+    case 'red':
       return colorRed;
-    case "yellow":
+    case 'yellow':
       return colorYellow;
-    case "blue":
+    case 'blue':
       return colorBlue;
-    case "orange":
+    case 'orange':
       return colorOrange;
-    case "pink":
+    case 'pink':
       return colorPink;
-    case "cyan":
+    case 'cyan':
       return colorCyan;
-    case "random":
+    case 'random':
       return randomColorArray[2];
     default:
       return null;
@@ -2232,35 +2235,35 @@ function matchColorToRGB(entryColor) {
 }
 
 // hover over button color change
-button.addEventListener("mouseover", function () {
+button.addEventListener('mouseover', function () {
   buttonMouseOver(1);
 });
 
-button.addEventListener("mouseout", function () {
+button.addEventListener('mouseout', function () {
   buttonMouseOut(1);
 });
 
-button2.addEventListener("mouseover", function () {
+button2.addEventListener('mouseover', function () {
   buttonMouseOver(2);
 });
 
-button2.addEventListener("mouseout", function () {
+button2.addEventListener('mouseout', function () {
   buttonMouseOut(2);
 });
 
-button3.addEventListener("mouseover", function () {
+button3.addEventListener('mouseover', function () {
   if (!all4Directions) buttonMouseOver(3);
 });
 
-button3.addEventListener("mouseout", function () {
+button3.addEventListener('mouseout', function () {
   if (!all4Directions) buttonMouseOut(3);
 });
 
-button4.addEventListener("mouseover", function () {
+button4.addEventListener('mouseover', function () {
   buttonMouseOver(4);
 });
 
-button4.addEventListener("mouseout", function () {
+button4.addEventListener('mouseout', function () {
   buttonMouseOut(4);
 });
 
@@ -2302,7 +2305,7 @@ function intToButton(input) {
 }
 
 function buttonDiscoChecked() {
-  return document.getElementById("disco").checked;
+  return document.getElementById('disco').checked;
 }
 
 function buttonBackgroundBlack() {
@@ -2336,8 +2339,8 @@ function buttonBorderColorSelectedColor() {
 }
 
 function updateAll4DirectionButtonStyling() {
-  let onText = "All 4 Directions:\nON";
-  let offText = "All 4 Directions:\nOFF";
+  let onText = 'All 4 Directions:\nON';
+  let offText = 'All 4 Directions:\nOFF';
 
   if (all4Directions) {
     button3.style.background = selectColor;
@@ -2366,12 +2369,12 @@ function updateRandomColorForTheMenu() {
 
 function frameCountFunctionOnChange() {
   let currentDiscoFrameMax = discoFrameElement.value;
-  localStorage.setItem("frameCountKey", currentDiscoFrameMax);
+  localStorage.setItem('frameCountKey', currentDiscoFrameMax);
   discoFrameCounterTurnoverPoint = currentDiscoFrameMax;
 }
 
 function frameCountFunctionOnLoad() {
-  discoFrameElement.value = localStorage.getItem("frameCountKey");
+  discoFrameElement.value = localStorage.getItem('frameCountKey');
 }
 
 function updateSelectBox(input) {
