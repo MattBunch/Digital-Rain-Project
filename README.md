@@ -1,6 +1,6 @@
 # Digital Rain Project
 
-This program displays a digital rain animation within the window browser, as seen in the film The Matrix (1999) or Ghost in the Shell (1995). The user can customize the animation through the menu and through keyboard inputs. Credit to The Coding Train for the inspiration for this project.
+This program displays a digital rain animation within the window browser, as seen in the film The Matrix (1999) or Ghost in the Shell (1995). The user can customize the animation through the menu and through keyboard inputs.
 
 ## Built With:
 
