@@ -1,0 +1,28 @@
+{
+  "name": "digital-rain-project",
+  "version": "1.0.0",
+  "description": "This program displays a digital rain animation within the window browser, as seen in the film The Matrix (1999) or Ghost in the Shell (1995). The user can customize the animation through the menu and through keyboard inputs.",
+  "main": "app.js",
+  "scripts": {
+    "test": "vitest",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MattBunch/Digital-Rain-Project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/MattBunch/Digital-Rain-Project/issues"
+  },
+  "homepage": "https://github.com/MattBunch/Digital-Rain-Project#readme",
+  "devDependencies": {
+    "vite": "^8.0.10",
+    "vitest": "^4.1.5"
+  }
+}

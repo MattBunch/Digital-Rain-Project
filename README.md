@@ -53,10 +53,11 @@ Same as Normal Mode except:
 
 - Music.
 - Colour wheel selector.
+- Up and down arrows in menu.
+- bugs in main menu - colours mismatching, highlight staying on.
 
 ## Misc
 
 The core of this program was written while I was learning JS, mostly completed on 18/08/20 and 19/08/20.
 
-I had completed another Digital Rain animation program in Java previously, which serves as a prototype of this current program. Here is a video of the original Java project:
-https://files.catbox.moe/prmcql.mp4
+I had completed another Digital Rain animation program in Java previously, which serves as a prototype of this current program.

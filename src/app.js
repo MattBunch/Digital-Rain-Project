@@ -2428,3 +2428,14 @@ Keyboard Inputs
   - P: Increase random square speed
   - ;: Decrease random square speed
   `;
+
+// Bridge to main.js
+window.run = run;
+window.all4DirectionsControl = all4DirectionsControl;
+window.selectFunction = selectFunction;
+window.directionFunction = directionFunction;
+window.checkboxFunction = checkboxFunction;
+window.frameCountFunctionOnChange = frameCountFunctionOnChange;
+window.frameCountFunctionOnLoad = frameCountFunctionOnLoad;
+window.menuOnLoad = menuOnLoad;
+window.helpText = helpText;
