@@ -148,7 +148,7 @@ export class CoreEngine {
           inputWords[i].fontSize = generateFontSize(this.fontSize);
           inputWords[i].y = generateYSouth(inputWords[i].word.length, inputWords[i].fontSize, this.canvas.height);
         } else {
-          inputWords[i].y = inputWords[i].y + this.fontSize + inputWords[i].ySpeed;
+          inputWords[i].y = inputWords[i].y + (this.fontSize + Math.abs(inputWords[i].ySpeed));
         }
       } else if (this.direction === 'north') {
         if (inputWords[i].y < 0 - this.canvas.height * 1.5) {
@@ -157,7 +157,7 @@ export class CoreEngine {
           inputWords[i].word = generateWord(generateWordSizeRand(this.stringSizeMin, this.stringSizeMax));
           inputWords[i].fontSize = generateFontSize(this.fontSize);
         } else {
-          inputWords[i].y = inputWords[i].y - this.fontSize - inputWords[i].ySpeed;
+          inputWords[i].y = inputWords[i].y - (this.fontSize + Math.abs(inputWords[i].ySpeed));
         }
       } else if (this.direction === 'east') {
         if (inputWords[i].x < 0 - this.canvas.width) {
@@ -166,7 +166,7 @@ export class CoreEngine {
           inputWords[i].word = generateWord(generateWordSizeRand(this.stringSizeMin, this.stringSizeMax));
           inputWords[i].fontSize = generateFontSize(this.fontSize);
         } else {
-          inputWords[i].x = inputWords[i].x - this.fontSize - inputWords[i].xSpeed;
+          inputWords[i].x = inputWords[i].x - (this.fontSize + Math.abs(inputWords[i].xSpeed));
         }
       } else if (this.direction === 'west') {
         if (inputWords[i].x > this.canvas.width) {
@@ -175,7 +175,7 @@ export class CoreEngine {
           inputWords[i].fontSize = generateFontSize(this.fontSize);
           inputWords[i].x = generateXWest(inputWords[i].word.length, inputWords[i].fontSize, this.canvas.width, this.canvas.height);
         } else {
-          inputWords[i].x = inputWords[i].x + this.fontSize + inputWords[i].xSpeed;
+          inputWords[i].x = inputWords[i].x + (this.fontSize + Math.abs(inputWords[i].xSpeed));
         }
       }
       this.ctx.font = inputWords[i].fontSize + "px 'Consolas', 'Lucida Console'";
@@ -194,7 +194,7 @@ export class CoreEngine {
   }
 
   drawAll4Directions() {
-    const directions = ['east', 'north', 'west', 'south'];
+    const directions = ['north', 'south', 'east', 'west'];
     directions.forEach((dir, i) => {
       this.direction = dir;
       this.draw(this.all4DirectionsArray[i], true);
