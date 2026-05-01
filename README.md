@@ -49,15 +49,19 @@ Same as Normal Mode except:
 - P: Increase random square speed
 - ;: Decrease random square speed
 
+## Plan
+refer to docs/plan.md
+
 ## Possible extensions in further versions:
 
-- Test coverage - v8 library (npm install -D vitest @vitest/coverage-v8)
-- 100% unit test coverage
 - fix broken square mode movement - no left or down movement working
 - all 4 directions - left & right aren't working 
+- execute the plan in docs/plan.md
+- Test coverage - v8 library (npm install -D vitest @vitest/coverage-v8)
+- migrate to typescript
+- migrate to svelte for components
 - eslint - make sure gemini/ai agents follow it
 - adapt values to work with any size monitor for consistent views no matter the screen size
-- migrate to typescript
 
 - Colour wheel selector.
 - Up and down arrows in menu.
