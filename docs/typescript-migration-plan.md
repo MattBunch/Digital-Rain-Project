@@ -22,9 +22,11 @@ Migrate the Digital Rain project from JavaScript to TypeScript to improve type s
 5. **Controllers**: Migrate `src/controllers/*.js` to `.ts`.
 6. **UI**: Migrate `src/ui/*.js` to `.ts`.
 
+NOTE: after tests pass, migrate test files to typescript ts files as well.
+
 ## Phase 4: Application Entry
-- [ ] Rename `src/app.js` to `src/app.ts` (keeping as legacy reference per project rules).
 - [ ] Update `src/main.ts` as the new entry point.
+- DO NOT update app.js, leave this as legacy reference file.
 
 ## Verification
 - [ ] Run type checker (`tsc --noEmit`).
