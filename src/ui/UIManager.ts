@@ -1,34 +1,64 @@
-// src/ui/UIManager.js
-import { colorBlack, colorWhite, colorMatrixGreen, colorRed, colorYellow, colorBlue, colorOrange, colorPink, colorCyan } from '../constants/Assets.js';
-import { getRandomColor } from '../utils/MathUtils.js';
+// src/ui/UIManager.ts
+import { 
+  colorBlack, 
+  colorMatrixGreen, 
+  colorRed, 
+  colorYellow, 
+  colorBlue, 
+  colorOrange, 
+  colorPink, 
+  colorCyan 
+} from '../constants/Assets.ts';
+import { getRandomColor } from '../utils/MathUtils.ts';
+import { CoreEngine } from '../engine/CoreEngine.ts';
 
 export class UIManager {
-  constructor(engine) {
+  engine: CoreEngine;
+  checkBox: HTMLInputElement | null = null;
+  text: HTMLElement | null = null;
+  select: HTMLSelectElement | null = null;
+  directionsSelect: HTMLSelectElement | null = null;
+  menuDivs: HTMLCollectionOf<HTMLElement> | null = null;
+  button: HTMLElement | null = null;
+  button2: HTMLElement | null = null;
+  button3: HTMLElement | null = null;
+  button4: HTMLElement | null = null;
+  buttons: HTMLCollectionOf<HTMLElement> | null = null;
+  elems: HTMLCollectionOf<HTMLElement> | null = null;
+  frameCountElems: HTMLCollectionOf<HTMLElement> | null = null;
+  discoFrameElement: HTMLInputElement | null = null;
+  canvas: HTMLCanvasElement | null = null;
+  borderPrefix: string;
+
+  constructor(engine: CoreEngine) {
     this.engine = engine;
     this.cacheElements();
     this.borderPrefix = '1px solid ';
+    this.menuOnLoad();
   }
 
-  cacheElements() {
-    this.checkBox = document.getElementById('disco');
+  cacheElements(): void {
+    this.checkBox = document.getElementById('disco') as HTMLInputElement;
     this.text = document.getElementById('colorsLabel');
-    this.select = document.getElementById('colors');
-    this.directionsSelect = document.getElementById('directions');
-    this.menuDivs = document.getElementsByClassName('menu');
+    this.select = document.getElementById('colors') as HTMLSelectElement;
+    this.directionsSelect = document.getElementById('directions') as HTMLSelectElement;
+    this.menuDivs = document.getElementsByClassName('menu') as HTMLCollectionOf<HTMLElement>;
     this.button = document.getElementById('button');
     this.button2 = document.getElementById('button2');
     this.button3 = document.getElementById('button3');
     this.button4 = document.getElementById('button4');
-    this.buttons = document.getElementsByClassName('button');
-    this.elems = document.body.getElementsByTagName('*');
-    this.frameCountElems = document.getElementsByClassName('frameCount');
-    this.discoFrameElement = document.getElementById('frameCount');
-    this.canvas = document.getElementById('myCanvas');
+    this.buttons = document.getElementsByClassName('button') as HTMLCollectionOf<HTMLElement>;
+    this.elems = document.body.getElementsByTagName('*') as HTMLCollectionOf<HTMLElement>;
+    this.frameCountElems = document.getElementsByClassName('frameCount') as HTMLCollectionOf<HTMLElement>;
+    this.discoFrameElement = document.getElementById('frameCount') as HTMLInputElement;
+    this.canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
   }
 
-  showMenu() {
-    for (let i = 0; i < this.menuDivs.length; i++) {
-      this.menuDivs[i].style.display = 'block';
+  showMenu(): void {
+    if (this.menuDivs) {
+      for (let i = 0; i < this.menuDivs.length; i++) {
+        this.menuDivs[i].style.display = 'block';
+      }
     }
     this.menuOnLoad();
     if (this.canvas) {
@@ -36,28 +66,36 @@ export class UIManager {
     }
   }
 
-  hideMenu() {
-    for (let i = 0; i < this.menuDivs.length; i++) {
-      this.menuDivs[i].style.display = 'none';
+  hideMenu(): void {
+    if (this.menuDivs) {
+      for (let i = 0; i < this.menuDivs.length; i++) {
+        this.menuDivs[i].style.display = 'none';
+      }
     }
-    this.canvas.style.display = 'block';
+    if (this.canvas) {
+      this.canvas.style.display = 'block';
+    }
   }
 
-  isMenuHidden() {
+  isMenuHidden(): boolean {
     let output = false;
-    for (let i = 0; i < this.menuDivs.length; i++) {
-      if (this.menuDivs[i].style.display === 'none') {
-        output = true;
+    if (this.menuDivs) {
+      for (let i = 0; i < this.menuDivs.length; i++) {
+        if (this.menuDivs[i].style.display === 'none') {
+          output = true;
+        }
       }
     }
     return output;
   }
 
-  isMenuShown() {
+  isMenuShown(): boolean {
     return !this.isMenuHidden();
   }
 
-  checkboxFunction() {
+  checkboxFunction(): void {
+    if (!this.checkBox || !this.text || !this.select || !this.button3) return;
+
     if (!this.checkBox.checked) {
       this.text.style.display = 'inline-block';
       this.select.style.display = 'inline-block';
@@ -66,7 +104,10 @@ export class UIManager {
       this.buttonBackgroundBlack();
       this.engine.discoOn = false;
       this.updateAll4DirectionButtonStyling();
-      if (this.engine.menuInterval) clearInterval(this.engine.menuInterval);
+      if ((this.engine as any).menuInterval) {
+        clearInterval((this.engine as any).menuInterval);
+        (this.engine as any).menuInterval = null;
+      }
     } else {
       this.text.style.display = 'none';
       this.select.style.display = 'none';
@@ -75,17 +116,18 @@ export class UIManager {
       this.discoIntervalFunction();
       this.engine.discoOn = true;
       this.updateAll4DirectionButtonStyling();
-      this.engine.menuInterval = setInterval(() => this.discoIntervalFunction(), 1000);
+      (this.engine as any).menuInterval = setInterval(() => this.discoIntervalFunction(), 1000);
     }
   }
 
-  discoIntervalFunction() {
+  discoIntervalFunction(): void {
     this.recolorMenuRandom();
     this.buttonDiscoBackgroundChangeColor();
     this.updateAll4DirectionButtonStyling();
   }
 
-  frameCountElemsVisibilityFunction() {
+  frameCountElemsVisibilityFunction(): void {
+    if (!this.frameCountElems || !this.checkBox) return;
     for (let i = 0; i < this.frameCountElems.length; i++) {
       if (this.checkBox.checked) {
         this.frameCountElems[i].style.display = 'inline-block';
@@ -95,17 +137,19 @@ export class UIManager {
     }
   }
 
-  selectFunction() {
+  selectFunction(): void {
+    if (!this.select || !this.button) return;
     let userColor = this.select.value;
     this.engine.selectColor = this.matchColorToRGB(userColor.toLowerCase());
-    if (!this.checkBox.checked) {
+    if (this.checkBox && !this.checkBox.checked) {
       this.recolorMenuOneColor(this.engine.selectColor);
       this.button.style.border = '1px solid ' + this.engine.selectColor;
     }
     localStorage.setItem('key', this.engine.selectColor);
   }
 
-  recolorMenuOneColor(inputColor) {
+  recolorMenuOneColor(inputColor: string): void {
+    if (!this.elems || !this.button3 || !this.select || !this.directionsSelect) return;
     for (let i = 0; i < this.elems.length; i++) {
       this.elems[i].style.color = inputColor;
       this.buttonBackgroundBlack();
@@ -124,7 +168,8 @@ export class UIManager {
     this.selectBackgroundColorFunction();
   }
 
-  recolorMenuRandom() {
+  recolorMenuRandom(): void {
+    if (!this.elems || !this.directionsSelect || !this.discoFrameElement) return;
     for (let i = 0; i < this.elems.length; i++) {
       this.elems[i].style.color = getRandomColor();
     }
@@ -135,9 +180,10 @@ export class UIManager {
     this.selectBackgroundColorFunction();
   }
 
-  selectBackgroundColorFunction() {
+  selectBackgroundColorFunction(): void {
+    if (!this.directionsSelect || !this.checkBox) return;
     Array.from(this.directionsSelect.options).forEach((optionElement) => {
-      if (this.checkBox.checked) {
+      if (this.checkBox!.checked) {
         optionElement.style.backgroundColor = getRandomColor();
       } else {
         optionElement.style.backgroundColor = colorBlack;
@@ -145,14 +191,14 @@ export class UIManager {
     });
   }
 
-  menuOnLoad() {
+  menuOnLoad(): void {
     this.engine.selectColor = localStorage.getItem('key') || colorMatrixGreen;
     this.checkboxFunction();
     this.selectFunction();
     this.updateAll4DirectionButtonStyling();
   }
 
-  matchColorToRGB(entryColor) {
+  matchColorToRGB(entryColor: string): string {
     switch (entryColor) {
       case 'green': return colorMatrixGreen;
       case 'red': return colorRed;
@@ -166,10 +212,12 @@ export class UIManager {
     }
   }
 
-  buttonMouseOver(input) {
+  buttonMouseOver(input: number): void {
     if (this.buttonDiscoChecked()) {
-      for (let i = 0; i < this.buttons.length; i++) {
-        this.buttons[i].style.color = getRandomColor();
+      if (this.buttons) {
+        for (let i = 0; i < this.buttons.length; i++) {
+          this.buttons[i].style.color = getRandomColor();
+        }
       }
       this.buttonDiscoBackgroundChangeColor();
       this.buttonBorderColorRandom();
@@ -182,9 +230,9 @@ export class UIManager {
     }
   }
 
-  buttonMouseOut(input) {
+  buttonMouseOut(input: number): void {
     if (this.buttonDiscoChecked()) {
-      this.button.style.color = getRandomColor();
+      if (this.button) this.button.style.color = getRandomColor();
       this.buttonDiscoBackgroundChangeColor();
       this.buttonBorderColorRandom();
     } else {
@@ -196,7 +244,7 @@ export class UIManager {
     }
   }
 
-  intToButton(input) {
+  intToButton(input: number): HTMLElement | null {
     switch (input) {
       case 1: return this.button;
       case 2: return this.button2;
@@ -206,41 +254,47 @@ export class UIManager {
     }
   }
 
-  buttonDiscoChecked() {
-    return this.checkBox.checked;
+  buttonDiscoChecked(): boolean {
+    return this.checkBox ? this.checkBox.checked : false;
   }
 
-  buttonBackgroundBlack() {
+  buttonBackgroundBlack(): void {
+    if (!this.buttons) return;
     for (let i = 0; i < this.buttons.length; i++) {
       this.buttons[i].style.background = colorBlack;
     }
   }
 
-  buttonBackgroundSelectedColor(inputColor) {
+  buttonBackgroundSelectedColor(inputColor: string): void {
+    if (!this.buttons) return;
     for (let i = 0; i < this.buttons.length; i++) {
       this.buttons[i].style.background = inputColor;
     }
   }
 
-  buttonDiscoBackgroundChangeColor() {
+  buttonDiscoBackgroundChangeColor(): void {
+    if (!this.buttons) return;
     for (let i = 0; i < this.buttons.length; i++) {
       this.buttons[i].style.background = getRandomColor();
     }
   }
 
-  buttonBorderColorRandom() {
+  buttonBorderColorRandom(): void {
+    if (!this.buttons) return;
     for (let i = 0; i < this.buttons.length; i++) {
       this.buttons[i].style.border = this.borderPrefix + getRandomColor();
     }
   }
 
-  buttonBorderColorSelectedColor() {
+  buttonBorderColorSelectedColor(): void {
+    if (!this.buttons) return;
     for (let i = 0; i < this.buttons.length; i++) {
       this.buttons[i].style.border = this.borderPrefix + this.engine.selectColor;
     }
   }
 
-  updateAll4DirectionButtonStyling() {
+  updateAll4DirectionButtonStyling(): void {
+    if (!this.button3) return;
     let onText = 'All 4 Directions:\nON';
     let offText = 'All 4 Directions:\nOFF';
     if (this.engine.all4Directions) {
@@ -256,22 +310,25 @@ export class UIManager {
     }
   }
 
-  updateRandomColorForTheMenu() {
+  updateRandomColorForTheMenu(): void {
     this.engine.selectColor = this.engine.randomColorArray[2];
     this.selectFunction();
   }
 
-  frameCountFunctionOnChange() {
+  frameCountFunctionOnChange(): void {
+    if (!this.discoFrameElement) return;
     let currentDiscoFrameMax = this.discoFrameElement.value;
     localStorage.setItem('frameCountKey', currentDiscoFrameMax);
-    this.engine.discoFrameCounterTurnoverPoint = currentDiscoFrameMax;
+    this.engine.discoFrameCounterTurnoverPoint = parseInt(currentDiscoFrameMax);
   }
 
-  frameCountFunctionOnLoad() {
+  frameCountFunctionOnLoad(): void {
+    if (!this.discoFrameElement) return;
     this.discoFrameElement.value = localStorage.getItem('frameCountKey') || '10';
   }
 
-  updateSelectBox(input) {
+  updateSelectBox(input: string): void {
+    if (!this.select) return;
     this.select.value = input;
     this.selectFunction();
   }

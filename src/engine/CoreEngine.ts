@@ -1,10 +1,74 @@
-// src/engine/CoreEngine.js
-import { MatrixString } from '../models/MatrixString.js';
-import { generateWord, generateWordSizeRand, generateFontSize, generateSpeed, generateWordChangeTurnoverNumber, getRandomColor, generateRandomColorArray, generateWordSizeRandHanging, doubleInt } from '../utils/MathUtils.js';
-import { generateYSouth, generateYNorth, generateXEast, generateXWest } from '../utils/CoordinateUtils.js';
-import { colorBlack, colorWhite, greenArray, redArray, yellowArray, blueArray, orangeArray, pinkArray, cyanArray } from '../constants/Assets.js';
+// src/engine/CoreEngine.ts
+import { MatrixString, IMatrixStringConfig, ISquareConfig } from '../models/MatrixString.ts';
+import { 
+  generateWord, 
+  generateWordSizeRand, 
+  generateFontSize, 
+  generateSpeed, 
+  generateWordChangeTurnoverNumber, 
+  getRandomColor, 
+  generateRandomColorArray, 
+  generateWordSizeRandHanging, 
+  doubleInt 
+} from '../utils/MathUtils.ts';
+import { generateYSouth, generateYNorth, generateXEast, generateXWest } from '../utils/CoordinateUtils.ts';
+import { 
+  colorWhite, 
+  greenArray, 
+  redArray, 
+  yellowArray, 
+  blueArray, 
+  orangeArray, 
+  pinkArray, 
+  cyanArray 
+} from '../constants/Assets.ts';
 
 export class CoreEngine {
+  words: MatrixString[];
+  all4DirectionsArray: MatrixString[][];
+  direction: string;
+  discoOn: boolean;
+  chosenColor: number;
+  intervalValid: any; // Using any for setInterval return which varies by env
+  animationOn: boolean;
+  discoFrameCounter: number;
+  discoFrameCounterTurnoverPoint: number;
+  savedColor: string;
+  selectColor: string;
+  intervalSpeed: number;
+  defaultFontSize: number;
+  fontSize: number;
+  stringSizeMin: number;
+  stringSizeMax: number;
+  alternativeFontSize: number;
+  rapidWordChange: boolean;
+  hangingWords: boolean;
+  all4Directions: boolean;
+  drawBackgroundOn: boolean;
+  drawBackgroundAll4DirectionsCounter: number;
+  drawBackgroundAll4DirectionsCounterMax: number;
+  squareAnimationOn: boolean;
+  rapidSquareOn: boolean;
+  squareCounter: number;
+  squareCounterTurnoverPoint: number;
+  x1: number;
+  x2: number;
+  y1: number;
+  y2: number;
+  SQUARE_SIZE: number;
+  topEdge: number;
+  rightEdge: number;
+  bottomEdge: number;
+  leftEdge: number;
+  topEdgeDisco: number;
+  rightEdgeDisco: number;
+  bottomEdgeDisco: number;
+  leftEdgeDisco: number;
+  randomColorArray: string[];
+  colorChoiceArray: string[][];
+  canvas?: HTMLCanvasElement;
+  ctx?: CanvasRenderingContext2D;
+
   constructor() {
     this.words = [];
     this.all4DirectionsArray = [];
@@ -53,13 +117,13 @@ export class CoreEngine {
     ];
   }
 
-  setContext(canvas, ctx) {
+  setContext(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D): void {
     this.canvas = canvas;
     this.ctx = ctx;
     this.updateBoundaries();
   }
 
-  updateBoundaries() {
+  updateBoundaries(): void {
     if (!this.canvas) return;
     this.topEdge = 60;
     this.rightEdge = 60;
@@ -72,8 +136,9 @@ export class CoreEngine {
     this.leftEdgeDisco = this.canvas.width - 20;
   }
 
-  createMatrixArray(inputDirectionMatrix) {
-    let xInput, yInput, xSpeedInput, ySpeedInput, newWord, newFontSize;
+  createMatrixArray(inputDirectionMatrix: string): void {
+    if (!this.canvas) return;
+    let xInput: number, yInput: number, xSpeedInput: number | null, ySpeedInput: number | null, newWord: string, newFontSize: number;
     const columns = Math.floor(this.canvas.width / this.fontSize);
     const rows = Math.floor(this.canvas.height / this.fontSize);
 
@@ -86,12 +151,12 @@ export class CoreEngine {
           yInput = generateYSouth(newWord.length, newFontSize, this.canvas.height);
           xSpeedInput = null;
           ySpeedInput = generateSpeed();
-        } else if (inputDirectionMatrix === 'north') {
+        } else {
           yInput = generateYNorth(this.canvas.height);
           xSpeedInput = null;
           ySpeedInput = -Math.abs(generateSpeed());
         }
-        this.words.push(new MatrixString(newWord, xInput, yInput, xSpeedInput, ySpeedInput, newFontSize));
+        this.words.push(new MatrixString(newWord, xInput, yInput, xSpeedInput || 0, ySpeedInput || 0, newFontSize));
       }
     } else if (inputDirectionMatrix === 'east' || inputDirectionMatrix === 'west') {
       for (let i = 0; i < rows; i++) {
@@ -102,17 +167,17 @@ export class CoreEngine {
           xInput = generateXEast(this.canvas.width, this.canvas.height);
           xSpeedInput = generateSpeed();
           ySpeedInput = null;
-        } else if (inputDirectionMatrix === 'west') {
+        } else {
           xInput = generateXWest(newWord.length, newFontSize, this.canvas.width, this.canvas.height);
           xSpeedInput = -Math.abs(generateSpeed());
           ySpeedInput = null;
         }
-        this.words.push(new MatrixString(newWord, xInput, yInput, xSpeedInput, ySpeedInput, newFontSize));
+        this.words.push(new MatrixString(newWord, xInput, yInput, xSpeedInput || 0, ySpeedInput || 0, newFontSize));
       }
     }
   }
 
-  initializeAll4Directions() {
+  initializeAll4Directions(): void {
     this.words = [];
     const directions = ['north', 'south', 'east', 'west'];
     this.all4DirectionsArray = directions.map(dir => {
@@ -123,7 +188,8 @@ export class CoreEngine {
     this.words = []; // Clear for consistency
   }
 
-  draw(inputWords, passThroughToDraw) {
+  draw(inputWords: MatrixString[], passThroughToDraw: boolean): void {
+    if (!this.ctx || !this.canvas) return;
     if (this.discoOn) this.discoFrameCounter++;
     if (this.all4Directions && !passThroughToDraw) {
       this.drawAll4Directions();
@@ -179,11 +245,11 @@ export class CoreEngine {
         }
       }
       this.ctx.font = inputWords[i].fontSize + "px 'Consolas', 'Lucida Console'";
-      const config = { rapidWordChange: this.rapidWordChange, discoOn: this.discoOn, direction: this.direction };
-      const discoCallback = (ctx) => {
+      const config: IMatrixStringConfig = { rapidWordChange: this.rapidWordChange, discoOn: this.discoOn, direction: this.direction };
+      const discoCallback = (ctx: CanvasRenderingContext2D) => {
         if (this.discoFrameCounter > this.discoFrameCounterTurnoverPoint) {
           ctx.fillStyle = getRandomColor();
-          this.savedColor = ctx.fillStyle;
+          this.savedColor = ctx.fillStyle as string;
           this.discoFrameCounter = 0;
         } else {
           ctx.fillStyle = this.savedColor;
@@ -193,7 +259,7 @@ export class CoreEngine {
     }
   }
 
-  drawAll4Directions() {
+  drawAll4Directions(): void {
     const directions = ['north', 'south', 'east', 'west'];
     directions.forEach((dir, i) => {
       this.direction = dir;
@@ -201,11 +267,11 @@ export class CoreEngine {
     });
   }
 
-  getAll4DirectionsDrawBackground() {
+  getAll4DirectionsDrawBackground(): boolean {
     return this.drawBackgroundAll4DirectionsCounter > this.drawBackgroundAll4DirectionsCounterMax;
   }
 
-  changeWordCheck(inputWordObject, inputSize) {
+  changeWordCheck(inputWordObject: MatrixString, inputSize: number): void {
     inputWordObject.wordChangeCounter++;
     if (inputWordObject.wordChangeCounter > inputWordObject.wordChangeCounterTurnoverPoint) {
       inputWordObject.word = generateWord(inputSize);
@@ -214,17 +280,20 @@ export class CoreEngine {
     }
   }
 
-  drawOpaqueRect() {
+  drawOpaqueRect(): void {
+    if (!this.ctx || !this.canvas) return;
     this.ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
-  drawSolidRect() {
+  drawSolidRect(): void {
+    if (!this.ctx || !this.canvas) return;
     this.ctx.fillStyle = 'rgba(0, 0, 0, 1)';
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
-  drawAlternative() {
+  drawAlternative(): void {
+    if (!this.ctx) return;
     if (this.discoOn) this.discoFrameCounter++;
     this.squareCounter++;
     if (this.drawBackgroundOn) this.drawOpaqueRect();
@@ -237,14 +306,14 @@ export class CoreEngine {
     }
 
     const newWordSize = this.getNewWordSize();
-    const config = { rapidWordChange: this.rapidWordChange, discoOn: this.discoOn, direction: this.direction };
-    const squareConfig = { 
+    const config: IMatrixStringConfig = { rapidWordChange: this.rapidWordChange, discoOn: this.discoOn, direction: this.direction };
+    const squareConfig: ISquareConfig = { 
       x1: this.x1, x2: this.x2, y1: this.y1, y2: this.y2, alternativeFontSize: this.alternativeFontSize,
       returnAlternativeFadeCondition: this.returnAlternativeFadeCondition.bind(this),
-      discoColorCounterCheck: (ctx) => {
+      discoColorCounterCheck: (ctx: CanvasRenderingContext2D) => {
         if (this.discoFrameCounter > this.discoFrameCounterTurnoverPoint) {
           ctx.fillStyle = getRandomColor();
-          this.savedColor = ctx.fillStyle;
+          this.savedColor = ctx.fillStyle as string;
           this.discoFrameCounter = 0;
         } else {
           ctx.fillStyle = this.savedColor;
@@ -264,41 +333,44 @@ export class CoreEngine {
       } else if (!this.hangingWords && !this.rapidWordChange) {
         this.changeWordCheck(arrayItem, newWordSize);
       }
-      arrayItem.showAlternative(this.ctx, this.colorChoiceArray[this.chosenColor], config, squareConfig);
+      arrayItem.showAlternative(this.ctx!, this.colorChoiceArray[this.chosenColor], config, squareConfig);
     });
   }
 
-  getNewWordSize() {
+  getNewWordSize(): number {
+    if (!this.canvas) return 80;
     let output = 80;
     if (this.canvas.height > 2000 || this.alternativeFontSize < 14) output = doubleInt(output) * 1.5;
     if (this.alternativeFontSize > 40) output = output / 2;
     return output;
   }
 
-  giveEachWordNewWord() {
+  giveEachWordNewWord(): void {
+    if (!this.canvas) return;
     const newWordSize = this.getNewWordSize();
     this.words.forEach(arrayWord => {
       if (this.hangingWords) {
         let hangingWordSize = generateWordSizeRandHanging(this.stringSizeMin, this.stringSizeMax);
-        if (this.canvas.height < 1000) hangingWordSize = Math.round(hangingWordSize * 0.6);
+        if (this.canvas!.height < 1000) hangingWordSize = Math.round(hangingWordSize * 0.6);
         arrayWord.word = generateWord(hangingWordSize);
       } else arrayWord.word = generateWord(newWordSize);
       arrayWord.XYCoordinates = arrayWord.generateXYCoordinates();
     });
   }
 
-  resetAllWordsYPositions() {
+  resetAllWordsYPositions(): void {
+    if (!this.canvas) return;
     this.words.forEach(arrayItem => {
       switch (this.direction) {
         case 'south': arrayItem.y = 0; break;
-        case 'north': arrayItem.y = this.canvas.height; break;
+        case 'north': arrayItem.y = this.canvas!.height; break;
         case 'east': arrayItem.x = 0; break;
-        case 'west': arrayItem.x = this.canvas.width; break;
+        case 'west': arrayItem.x = this.canvas!.width; break;
       }
     });
   }
 
-  moveSquareLeft(forceMove) {
+  moveSquareLeft(forceMove: boolean): void {
     let inputLeftEdge = this.leftEdge;
     if (this.discoOn || forceMove) inputLeftEdge = this.leftEdgeDisco;
     if (this.x2 < inputLeftEdge) {
@@ -307,7 +379,7 @@ export class CoreEngine {
     }
   }
 
-  moveSquareUp(forceMove) {
+  moveSquareUp(forceMove: boolean): void {
     let inputTopEdge = this.topEdge;
     if (this.discoOn || forceMove) inputTopEdge = this.topEdgeDisco;
     if (this.y1 > inputTopEdge) {
@@ -315,7 +387,7 @@ export class CoreEngine {
       this.y2 -= this.alternativeFontSize;
     }
   }
-  moveSquareRight(forceMove) {
+  moveSquareRight(forceMove: boolean): void {
     let inputRightEdge = this.rightEdge;
     if (this.discoOn || forceMove) inputRightEdge = this.rightEdgeDisco;
     if (this.x1 > inputRightEdge) {
@@ -323,7 +395,7 @@ export class CoreEngine {
       this.x2 -= this.alternativeFontSize;
     }
   }
-  moveSquareDown(forceMove) {
+  moveSquareDown(forceMove: boolean): void {
     let inputBottomEdge = this.bottomEdge;
     if (this.discoOn || forceMove) inputBottomEdge = this.bottomEdgeDisco;
     if (this.y2 < inputBottomEdge) {
@@ -332,9 +404,9 @@ export class CoreEngine {
     }
   }
 
-  returnAlternativeFadeCondition(inputNum, xCoordinate, yCoordinate, squareConfig, direction) {
+  returnAlternativeFadeCondition(inputNum: number, xCoordinate: number, yCoordinate: number, squareConfig: ISquareConfig, direction: string): boolean {
     const { x1, x2, y1, y2, alternativeFontSize } = squareConfig;
-    let coordinateNum = 0, alteredNum;
+    let coordinateNum = 0, alteredNum = 0;
     switch (inputNum) {
       case 0: coordinateNum = alternativeFontSize; alteredNum = coordinateNum / 2; break;
       case 1: coordinateNum = alternativeFontSize * 2; alteredNum = coordinateNum / 4; break;
@@ -355,41 +427,46 @@ export class CoreEngine {
     return rightCon || leftCon || topCon || bottomCon;
   }
 
-  generateRandomSquarePositions() {
+  generateRandomSquarePositions(): void {
     this.x1 = this.generateRandomPosition(50, this.getMaxPoint(true));
     this.x2 = this.x1 + 250;
     this.y1 = this.generateRandomPosition(50, this.getMaxPoint(false));
     this.y2 = this.y1 + 250;
   }
 
-  generateRandomPosition(startingPoint, finishingPoint) {
-    let availablePositions = [];
-    while (startingPoint < finishingPoint) availablePositions.push((startingPoint += 20));
+  generateRandomPosition(startingPoint: number, finishingPoint: number): number {
+    let availablePositions: number[] = [];
+    let current = startingPoint;
+    while (current < finishingPoint) {
+      availablePositions.push(current);
+      current += 20;
+    }
     return availablePositions[Math.floor(Math.random() * availablePositions.length)];
   }
 
-  getMaxPoint(maxX1) {
+  getMaxPoint(maxX1: boolean): number {
+    if (!this.canvas) return 0;
     let heightOrWidth = maxX1 ? this.canvas.width : this.canvas.height;
     let maxRange = heightOrWidth - this.SQUARE_SIZE - 60;
     if (!maxX1) maxRange += 10;
     return Math.round(maxRange / 10) * 10;
   }
 
-  matchColorToIndex(input) {
-    const map = { green: 0, red: 1, yellow: 2, blue: 3, orange: 4, pink: 5, cyan: 6, random: 7 };
+  matchColorToIndex(input: string): number {
+    const map: Record<string, number> = { green: 0, red: 1, yellow: 2, blue: 3, orange: 4, pink: 5, cyan: 6, random: 7 };
     return map[input.toLowerCase()] ?? 0;
   }
 
-  switchColor(input) {
+  switchColor(input: string): void {
     this.chosenColor = this.matchColorToIndex(input);
   }
 
-  updateRandomColor() {
+  updateRandomColor(): void {
     this.randomColorArray = generateRandomColorArray();
     this.colorChoiceArray[7] = this.randomColorArray;
   }
 
-  reset() {
+  reset(): void {
     this.words = [];
     this.all4DirectionsArray = [];
     this.direction = 'south';
@@ -403,7 +480,7 @@ export class CoreEngine {
     this.alternativeFontSize = 20;
   }
 
-  pause() {
+  pause(): void {
     if (this.animationOn) {
       clearInterval(this.intervalValid);
       this.animationOn = false;
@@ -416,18 +493,19 @@ export class CoreEngine {
     }
   }
 
-  clearScreen() {
+  clearScreen(): void {
+    if (!this.canvas) return;
     this.words.forEach(word => {
       switch (this.direction) {
-        case 'south': word.y = generateYSouth(word.word.length, word.fontSize, this.canvas.height); break;
-        case 'north': word.y = generateYNorth(this.canvas.height); break;
-        case 'east': word.x = generateXEast(this.canvas.width, this.canvas.height); break;
-        case 'west': word.x = generateXWest(word.word.length, word.fontSize, this.canvas.width, this.canvas.height); break;
+        case 'south': word.y = generateYSouth(word.word.length, word.fontSize, this.canvas!.height); break;
+        case 'north': word.y = generateYNorth(this.canvas!.height); break;
+        case 'east': word.x = generateXEast(this.canvas!.width, this.canvas!.height); break;
+        case 'west': word.x = generateXWest(word.word.length, word.fontSize, this.canvas!.width, this.canvas!.height); break;
       }
     });
   }
 
-  speedController(increase) {
+  speedController(increase: boolean): void {
     if (increase) this.intervalSpeed /= 2;
     else this.intervalSpeed *= 2;
     clearInterval(this.intervalValid);
@@ -437,7 +515,7 @@ export class CoreEngine {
     }, this.intervalSpeed);
   }
 
-  controlFontSize(increase) {
+  controlFontSize(increase: boolean): void {
     if (this.squareAnimationOn) return;
     if (increase) {
       this.defaultFontSize++;
@@ -452,7 +530,7 @@ export class CoreEngine {
     });
   }
 
-  controlStringSize(increase) {
+  controlStringSize(increase: boolean): void {
     if (increase) {
       this.stringSizeMin++;
       this.stringSizeMax++;
@@ -466,17 +544,17 @@ export class CoreEngine {
     });
   }
 
-  rapidWordChangeControl() {
+  rapidWordChangeControl(): void {
     this.rapidWordChange = !this.rapidWordChange;
   }
 
-  switchMode() {
+  switchMode(): void {
     const original = this.squareAnimationOn;
     this.reset();
     this.run(original);
   }
 
-  resetWordsArray() {
+  resetWordsArray(): void {
     this.words = [];
     if (this.all4Directions) {
       this.initializeAll4Directions();
@@ -490,7 +568,7 @@ export class CoreEngine {
     }
   }
 
-  run(original) {
+  run(original: boolean): void {
     this.squareAnimationOn = !original;
     this.resetWordsArray();
 
