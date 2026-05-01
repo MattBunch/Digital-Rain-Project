@@ -201,4 +201,8 @@ Added `buttonDiscoChecked()` to the button mouseover functionality for changing 
 
 ## 30/04/2025
 
-- Decided to try getting Gemini CLI to refactor this repo - started in the early stages
+- Decided to try getting Gemini CLI to refactor this repo - started in the early stages.
+
+## 01/05/2025
+
+- Couple of bugfixes. Prepping for switch to typescript, svelte. plan is in place in docs/plan.md, typescript in file: docs/typescript-migration-plan.md  

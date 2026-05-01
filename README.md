@@ -54,18 +54,17 @@ refer to docs/plan.md
 
 ## Possible extensions in further versions:
 
-- fix broken square mode movement - no left or down movement working
-- all 4 directions - left & right aren't working 
 - execute the plan in docs/plan.md
 - Test coverage - v8 library (npm install -D vitest @vitest/coverage-v8)
 - migrate to typescript - prompt outlined in docs/typescript-migration-plan.md
 - migrate to svelte for components
 - eslint - make sure gemini/ai agents follow it
 - adapt values to work with any size monitor for consistent views no matter the screen size
+- rename square boundry left side right side names switched - fix this naming inconsistency
 
 - Colour wheel selector.
-- Up and down arrows in menu.
-- bugs in main menu - colours mismatching, highlight staying on.
+- Up and down keys work in menu.
+- bugs in main menu - co lours mismatching, highlight staying on - switch to .
 
 ## Misc
 
