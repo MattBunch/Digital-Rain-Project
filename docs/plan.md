@@ -2,6 +2,7 @@ This migration plan follows a "Stability-First" approach. We will stabilize the 
 
 ---
 
+# NOTE: already completed, go to phase 2
 ## Phase 1: Environment Setup & Node.js Initialization
 The first step is to transform this from a loose collection of files into a structured development environment.
 
