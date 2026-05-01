@@ -56,6 +56,20 @@ export class CoreEngine {
   setContext(canvas, ctx) {
     this.canvas = canvas;
     this.ctx = ctx;
+    this.updateBoundaries();
+  }
+
+  updateBoundaries() {
+    if (!this.canvas) return;
+    this.topEdge = 60;
+    this.rightEdge = 60;
+    this.bottomEdge = this.canvas.height - 60;
+    this.leftEdge = this.canvas.width - 60;
+
+    this.topEdgeDisco = 20;
+    this.rightEdgeDisco = 20;
+    this.bottomEdgeDisco = this.canvas.height - 20;
+    this.leftEdgeDisco = this.canvas.width - 20;
   }
 
   createMatrixArray(inputDirectionMatrix) {

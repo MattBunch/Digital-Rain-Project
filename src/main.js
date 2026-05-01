@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const setup = () => {
     canvasSetup(window.innerWidth, window.innerHeight, canvas, ctx, engine.defaultFontSize);
+    engine.updateBoundaries();
   };
 
   window.addEventListener('resize', () => {
