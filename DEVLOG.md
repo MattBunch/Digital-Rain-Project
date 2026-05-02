@@ -209,4 +209,4 @@ Added `buttonDiscoChecked()` to the button mouseover functionality for changing 
 
 ## 02/05/2025
 
-- Migrated to typescript
+- Migrated to typescript, unit test coverage expanded.
