@@ -194,9 +194,7 @@ function generateWordSizeRand() {
 }
 
 function generateWordSizeRandHanging() {
-  return Math.floor(
-    generateRandomNumber(stringSizeMin - 10, stringSizeMax + 3),
-  );
+  return Math.floor(generateRandomNumber(stringSizeMin - 10, stringSizeMax + 3));
 }
 
 // generate font size number between 15 and 25
@@ -261,9 +259,7 @@ function generateXWest(word, inputFontSize) {
 
 function generateYNorth() {
   let minNum = canvas.height + 2;
-  let maxNum = Math.round(
-    canvas.height + canvas.height * 2 + canvas.height * 0.7021,
-  );
+  let maxNum = Math.round(canvas.height + canvas.height * 2 + canvas.height * 0.7021);
 
   return generateStartingPointInput(minNum, maxNum);
 }
@@ -399,8 +395,7 @@ class MatrixString {
       let xCoordinate = this.getXCoordinateFromDirection(i, true);
       let yCoordinate = this.getYCoordinateFromDirection(i, true);
 
-      if (onePercentChance() && !rapidWordChange && i != 0)
-        letter = getRandomChar();
+      if (onePercentChance() && !rapidWordChange && i != 0) letter = getRandomChar();
 
       if (i == 0) letter = ' ';
 
@@ -414,22 +409,11 @@ class MatrixString {
 
   drawSquare(xCoordinate, yCoordinate, inputColorArray) {
     let primaryColorCondition =
-      xCoordinate < x1 ||
-      xCoordinate > x2 ||
-      yCoordinate < y1 ||
-      yCoordinate > y2;
+      xCoordinate < x1 || xCoordinate > x2 || yCoordinate < y1 || yCoordinate > y2;
 
-    let alternativeFade1Condition = returnAlternativeFadeCondition(
-      0,
-      xCoordinate,
-      yCoordinate,
-    );
+    let alternativeFade1Condition = returnAlternativeFadeCondition(0, xCoordinate, yCoordinate);
 
-    let alternativeFade2Condition = returnAlternativeFadeCondition(
-      1,
-      xCoordinate,
-      yCoordinate,
-    );
+    let alternativeFade2Condition = returnAlternativeFadeCondition(1, xCoordinate, yCoordinate);
 
     if (primaryColorCondition) {
       if (discoOn) {
@@ -581,16 +565,11 @@ function returnAlternativeFadeCondition(inputNum, xCoordinate, yCoordinate) {
   // ###
   let yPos1 = y1 - coordinateNum + alteredNum;
 
-  let yCon3 = !(
-    xCoordinate < x1 - coordinateNum || xCoordinate > x2 + coordinateNum
-  );
+  let yCon3 = !(xCoordinate < x1 - coordinateNum || xCoordinate > x2 + coordinateNum);
 
   // top
   let topCon1 = yCoordinate == yPos1;
-  let topCon2 = !(
-    xCoordinate < x1 - alternativeFontSize ||
-    xCoordinate > x2 + alternativeFontSize
-  );
+  let topCon2 = !(xCoordinate < x1 - alternativeFontSize || xCoordinate > x2 + alternativeFontSize);
 
   if (direction === 'north') {
     topCon1 = yCoordinate - 6 == yPos1;
@@ -601,8 +580,7 @@ function returnAlternativeFadeCondition(inputNum, xCoordinate, yCoordinate) {
   // bottom
   let bottomCon1 = yCoordinate == y2 + coordinateNum;
   let bottomCon2 = !(
-    xCoordinate < x1 - alternativeFontSize ||
-    xCoordinate > x2 + alternativeFontSize
+    xCoordinate < x1 - alternativeFontSize || xCoordinate > x2 + alternativeFontSize
   );
 
   if (direction === 'north') {
@@ -678,22 +656,10 @@ function createMatrixArray(inputDirectionMatrix) {
         ySpeedInput = -Math.abs(generateSpeed());
       }
       // create new MatrixString object for vertical
-      words.push(
-        new MatrixString(
-          newWord,
-          xInput,
-          yInput,
-          xSpeedInput,
-          ySpeedInput,
-          newFontSize,
-        ),
-      );
+      words.push(new MatrixString(newWord, xInput, yInput, xSpeedInput, ySpeedInput, newFontSize));
     }
     // horizontal
-  } else if (
-    inputDirectionMatrix === 'east' ||
-    inputDirectionMatrix === 'west'
-  ) {
+  } else if (inputDirectionMatrix === 'east' || inputDirectionMatrix === 'west') {
     for (let i = 0; i < rows; i++) {
       yInput = fontSize * i;
       newWord = generateWord(generateWordSizeRand());
@@ -708,16 +674,7 @@ function createMatrixArray(inputDirectionMatrix) {
         ySpeedInput = null;
       }
       // create new object for horizontal
-      words.push(
-        new MatrixString(
-          newWord,
-          xInput,
-          yInput,
-          xSpeedInput,
-          ySpeedInput,
-          newFontSize,
-        ),
-      );
+      words.push(new MatrixString(newWord, xInput, yInput, xSpeedInput, ySpeedInput, newFontSize));
     }
   }
 }
@@ -814,8 +771,7 @@ function draw(inputWords, passThroughToDraw) {
     drawBackgroundAll4DirectionsCounter++;
 
     // only returns true once every 4 calls  of draw()
-    all4DirectionsDrawBackground =
-      all4Directions && getAll4DirectionsDrawBackground();
+    all4DirectionsDrawBackground = all4Directions && getAll4DirectionsDrawBackground();
 
     // if counter is over the max limit, reset
     checkBackgroundCounter();
@@ -839,10 +795,7 @@ function draw(inputWords, passThroughToDraw) {
         inputWords[i].ySpeed = generateSpeed(); // new speed
         inputWords[i].word = generateWord(generateWordSizeRand()); // generate new random word with random size
         inputWords[i].fontSize = generateFontSize(); // new font size
-        inputWords[i].y = generateYSouth(
-          inputWords[i].word,
-          inputWords[i].fontSize,
-        );
+        inputWords[i].y = generateYSouth(inputWords[i].word, inputWords[i].fontSize);
       } else {
         inputWords[i].y = inputWords[i].y + fontSize + inputWords[i].ySpeed;
         ctx.font = inputWords[i].fontSize + "px 'Consolas', 'Lucida Console'";
@@ -873,10 +826,7 @@ function draw(inputWords, passThroughToDraw) {
         inputWords[i].xSpeed = -Math.abs(generateSpeed()); // new speed
         inputWords[i].word = generateWord(generateWordSizeRand()); // generate new random word with random size
         inputWords[i].fontSize = generateFontSize(); // new font size
-        inputWords[i].x = generateXWest(
-          inputWords[i].word,
-          inputWords[i].fontSize,
-        ); // new x placement
+        inputWords[i].x = generateXWest(inputWords[i].word, inputWords[i].fontSize); // new x placement
       } else {
         inputWords[i].x = inputWords[i].x + fontSize + inputWords[i].xSpeed;
         ctx.font = inputWords[i].fontSize + "px 'Consolas', 'Lucida Console'";
@@ -886,10 +836,7 @@ function draw(inputWords, passThroughToDraw) {
     let millisecondsToWait = inputWords[i].ySpeed * 100;
     // code for vertical movement methods
 
-    setTimeout(
-      inputWords[i].show(colorChoiceArray[chosenColor]),
-      millisecondsToWait,
-    );
+    setTimeout(inputWords[i].show(colorChoiceArray[chosenColor]), millisecondsToWait);
   }
 }
 
@@ -958,23 +905,19 @@ function checkBackgroundCounter() {
 }
 
 function getAll4DirectionsDrawBackground() {
-  return (
-    drawBackgroundAll4DirectionsCounter > drawBackgroundAll4DirectionsCounterMax
-  );
+  return drawBackgroundAll4DirectionsCounter > drawBackgroundAll4DirectionsCounterMax;
 }
 
 function changeWordCheck(inputWordObject, inputSize) {
   inputWordObject.wordChangeCounter++;
   let changeOverCondition =
-    inputWordObject.wordChangeCounter >
-    inputWordObject.wordChangeCounterTurnoverPoint;
+    inputWordObject.wordChangeCounter > inputWordObject.wordChangeCounterTurnoverPoint;
 
   if (changeOverCondition) {
     let replacementWord = generateWord(inputSize);
     inputWordObject.word = replacementWord;
     inputWordObject.wordChangeCounter = 0;
-    inputWordObject.wordChangeCounterTurnoverPoint =
-      generateWordChangeTurnoverNumber();
+    inputWordObject.wordChangeCounterTurnoverPoint = generateWordChangeTurnoverNumber();
   }
 }
 
@@ -1074,8 +1017,7 @@ function isBigFontSize() {
 function getNewWordSize() {
   let output = 80;
 
-  if (isReallyTallScreen() || isSmallFontSize())
-    output = doubleInt(output) * 1.5;
+  if (isReallyTallScreen() || isSmallFontSize()) output = doubleInt(output) * 1.5;
 
   if (isBigFontSize()) output = output / 2;
 
@@ -1345,9 +1287,7 @@ function generateRandomSquarePositions() {
       availablePositions.push((startingPoint += 20));
     }
 
-    return availablePositions[
-      Math.floor(Math.random() * availablePositions.length)
-    ];
+    return availablePositions[Math.floor(Math.random() * availablePositions.length)];
   }
 
   function getMinX1Point() {
@@ -1698,8 +1638,7 @@ function speedController(increase) {
 
   // check if current speed level is at 0 or 7
   if (currentSpeedLevel === speedLevels[0] && !increase) return;
-  if (currentSpeedLevel === speedLevels[speedLevels.length - 1] && increase)
-    return;
+  if (currentSpeedLevel === speedLevels[speedLevels.length - 1] && increase) return;
 
   // increase or decrease speed level
   if (increase) {
@@ -1836,12 +1775,8 @@ const DISCO_FRAME_COUNTER_DEFAULT_MIN = 1;
 
 function discoIntervalSpeedControl(increase) {
   if (discoOn) {
-    let canIncrease =
-      increase &&
-      discoFrameCounterTurnoverPoint < DISCO_FRAME_COUNTER_DEFAULT_MAX;
-    let canDecrease =
-      !increase &&
-      discoFrameCounterTurnoverPoint > DISCO_FRAME_COUNTER_DEFAULT_MIN;
+    let canIncrease = increase && discoFrameCounterTurnoverPoint < DISCO_FRAME_COUNTER_DEFAULT_MAX;
+    let canDecrease = !increase && discoFrameCounterTurnoverPoint > DISCO_FRAME_COUNTER_DEFAULT_MIN;
 
     if (canIncrease) discoFrameCounterTurnoverPoint++;
     else if (canDecrease) discoFrameCounterTurnoverPoint--;
@@ -1894,8 +1829,7 @@ function squareCounterControl(increase) {
 
   function returnMaxCon() {
     return (
-      squareCounterTurnoverPoint ===
-        squareCounterLevels[squareCounterLevels.length - 1] && increase
+      squareCounterTurnoverPoint === squareCounterLevels[squareCounterLevels.length - 1] && increase
     );
   }
 }
@@ -2137,11 +2071,9 @@ function selectFunction() {
 // https://stackoverflow.com/questions/31910038/do-something-when-mouse-hovers-over-each-select-option-in-the-list-javascript
 // below method only works when hovering over the main opton, will have to create own select option
 // if you want to have a dropdown recolor itself
-document
-  .getElementById('directions')
-  .addEventListener('mouseover', function () {
-    // do nothing
-  });
+document.getElementById('directions').addEventListener('mouseover', function () {
+  // do nothing
+});
 
 // call selectionFunction on page loading
 
@@ -2428,3 +2360,14 @@ Keyboard Inputs
   - P: Increase random square speed
   - ;: Decrease random square speed
   `;
+
+// Bridge to main.js
+window.run = run;
+window.all4DirectionsControl = all4DirectionsControl;
+window.selectFunction = selectFunction;
+window.directionFunction = directionFunction;
+window.checkboxFunction = checkboxFunction;
+window.frameCountFunctionOnChange = frameCountFunctionOnChange;
+window.frameCountFunctionOnLoad = frameCountFunctionOnLoad;
+window.menuOnLoad = menuOnLoad;
+window.helpText = helpText;

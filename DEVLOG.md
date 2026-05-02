@@ -198,3 +198,15 @@ Added `buttonDiscoChecked()` to the button mouseover functionality for changing 
 ## 29/08/2021
 
 - Formatting fixed for this DEVLOG.md file.
+
+## 30/04/2025
+
+- Decided to try getting Gemini CLI to refactor this repo - started in the early stages. Migration to node.js & vite.
+
+## 01/05/2025
+
+- Couple of bugfixes. Prepping for switch to typescript, svelte. plan is in place in docs/plan.md, typescript in file: docs/typescript-migration-plan.md
+
+## 02/05/2025
+
+- Migrated to typescript, unit test coverage expanded.

@@ -49,14 +49,26 @@ Same as Normal Mode except:
 - P: Increase random square speed
 - ;: Decrease random square speed
 
+## Plan
+
+refer to docs/plan.md
+
 ## Possible extensions in further versions:
 
-- Music.
+- execute the plan in docs/plan.md
+- Test coverage - v8 library (npm install -D vitest @vitest/coverage-v8)
+- migrate to typescript - prompt outlined in docs/typescript-migration-plan.md
+- migrate to svelte for components
+- eslint - make sure gemini/ai agents follow it
+- adapt values to work with any size monitor for consistent views no matter the screen size
+- rename square boundry left side right side names switched - fix this naming inconsistency
+
 - Colour wheel selector.
+- Up and down keys work in menu.
+- bugs in main menu - co lours mismatching, highlight staying on - switch to .
 
 ## Misc
 
 The core of this program was written while I was learning JS, mostly completed on 18/08/20 and 19/08/20.
 
-I had completed another Digital Rain animation program in Java previously, which serves as a prototype of this current program. Here is a video of the original Java project:
-https://files.catbox.moe/prmcql.mp4
+I had completed another Digital Rain animation program in Java previously, which serves as a prototype of this current program.
