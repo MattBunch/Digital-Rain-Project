@@ -56,13 +56,13 @@ refer to docs/plan.md
 ## Possible extensions in further versions:
 
 - execute the plan in docs/plan.md
-- migrate to svelte for components
 - adapt values to work with any size monitor for consistent views no matter the screen size
+- bugs in main menu - colours mismatching, disco colours staying on
 - rename square boundry left side right side names switched - fix this naming inconsistency
 
 - Colour wheel selector.
 - Up and down keys work in menu.
-- bugs in main menu - colours mismatching, disco colours staying on
+
 - more interesting dynamic menu - highlight effect where letters fall off the mouse/sides of buttons, canvas background showing the digital rain effect etc. be creative.
 - modal window for button presses instead of just "alert" built in browser functionality.
 
