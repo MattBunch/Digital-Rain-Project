@@ -1,5 +1,10 @@
 // src/models/MatrixString.ts
-import { generateWord, getRandomChar, onePercentChance, generateWordChangeTurnoverNumber } from '../utils/MathUtils.ts';
+import {
+  generateWord,
+  getRandomChar,
+  onePercentChance,
+  generateWordChangeTurnoverNumber,
+} from '../utils/MathUtils.ts';
 import { colorWhite } from '../constants/Assets.ts';
 
 export class CoordinateObject {
@@ -24,7 +29,13 @@ export interface ISquareConfig {
   y1: number;
   y2: number;
   alternativeFontSize: number;
-  returnAlternativeFadeCondition: (index: number, x: number, y: number, config: ISquareConfig, direction: string) => boolean;
+  returnAlternativeFadeCondition: (
+    index: number,
+    x: number,
+    y: number,
+    config: ISquareConfig,
+    direction: string,
+  ) => boolean;
   discoColorCounterCheck: (ctx: CanvasRenderingContext2D) => void;
   getRandomColor: () => string;
 }
@@ -40,7 +51,14 @@ export class MatrixString {
   wordChangeCounterTurnoverPoint: number;
   XYCoordinates: CoordinateObject[];
 
-  constructor(word: string, x: number, y: number, xSpeed: number, ySpeed: number, inputFontSize: number) {
+  constructor(
+    word: string,
+    x: number,
+    y: number,
+    xSpeed: number,
+    ySpeed: number,
+    inputFontSize: number,
+  ) {
     this.word = word;
     this.x = x;
     this.y = y;
@@ -52,21 +70,34 @@ export class MatrixString {
     this.XYCoordinates = this.generateXYCoordinates();
   }
 
-  show(ctx: CanvasRenderingContext2D, inputColorArray: string[], config: IMatrixStringConfig, discoColorCounterCheck: (ctx: CanvasRenderingContext2D) => void): void {
+  show(
+    ctx: CanvasRenderingContext2D,
+    inputColorArray: string[],
+    config: IMatrixStringConfig,
+    discoColorCounterCheck: (ctx: CanvasRenderingContext2D) => void,
+  ): void {
     const { rapidWordChange, discoOn } = config;
 
-    if (rapidWordChange) this.word = generateWord(this.word.length);
+    if (rapidWordChange) {
+      this.word = generateWord(this.word.length);
+    }
 
-    if (discoOn) discoColorCounterCheck(ctx);
+    if (discoOn) {
+      discoColorCounterCheck(ctx);
+    }
 
     for (let i = 0; i < this.word.length - 1; i++) {
       let letter = this.word.substring(i, i + 1);
       const xCoordinate = this.getXCoordinateFromDirection(i, config.direction, false);
       const yCoordinate = this.getYCoordinateFromDirection(i, config.direction, false);
 
-      if (onePercentChance() && !rapidWordChange) letter = getRandomChar();
+      if (onePercentChance() && !rapidWordChange) {
+        letter = getRandomChar();
+      }
 
-      if (!discoOn) this.setColors(ctx, i, inputColorArray, config.direction);
+      if (!discoOn) {
+        this.setColors(ctx, i, inputColorArray, config.direction);
+      }
 
       ctx.fillText(letter, xCoordinate, yCoordinate);
 
@@ -74,21 +105,31 @@ export class MatrixString {
     }
   }
 
-  showAlternative(ctx: CanvasRenderingContext2D, inputColorArray: string[], config: IMatrixStringConfig, squareConfig: ISquareConfig): void {
+  showAlternative(
+    ctx: CanvasRenderingContext2D,
+    inputColorArray: string[],
+    config: IMatrixStringConfig,
+    squareConfig: ISquareConfig,
+  ): void {
     const { rapidWordChange } = config;
 
-    if (rapidWordChange) this.word = generateWord(this.word.length);
+    if (rapidWordChange) {
+      this.word = generateWord(this.word.length);
+    }
 
     for (let i = 0; i < this.word.length; i++) {
       let letter = this.word.substring(i, i + 1);
 
-      let xCoordinate = this.getXCoordinateFromDirection(i, config.direction, true);
-      let yCoordinate = this.getYCoordinateFromDirection(i, config.direction, true);
+      const xCoordinate = this.getXCoordinateFromDirection(i, config.direction, true);
+      const yCoordinate = this.getYCoordinateFromDirection(i, config.direction, true);
 
-      if (onePercentChance() && !rapidWordChange && i != 0)
+      if (onePercentChance() && !rapidWordChange && i != 0) {
         letter = getRandomChar();
+      }
 
-      if (i == 0) letter = ' ';
+      if (i == 0) {
+        letter = ' ';
+      }
 
       this.drawSquare(ctx, xCoordinate, yCoordinate, inputColorArray, config, squareConfig);
 
@@ -98,32 +139,36 @@ export class MatrixString {
     }
   }
 
-  drawSquare(ctx: CanvasRenderingContext2D, xCoordinate: number, yCoordinate: number, inputColorArray: string[], config: IMatrixStringConfig, squareConfig: ISquareConfig): void {
+  drawSquare(
+    ctx: CanvasRenderingContext2D,
+    xCoordinate: number,
+    yCoordinate: number,
+    inputColorArray: string[],
+    config: IMatrixStringConfig,
+    squareConfig: ISquareConfig,
+  ): void {
     const { x1, x2, y1, y2 } = squareConfig;
     const { discoOn } = config;
 
-    let primaryColorCondition =
-      xCoordinate < x1 ||
-      xCoordinate > x2 ||
-      yCoordinate < y1 ||
-      yCoordinate > y2;
+    const primaryColorCondition =
+      xCoordinate < x1 || xCoordinate > x2 || yCoordinate < y1 || yCoordinate > y2;
 
     const { returnAlternativeFadeCondition, discoColorCounterCheck, getRandomColor } = squareConfig;
 
-    let alternativeFade1Condition = returnAlternativeFadeCondition(
+    const alternativeFade1Condition = returnAlternativeFadeCondition(
       0,
       xCoordinate,
       yCoordinate,
       squareConfig,
-      config.direction
+      config.direction,
     );
 
-    let alternativeFade2Condition = returnAlternativeFadeCondition(
+    const alternativeFade2Condition = returnAlternativeFadeCondition(
       1,
       xCoordinate,
       yCoordinate,
       squareConfig,
-      config.direction
+      config.direction,
     );
 
     if (primaryColorCondition) {
@@ -145,7 +190,12 @@ export class MatrixString {
     }
   }
 
-  setColors(ctx: CanvasRenderingContext2D, i: number, inputColorArray: string[], direction: string): void {
+  setColors(
+    ctx: CanvasRenderingContext2D,
+    i: number,
+    inputColorArray: string[],
+    direction: string,
+  ): void {
     if (direction == 'south' || direction == 'west') {
       if (i == this.word.length - 2) {
         ctx.fillStyle = colorWhite;
@@ -170,12 +220,14 @@ export class MatrixString {
   }
 
   getYCoordinateFromDirection(i: number, direction: string, alternative: boolean): number {
-    let defaultYCoordinate = this.y + i * this.fontSize;
+    const defaultYCoordinate = this.y + i * this.fontSize;
     switch (direction) {
       case 'south':
         return defaultYCoordinate;
       case 'north':
-        if (!alternative) return defaultYCoordinate;
+        if (!alternative) {
+          return defaultYCoordinate;
+        }
         return this.y - i * this.fontSize;
       case 'east':
         return this.y;
@@ -187,7 +239,7 @@ export class MatrixString {
   }
 
   getXCoordinateFromDirection(i: number, direction: string, alternative: boolean): number {
-    let defaultXCoordinate = this.x + i * this.fontSize;
+    const defaultXCoordinate = this.x + i * this.fontSize;
     switch (direction) {
       case 'south':
         return this.x;
@@ -196,7 +248,9 @@ export class MatrixString {
       case 'east':
         return defaultXCoordinate;
       case 'west':
-        if (!alternative) return defaultXCoordinate;
+        if (!alternative) {
+          return defaultXCoordinate;
+        }
         return this.x - i * this.fontSize;
       default:
         return defaultXCoordinate;
@@ -204,10 +258,10 @@ export class MatrixString {
   }
 
   generateXYCoordinates(): CoordinateObject[] {
-    let output = new Array<CoordinateObject>();
+    const output = new Array<CoordinateObject>();
     for (let i = 0; i < this.word.length; i++) {
-      let xCoordinate = this.x;
-      let yCoordinate = this.y + i * this.fontSize;
+      const xCoordinate = this.x;
+      const yCoordinate = this.y + i * this.fontSize;
       output.push(new CoordinateObject(xCoordinate, yCoordinate));
     }
     return output;

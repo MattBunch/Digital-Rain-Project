@@ -8,16 +8,16 @@ export function canvasSetup(
   height: number,
   canvas: HTMLCanvasElement,
   ctx: CanvasRenderingContext2D,
-  defaultFontSize: number
+  defaultFontSize: number,
 ): { columns: number; rows: number } {
-  let fontSize = defaultFontSize;
+  const fontSize = defaultFontSize;
   ctx.font = fontSize + "px 'Consolas', 'Lucida Console'";
   ctx.fillStyle = '#00FF41';
 
   canvas.width = width;
   canvas.height = height;
-  let columns = canvas.width / fontSize;
-  let rows = canvas.height / fontSize;
+  const columns = canvas.width / fontSize;
+  const rows = canvas.height / fontSize;
 
   // mirror the screen
   ctx.translate(canvas.width, 0);
@@ -26,7 +26,11 @@ export function canvasSetup(
   return { columns, rows };
 }
 
-export function generateStartingPointInput(inputMin: number, inputMax: number, canvasHeight: number): number {
+export function generateStartingPointInput(
+  inputMin: number,
+  inputMax: number,
+  canvasHeight: number,
+): number {
   if (canvasHeight > 1000) {
     inputMax = doubleInt(inputMax);
   }
@@ -34,28 +38,35 @@ export function generateStartingPointInput(inputMin: number, inputMax: number, c
 }
 
 export function generateXEast(canvasWidth: number, canvasHeight: number): number {
-  let minNum = canvasWidth;
-  let maxNum = canvasWidth + 1200;
+  const minNum = canvasWidth;
+  const maxNum = canvasWidth + 1200;
   return generateStartingPointInput(minNum, maxNum, canvasHeight);
 }
 
-export function generateXWest(wordLength: number, inputFontSize: number, canvasWidth: number, canvasHeight: number): number {
-  let minNum = 0 - (wordLength * inputFontSize + 20);
-  let maxNum = canvasWidth * -1 * 1.5;
+export function generateXWest(
+  wordLength: number,
+  inputFontSize: number,
+  canvasWidth: number,
+  canvasHeight: number,
+): number {
+  const minNum = 0 - (wordLength * inputFontSize + 20);
+  const maxNum = canvasWidth * -1 * 1.5;
   return generateStartingPointInput(minNum, maxNum, canvasHeight);
 }
 
 export function generateYNorth(canvasHeight: number): number {
-  let minNum = canvasHeight + 2;
-  let maxNum = Math.round(
-    canvasHeight + canvasHeight * 2 + canvasHeight * 0.7021,
-  );
+  const minNum = canvasHeight + 2;
+  const maxNum = Math.round(canvasHeight + canvasHeight * 2 + canvasHeight * 0.7021);
   return generateStartingPointInput(minNum, maxNum, canvasHeight);
 }
 
-export function generateYSouth(wordLength: number, inputFontSize: number, canvasHeight: number): number {
-  let minNum = 0 - wordLength * inputFontSize;
-  let maxNum = canvasHeight * -1 * 4;
+export function generateYSouth(
+  wordLength: number,
+  inputFontSize: number,
+  canvasHeight: number,
+): number {
+  const minNum = 0 - wordLength * inputFontSize;
+  const maxNum = canvasHeight * -1 * 4;
   return generateStartingPointInput(minNum, maxNum, canvasHeight);
 }
 
@@ -63,12 +74,18 @@ export function isCanvasLarge(canvasHeight: number): boolean {
   return canvasHeight > 1000;
 }
 
-export function calculateAverageStartingPosition(inputArray: ICoordinate[], inputDirection: string): number {
+export function calculateAverageStartingPosition(
+  inputArray: ICoordinate[],
+  inputDirection: string,
+): number {
   let total = 0;
   let counter = 0;
   for (let i = 0; i < inputArray.length; i++) {
-    if (inputDirection === vertical) total += inputArray[i].y;
-    else if (inputDirection === horizontal) total += inputArray[i].x;
+    if (inputDirection === vertical) {
+      total += inputArray[i].y;
+    } else if (inputDirection === horizontal) {
+      total += inputArray[i].x;
+    }
     counter++;
   }
   return total / counter;
@@ -81,7 +98,7 @@ export function getMiddleElementOfArray<T>(inputArray: T[]): T {
 export function getMiddleLevel<T>(inputArray: T[]): T {
   // Original JS was: return inputArray[getMiddleElementOfArray(inputArray)];
   // This looks like a bug in original code if inputArray is an array and getMiddleElementOfArray returns an element.
-  // However, I'll stick to the logic for now but typed. 
+  // However, I'll stick to the logic for now but typed.
   // If getMiddleElementOfArray returns an index (number), it works. Let's check getMiddleElementOfArray implementation above.
   // It returns an element. So inputArray[element] only works if element is a valid key.
   // Actually, getMiddleElementOfArray returns T. If T is number, it might work as index.

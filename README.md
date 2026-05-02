@@ -50,6 +50,7 @@ Same as Normal Mode except:
 - ;: Decrease random square speed
 
 ## Plan
+
 refer to docs/plan.md
 
 ## Possible extensions in further versions:

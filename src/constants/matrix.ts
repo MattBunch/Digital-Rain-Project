@@ -1,6 +1,7 @@
 // src/constants/matrix.js
 
-export const ALPHABET = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ｦｧｨｩｪｫｬｭｮｯｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ';
+export const ALPHABET =
+  'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ｦｧｨｩｪｫｬｭｮｯｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ';
 
 export const COLORS = {
   WHITE: '#ffffff',
@@ -12,12 +13,12 @@ export const COLORS = {
   BLUE_VARIANTS: ['#e6e6ff', '#6666ff', '#0000ff'],
   ORANGE_VARIANTS: ['#fff5e6', '#ffc266', '#ff9900'],
   PINK_VARIANTS: ['#ffe6ff', '#ff66ff', '#ff00ff'],
-  CYAN_VARIANTS: ['#e6ffff', '#66ffff', '#00ffff']
+  CYAN_VARIANTS: ['#e6ffff', '#66ffff', '#00ffff'],
 };
 
 export const DEFAULT_CONFIG = {
   FONT_SIZE: 20,
   SPEED: 50,
   STRING_SIZE_MIN: 20,
-  STRING_SIZE_MAX: 48
+  STRING_SIZE_MAX: 48,
 };

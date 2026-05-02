@@ -1,13 +1,13 @@
 // src/ui/UIManager.ts
-import { 
-  colorBlack, 
-  colorMatrixGreen, 
-  colorRed, 
-  colorYellow, 
-  colorBlue, 
-  colorOrange, 
-  colorPink, 
-  colorCyan 
+import {
+  colorBlack,
+  colorMatrixGreen,
+  colorRed,
+  colorYellow,
+  colorBlue,
+  colorOrange,
+  colorPink,
+  colorCyan,
 } from '../constants/Assets.ts';
 import { getRandomColor } from '../utils/MathUtils.ts';
 import { CoreEngine } from '../engine/CoreEngine.ts';
@@ -49,7 +49,9 @@ export class UIManager {
     this.button4 = document.getElementById('button4');
     this.buttons = document.getElementsByClassName('button') as HTMLCollectionOf<HTMLElement>;
     this.elems = document.body.getElementsByTagName('*') as HTMLCollectionOf<HTMLElement>;
-    this.frameCountElems = document.getElementsByClassName('frameCount') as HTMLCollectionOf<HTMLElement>;
+    this.frameCountElems = document.getElementsByClassName(
+      'frameCount',
+    ) as HTMLCollectionOf<HTMLElement>;
     this.discoFrameElement = document.getElementById('frameCount') as HTMLInputElement;
     this.canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
   }
@@ -94,7 +96,9 @@ export class UIManager {
   }
 
   checkboxFunction(): void {
-    if (!this.checkBox || !this.text || !this.select || !this.button3) return;
+    if (!this.checkBox || !this.text || !this.select || !this.button3) {
+      return;
+    }
 
     if (!this.checkBox.checked) {
       this.text.style.display = 'inline-block';
@@ -127,7 +131,9 @@ export class UIManager {
   }
 
   frameCountElemsVisibilityFunction(): void {
-    if (!this.frameCountElems || !this.checkBox) return;
+    if (!this.frameCountElems || !this.checkBox) {
+      return;
+    }
     for (let i = 0; i < this.frameCountElems.length; i++) {
       if (this.checkBox.checked) {
         this.frameCountElems[i].style.display = 'inline-block';
@@ -138,8 +144,10 @@ export class UIManager {
   }
 
   selectFunction(): void {
-    if (!this.select || !this.button) return;
-    let userColor = this.select.value;
+    if (!this.select || !this.button) {
+      return;
+    }
+    const userColor = this.select.value;
     this.engine.selectColor = this.matchColorToRGB(userColor.toLowerCase());
     if (this.checkBox && !this.checkBox.checked) {
       this.recolorMenuOneColor(this.engine.selectColor);
@@ -149,7 +157,9 @@ export class UIManager {
   }
 
   recolorMenuOneColor(inputColor: string): void {
-    if (!this.elems || !this.button3 || !this.select || !this.directionsSelect) return;
+    if (!this.elems || !this.button3 || !this.select || !this.directionsSelect) {
+      return;
+    }
     for (let i = 0; i < this.elems.length; i++) {
       this.elems[i].style.color = inputColor;
       this.buttonBackgroundBlack();
@@ -169,7 +179,9 @@ export class UIManager {
   }
 
   recolorMenuRandom(): void {
-    if (!this.elems || !this.directionsSelect || !this.discoFrameElement) return;
+    if (!this.elems || !this.directionsSelect || !this.discoFrameElement) {
+      return;
+    }
     for (let i = 0; i < this.elems.length; i++) {
       this.elems[i].style.color = getRandomColor();
     }
@@ -181,7 +193,9 @@ export class UIManager {
   }
 
   selectBackgroundColorFunction(): void {
-    if (!this.directionsSelect || !this.checkBox) return;
+    if (!this.directionsSelect || !this.checkBox) {
+      return;
+    }
     Array.from(this.directionsSelect.options).forEach((optionElement) => {
       if (this.checkBox!.checked) {
         optionElement.style.backgroundColor = getRandomColor();
@@ -200,15 +214,24 @@ export class UIManager {
 
   matchColorToRGB(entryColor: string): string {
     switch (entryColor) {
-      case 'green': return colorMatrixGreen;
-      case 'red': return colorRed;
-      case 'yellow': return colorYellow;
-      case 'blue': return colorBlue;
-      case 'orange': return colorOrange;
-      case 'pink': return colorPink;
-      case 'cyan': return colorCyan;
-      case 'random': return this.engine.randomColorArray[2];
-      default: return colorMatrixGreen;
+      case 'green':
+        return colorMatrixGreen;
+      case 'red':
+        return colorRed;
+      case 'yellow':
+        return colorYellow;
+      case 'blue':
+        return colorBlue;
+      case 'orange':
+        return colorOrange;
+      case 'pink':
+        return colorPink;
+      case 'cyan':
+        return colorCyan;
+      case 'random':
+        return this.engine.randomColorArray[2];
+      default:
+        return colorMatrixGreen;
     }
   }
 
@@ -232,7 +255,9 @@ export class UIManager {
 
   buttonMouseOut(input: number): void {
     if (this.buttonDiscoChecked()) {
-      if (this.button) this.button.style.color = getRandomColor();
+      if (this.button) {
+        this.button.style.color = getRandomColor();
+      }
       this.buttonDiscoBackgroundChangeColor();
       this.buttonBorderColorRandom();
     } else {
@@ -246,11 +271,16 @@ export class UIManager {
 
   intToButton(input: number): HTMLElement | null {
     switch (input) {
-      case 1: return this.button;
-      case 2: return this.button2;
-      case 3: return this.button3;
-      case 4: return this.button4;
-      default: return null;
+      case 1:
+        return this.button;
+      case 2:
+        return this.button2;
+      case 3:
+        return this.button3;
+      case 4:
+        return this.button4;
+      default:
+        return null;
     }
   }
 
@@ -259,44 +289,56 @@ export class UIManager {
   }
 
   buttonBackgroundBlack(): void {
-    if (!this.buttons) return;
+    if (!this.buttons) {
+      return;
+    }
     for (let i = 0; i < this.buttons.length; i++) {
       this.buttons[i].style.background = colorBlack;
     }
   }
 
   buttonBackgroundSelectedColor(inputColor: string): void {
-    if (!this.buttons) return;
+    if (!this.buttons) {
+      return;
+    }
     for (let i = 0; i < this.buttons.length; i++) {
       this.buttons[i].style.background = inputColor;
     }
   }
 
   buttonDiscoBackgroundChangeColor(): void {
-    if (!this.buttons) return;
+    if (!this.buttons) {
+      return;
+    }
     for (let i = 0; i < this.buttons.length; i++) {
       this.buttons[i].style.background = getRandomColor();
     }
   }
 
   buttonBorderColorRandom(): void {
-    if (!this.buttons) return;
+    if (!this.buttons) {
+      return;
+    }
     for (let i = 0; i < this.buttons.length; i++) {
       this.buttons[i].style.border = this.borderPrefix + getRandomColor();
     }
   }
 
   buttonBorderColorSelectedColor(): void {
-    if (!this.buttons) return;
+    if (!this.buttons) {
+      return;
+    }
     for (let i = 0; i < this.buttons.length; i++) {
       this.buttons[i].style.border = this.borderPrefix + this.engine.selectColor;
     }
   }
 
   updateAll4DirectionButtonStyling(): void {
-    if (!this.button3) return;
-    let onText = 'All 4 Directions:\nON';
-    let offText = 'All 4 Directions:\nOFF';
+    if (!this.button3) {
+      return;
+    }
+    const onText = 'All 4 Directions:\nON';
+    const offText = 'All 4 Directions:\nOFF';
     if (this.engine.all4Directions) {
       this.button3.style.background = this.engine.selectColor;
       this.button3.style.color = colorBlack;
@@ -316,19 +358,25 @@ export class UIManager {
   }
 
   frameCountFunctionOnChange(): void {
-    if (!this.discoFrameElement) return;
-    let currentDiscoFrameMax = this.discoFrameElement.value;
+    if (!this.discoFrameElement) {
+      return;
+    }
+    const currentDiscoFrameMax = this.discoFrameElement.value;
     localStorage.setItem('frameCountKey', currentDiscoFrameMax);
     this.engine.discoFrameCounterTurnoverPoint = parseInt(currentDiscoFrameMax);
   }
 
   frameCountFunctionOnLoad(): void {
-    if (!this.discoFrameElement) return;
+    if (!this.discoFrameElement) {
+      return;
+    }
     this.discoFrameElement.value = localStorage.getItem('frameCountKey') || '10';
   }
 
   updateSelectBox(input: string): void {
-    if (!this.select) return;
+    if (!this.select) {
+      return;
+    }
     this.select.value = input;
     this.selectFunction();
   }

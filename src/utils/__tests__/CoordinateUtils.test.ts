@@ -18,7 +18,9 @@ describe('CoordinateUtils', () => {
     it('should use doubleInt for max if canvas is large', () => {
       // Mocking Math.random to 1 to test max boundary
       vi.spyOn(Math, 'random').mockReturnValue(1);
-      const min = 10, max = 20, height = 1500;
+      const min = 10,
+        max = 20,
+        height = 1500;
       // doubleInt(20) = 40. range = 40 - 10 = 30. result = 1 * 30 + 10 = 40.
       expect(CoordinateUtils.generateStartingPointInput(min, max, height)).toBe(40);
       vi.restoreAllMocks();
@@ -26,7 +28,9 @@ describe('CoordinateUtils', () => {
 
     it('should not use doubleInt for max if canvas is small', () => {
       vi.spyOn(Math, 'random').mockReturnValue(1);
-      const min = 10, max = 20, height = 500;
+      const min = 10,
+        max = 20,
+        height = 500;
       // range = 20 - 10 = 10. result = 1 * 10 + 10 = 20.
       expect(CoordinateUtils.generateStartingPointInput(min, max, height)).toBe(20);
       vi.restoreAllMocks();
@@ -36,7 +40,8 @@ describe('CoordinateUtils', () => {
   describe('generateXEast', () => {
     it('should generate X coordinate east of canvas', () => {
       vi.spyOn(Math, 'random').mockReturnValue(0.5);
-      const width = 1000, height = 500;
+      const width = 1000,
+        height = 500;
       // minNum = 1000, maxNum = 2200. range = 1200. 0.5 * 1200 + 1000 = 1600
       expect(CoordinateUtils.generateXEast(width, height)).toBe(1600);
       vi.restoreAllMocks();
@@ -46,7 +51,10 @@ describe('CoordinateUtils', () => {
   describe('generateXWest', () => {
     it('should generate X coordinate west of canvas', () => {
       vi.spyOn(Math, 'random').mockReturnValue(0.5);
-      const wordLength = 10, fontSize = 20, width = 1000, height = 500;
+      const wordLength = 10,
+        fontSize = 20,
+        width = 1000,
+        height = 500;
       // minNum = 0 - (10 * 20 + 20) = -220
       // maxNum = 1000 * -1 * 1.5 = -1500
       // range = -1500 - (-220) = -1280. 0.5 * -1280 + (-220) = -640 - 220 = -860
@@ -70,7 +78,9 @@ describe('CoordinateUtils', () => {
   describe('generateYSouth', () => {
     it('should generate Y coordinate south of canvas', () => {
       vi.spyOn(Math, 'random').mockReturnValue(0.5);
-      const wordLength = 10, fontSize = 20, height = 1000;
+      const wordLength = 10,
+        fontSize = 20,
+        height = 1000;
       // minNum = 0 - 10 * 20 = -200
       // maxNum = 1000 * -1 * 4 = -4000
       // range = -4000 - (-200) = -3800. 0.5 * -3800 + (-200) = -1900 - 200 = -2100
@@ -80,8 +90,11 @@ describe('CoordinateUtils', () => {
   });
 
   describe('calculateAverageStartingPosition', () => {
-    const coords = [{ x: 10, y: 20 }, { x: 30, y: 40 }];
-    
+    const coords = [
+      { x: 10, y: 20 },
+      { x: 30, y: 40 },
+    ];
+
     it('should calculate average Y for vertical direction', () => {
       expect(CoordinateUtils.calculateAverageStartingPosition(coords, vertical)).toBe(30);
     });
@@ -105,12 +118,27 @@ describe('CoordinateUtils', () => {
 
   describe('getMiddleLevel', () => {
     it('should return element at index of middle element (original logic)', () => {
-      // original logic: return inputArray[getMiddleElementOfArray(inputArray)]
-      // if inputArray = [2, 0, 1]
-      // getMiddleElementOfArray returns 0
-      // inputArray[0] returns 2
       const arr = [2, 0, 1];
       expect(CoordinateUtils.getMiddleLevel(arr)).toBe(2);
+    });
+  });
+
+  describe('canvasSetup', () => {
+    it('should set up canvas context and return dimensions', () => {
+      const mockCanvas = { width: 0, height: 0 } as HTMLCanvasElement;
+      const mockCtx = {
+        font: '',
+        fillStyle: '',
+        translate: vi.fn(),
+        scale: vi.fn(),
+      } as unknown as CanvasRenderingContext2D;
+      const dims = CoordinateUtils.canvasSetup(1000, 1000, mockCanvas, mockCtx, 20);
+      expect(dims.columns).toBe(50);
+      expect(dims.rows).toBe(50);
+      expect(mockCanvas.width).toBe(1000);
+      expect(mockCanvas.height).toBe(1000);
+      expect(mockCtx.translate).toHaveBeenCalledWith(1000, 0);
+      expect(mockCtx.scale).toHaveBeenCalledWith(-1, 1);
     });
   });
 });

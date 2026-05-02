@@ -205,7 +205,7 @@ Added `buttonDiscoChecked()` to the button mouseover functionality for changing 
 
 ## 01/05/2025
 
-- Couple of bugfixes. Prepping for switch to typescript, svelte. plan is in place in docs/plan.md, typescript in file: docs/typescript-migration-plan.md  
+- Couple of bugfixes. Prepping for switch to typescript, svelte. plan is in place in docs/plan.md, typescript in file: docs/typescript-migration-plan.md
 
 ## 02/05/2025
 

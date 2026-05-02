@@ -5,6 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint .",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
@@ -22,8 +24,14 @@
   },
   "homepage": "https://github.com/MattBunch/Digital-Rain-Project#readme",
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/node": "^25.6.0",
+    "@vitest/coverage-v8": "^4.1.5",
+    "eslint": "^10.3.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.6.0",
     "typescript": "^6.0.3",
+    "typescript-eslint": "^8.59.1",
     "vite": "^8.0.10",
     "vitest": "^4.1.5"
   }

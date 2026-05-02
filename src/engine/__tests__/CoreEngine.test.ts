@@ -54,7 +54,7 @@ describe('CoreEngine', () => {
     it('should update chosenColor index', () => {
       engine.switchColor('red');
       expect(engine.chosenColor).toBe(1);
-      
+
       engine.switchColor('blue');
       expect(engine.chosenColor).toBe(3);
     });

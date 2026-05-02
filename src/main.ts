@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.getElementById('button4')?.addEventListener('click', () => {
-    import('./constants/Assets.ts').then(m => alert(m.helpText));
+    import('./constants/Assets.ts').then((m) => alert(m.helpText));
   });
 
   document.getElementById('colors')?.addEventListener('change', (e) => {

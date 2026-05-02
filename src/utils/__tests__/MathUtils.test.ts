@@ -14,7 +14,7 @@ describe('MathUtils', () => {
     it('should generate an array of 3 color strings', () => {
       const colors = MathUtils.generateRandomColorArray();
       expect(colors).toHaveLength(3);
-      colors.forEach(color => {
+      colors.forEach((color) => {
         expect(color).toMatch(/^#[0-9A-F]{6}$/);
       });
     });
@@ -114,10 +114,10 @@ describe('MathUtils', () => {
     it('should return the correct character based on Math.random', () => {
       vi.spyOn(Math, 'random').mockReturnValue(0);
       expect(MathUtils.getRandomChar()).toBe(alphabet.charAt(0));
-      
+
       vi.spyOn(Math, 'random').mockReturnValue(0.9999);
       expect(MathUtils.getRandomChar()).toBe(alphabet.charAt(alphabet.length - 1));
-      
+
       vi.restoreAllMocks();
     });
   });

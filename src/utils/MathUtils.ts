@@ -2,7 +2,7 @@
 import { alphabet } from '../constants/Assets.ts';
 
 export function getRandomColor(): string {
-  let letters = '0123456789ABCDEF';
+  const letters = '0123456789ABCDEF';
   let color = '#';
   for (let i = 0; i < 6; i++) {
     color += letters[Math.floor(Math.random() * 16)];
@@ -31,9 +31,7 @@ export function generateWordSizeRand(stringSizeMin: number, stringSizeMax: numbe
 }
 
 export function generateWordSizeRandHanging(stringSizeMin: number, stringSizeMax: number): number {
-  return Math.floor(
-    generateRandomNumber(stringSizeMin - 10, stringSizeMax + 3),
-  );
+  return Math.floor(generateRandomNumber(stringSizeMin - 10, stringSizeMax + 3));
 }
 
 export function generateFontSize(baseSize: number): number {
