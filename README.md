@@ -56,19 +56,18 @@ refer to docs/plan.md
 ## Possible extensions in further versions:
 
 - execute the plan in docs/plan.md
-- Test coverage - v8 library (npm install -D vitest @vitest/coverage-v8)
-- migrate to typescript - prompt outlined in docs/typescript-migration-plan.md
 - migrate to svelte for components
-- eslint - make sure gemini/ai agents follow it
 - adapt values to work with any size monitor for consistent views no matter the screen size
 - rename square boundry left side right side names switched - fix this naming inconsistency
 
 - Colour wheel selector.
 - Up and down keys work in menu.
-- bugs in main menu - co lours mismatching, highlight staying on - switch to .
+- bugs in main menu - colours mismatching, disco colours staying on
+- more interesting dynamic menu - highlight effect where letters fall off the mouse/sides of buttons, canvas background showing the digital rain effect etc. be creative.
+- modal window for button presses instead of just "alert" built in browser functionality.
 
 ## Misc
 
-The core of this program was written while I was learning JS, mostly completed on 18/08/20 and 19/08/20.
+The core of this program was written while I was learning JS, mostly completed on 18/08/20 and 19/08/20. Then on April 29 2025, I started the process of rewriting and modernizng this program in Node.js with TypeScript, with the help of Gemini AI to expediate the process.
 
 I had completed another Digital Rain animation program in Java previously, which serves as a prototype of this current program.

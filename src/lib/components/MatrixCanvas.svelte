@@ -1,0 +1,182 @@
+<script lang="ts">
+  import { canvasSetup } from '$lib/utils/CoordinateUtils';
+  import type { CoreEngine } from '$lib/engine/CoreEngine';
+
+  const { engine, mode, onReturn } = $props<{
+    engine: CoreEngine;
+    mode: 'normal' | 'square';
+    onReturn: () => void;
+  }>();
+
+  let canvas: HTMLCanvasElement;
+
+  function handleKeyDown(event: KeyboardEvent) {
+    switch (event.key) {
+      case 'Escape':
+        onReturn();
+        break;
+      case 'ArrowLeft':
+        if (engine.squareAnimationOn) {
+          engine.moveSquareLeft(false);
+        } else {
+          arrowDirectionControl('west', 'east');
+        }
+        break;
+      case 'ArrowUp':
+        if (engine.squareAnimationOn) {
+          engine.moveSquareUp(false);
+        } else {
+          arrowDirectionControl('north', 'south');
+        }
+        break;
+      case 'ArrowRight':
+        if (engine.squareAnimationOn) {
+          engine.moveSquareRight(false);
+        } else {
+          arrowDirectionControl('east', 'west');
+        }
+        break;
+      case 'ArrowDown':
+        if (engine.squareAnimationOn) {
+          engine.moveSquareDown(false);
+        } else {
+          arrowDirectionControl('south', 'north');
+        }
+        break;
+      case ' ':
+        if (engine.ctx != null) {
+          engine.pause();
+        }
+        break;
+      case 'c':
+        engine.clearScreen();
+        break;
+      case 'd':
+        engine.discoOn = !engine.discoOn;
+        break;
+      case 'PageUp':
+        if (engine.ctx != null || !engine.squareAnimationOn) {
+          engine.speedController(true);
+        }
+        break;
+      case 'PageDown':
+        if (engine.ctx != null || !engine.squareAnimationOn) {
+          engine.speedController(false);
+        }
+        break;
+      case '1':
+        engine.switchColor('green');
+        break;
+      case '2':
+        engine.switchColor('red');
+        break;
+      case '3':
+        engine.switchColor('yellow');
+        break;
+      case '4':
+        engine.switchColor('blue');
+        break;
+      case '5':
+        engine.switchColor('orange');
+        break;
+      case '6':
+        engine.switchColor('pink');
+        break;
+      case '7':
+        engine.switchColor('cyan');
+        break;
+      case '8':
+        engine.updateRandomColor();
+        engine.switchColor('random');
+        break;
+      case 'w':
+        engine.controlFontSize(true);
+        break;
+      case 's':
+        engine.controlFontSize(false);
+        break;
+      case 'q':
+        engine.controlStringSize(true);
+        break;
+      case 'a':
+        engine.controlStringSize(false);
+        break;
+      case 'r':
+        engine.rapidWordChangeControl();
+        break;
+      case 'm':
+        if (engine.ctx) {
+          engine.switchMode();
+        }
+        break;
+    }
+  }
+
+  function arrowDirectionControl(newDirection: string, oppositeDirection: string): void {
+    if (engine.direction != newDirection) {
+      if (engine.direction === oppositeDirection) {
+        engine.direction = newDirection;
+      } else {
+        engine.direction = newDirection;
+        engine.resetWordsArray();
+      }
+    }
+  }
+
+  $effect(() => {
+    if (canvas) {
+      const ctx = canvas.getContext('2d')!;
+      engine.setContext(canvas, ctx);
+
+      const setup = () => {
+        canvasSetup(window.innerWidth, window.innerHeight, canvas, ctx, engine.defaultFontSize);
+        engine.updateBoundaries();
+      };
+
+      setup();
+      engine.run(mode === 'normal');
+
+      const handleResize = () => {
+        setup();
+        engine.resetWordsArray();
+      };
+
+      window.addEventListener('resize', handleResize);
+
+      return () => {
+        window.removeEventListener('resize', handleResize);
+        clearInterval(engine.intervalValid);
+        if ((engine as any).menuInterval) clearInterval((engine as any).menuInterval);
+      };
+    }
+
+    // NOTE: We return undefined here to satisfy the linter, but the actual cleanup is handled in the returned function above. This is just to avoid a linting error about not returning anything from an effect.
+    return undefined;
+  });
+
+  // Secondary effect to handle state changes that might happen from App.svelte
+  $effect(() => {
+    // These values are synced in App.svelte already, but we might want to trigger resetWordsArray
+    // if direction or all4Directions change externally (though they mostly change via KeyDown here)
+  });
+</script>
+
+<svelte:window onkeydown={handleKeyDown} />
+
+<canvas
+  bind:this={canvas}
+  onclick={onReturn}
+  style:display="block"
+  style:background="black"
+  style:cursor="pointer"
+></canvas>
+
+<style>
+  canvas {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+</style>
