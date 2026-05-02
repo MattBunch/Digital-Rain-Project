@@ -31,9 +31,11 @@
   }
 
   function handleReturnToMenu() {
-    clearInterval(engine.intervalValid);
-    if ((engine as any).menuInterval) {
-      clearInterval((engine as any).menuInterval);
+    if (engine.intervalValid) {
+      clearInterval(engine.intervalValid);
+    }
+    if (engine.menuInterval) {
+      clearInterval(engine.menuInterval);
     }
 
     if (engine.ctx && engine.canvas) {

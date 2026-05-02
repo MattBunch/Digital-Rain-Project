@@ -34,7 +34,8 @@ export class CoreEngine {
   direction: string;
   discoOn: boolean;
   chosenColor: number;
-  intervalValid: any; // Using any for setInterval return which varies by env
+  intervalValid: ReturnType<typeof setInterval> | null;
+  menuInterval: ReturnType<typeof setInterval> | null;
   animationOn: boolean;
   discoFrameCounter: number;
   discoFrameCounterTurnoverPoint: number;
@@ -81,6 +82,7 @@ export class CoreEngine {
     this.discoOn = false;
     this.chosenColor = 0;
     this.intervalValid = null;
+    this.menuInterval = null;
     this.animationOn = false;
     this.discoFrameCounter = 0;
     this.discoFrameCounterTurnoverPoint = 10;
@@ -648,7 +650,9 @@ export class CoreEngine {
 
   pause(): void {
     if (this.animationOn) {
-      clearInterval(this.intervalValid);
+      if (this.intervalValid) {
+        clearInterval(this.intervalValid);
+      }
       this.animationOn = false;
     } else {
       this.intervalValid = setInterval(() => {
@@ -695,7 +699,9 @@ export class CoreEngine {
     } else {
       this.intervalSpeed *= 2;
     }
-    clearInterval(this.intervalValid);
+    if (this.intervalValid) {
+      clearInterval(this.intervalValid);
+    }
     this.intervalValid = setInterval(() => {
       if (this.squareAnimationOn) {
         this.drawAlternative();

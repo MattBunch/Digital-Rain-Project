@@ -145,8 +145,12 @@
 
       return () => {
         window.removeEventListener('resize', handleResize);
-        clearInterval(engine.intervalValid);
-        if ((engine as any).menuInterval) clearInterval((engine as any).menuInterval);
+        if (engine.intervalValid) {
+          clearInterval(engine.intervalValid);
+        }
+        if (engine.menuInterval) {
+          clearInterval(engine.menuInterval);
+        }
       };
     }
 

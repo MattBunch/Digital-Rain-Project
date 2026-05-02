@@ -5,6 +5,14 @@ import prettierConfig from 'eslint-config-prettier';
 import sveltePlugin from 'eslint-plugin-svelte';
 import svelteParser from 'svelte-eslint-parser';
 
+const customRules = {
+  curly: ['error', 'all'],
+  'brace-style': ['error', '1tbs', { allowSingleLine: false }],
+  'no-var': 'error',
+  'prefer-const': 'error',
+  '@typescript-eslint/no-explicit-any': 'warn',
+};
+
 export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
@@ -25,16 +33,12 @@ export default tseslint.config(
         ...globals.node,
       },
     },
-    rules: {
-      curly: ['error', 'all'],
-      'brace-style': ['error', '1tbs', { allowSingleLine: false }],
-      'no-var': 'error',
-      'prefer-const': 'error',
-      '@typescript-eslint/no-explicit-any': 'warn',
-    },
   },
   {
     ignores: ['dist/', 'node_modules/', 'src/app.js'],
   },
   prettierConfig,
+  {
+    rules: customRules,
+  },
 );

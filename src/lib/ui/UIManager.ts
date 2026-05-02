@@ -108,9 +108,9 @@ export class UIManager {
       this.buttonBackgroundBlack();
       this.engine.discoOn = false;
       this.updateAll4DirectionButtonStyling();
-      if ((this.engine as any).menuInterval) {
-        clearInterval((this.engine as any).menuInterval);
-        (this.engine as any).menuInterval = null;
+      if (this.engine.menuInterval) {
+        clearInterval(this.engine.menuInterval);
+        this.engine.menuInterval = null;
       }
     } else {
       this.text.style.display = 'none';
@@ -120,7 +120,7 @@ export class UIManager {
       this.discoIntervalFunction();
       this.engine.discoOn = true;
       this.updateAll4DirectionButtonStyling();
-      (this.engine as any).menuInterval = setInterval(() => this.discoIntervalFunction(), 1000);
+      this.engine.menuInterval = setInterval(() => this.discoIntervalFunction(), 1000);
     }
   }
 

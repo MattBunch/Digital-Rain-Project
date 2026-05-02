@@ -3,8 +3,8 @@ import { CoreEngine } from '../CoreEngine';
 
 describe('CoreEngine', () => {
   let engine: CoreEngine;
-  let mockCanvas: any;
-  let mockCtx: any;
+  let mockCanvas: Partial<HTMLCanvasElement>;
+  let mockCtx: Partial<CanvasRenderingContext2D>;
 
   beforeEach(() => {
     engine = new CoreEngine();
@@ -18,13 +18,13 @@ describe('CoreEngine', () => {
       stroke: vi.fn(),
       translate: vi.fn(),
       scale: vi.fn(),
-    };
+    } as unknown as Partial<CanvasRenderingContext2D>;
     mockCanvas = {
       width: 1000,
       height: 1000,
       getContext: vi.fn().mockReturnValue(mockCtx),
-    };
-    engine.setContext(mockCanvas, mockCtx);
+    } as unknown as Partial<HTMLCanvasElement>;
+    engine.setContext(mockCanvas as HTMLCanvasElement, mockCtx as CanvasRenderingContext2D);
   });
 
   describe('Pure Logic: matchColorToIndex', () => {

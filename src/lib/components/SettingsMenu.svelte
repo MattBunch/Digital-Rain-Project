@@ -10,6 +10,7 @@
     colorCyan,
   } from '$lib/constants/Assets';
 
+  /* eslint-disable prefer-const */
   let {
     discoOn = $bindable(false),
     chosenColor = $bindable('green'),
@@ -18,6 +19,7 @@
     onStartNormal,
     onStartSquare,
   } = $props();
+  /* eslint-enable prefer-const */
 
   let menuInterval: ReturnType<typeof setInterval> | null = null;
   const localUiColors = $state({
@@ -49,10 +51,14 @@
         localUiColors.random3 = getRandomColor();
       }, 1000);
     } else {
-      if (menuInterval) clearInterval(menuInterval);
+      if (menuInterval) {
+        clearInterval(menuInterval);
+      }
     }
     return () => {
-      if (menuInterval) clearInterval(menuInterval);
+      if (menuInterval) {
+        clearInterval(menuInterval);
+      }
     };
   });
 
