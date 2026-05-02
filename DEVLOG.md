@@ -201,7 +201,7 @@ Added `buttonDiscoChecked()` to the button mouseover functionality for changing 
 
 ## 30/04/2025
 
-- Decided to try getting Gemini CLI to refactor this repo - started in the early stages.
+- Decided to try getting Gemini CLI to refactor this repo - started in the early stages. Migration to node.js & vite.
 
 ## 01/05/2025
 
