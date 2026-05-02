@@ -1,129 +1,16 @@
+:root {
+  font-family: 'Consolas', 'Lucida Console', monospace;
+  background-color: black;
+  color: #00ff41;
+}
+
 body {
-  overflow: hidden; /* hide scrollbars */
-  background-color: black;
-  font-family: Lucida Console;
-  font-size: 20px;
-  transition-duration: 0.4s;
-
-  -webkit-animation: fadeIn 1.5s ease-in; /* Safari 4+ */
-  -moz-animation: fadeIn 1.5s ease-in; /* Fx 5+ */
-  -o-animation: fadeIn 1.5s ease-in; /* Opera 12+ */
-  animation: fadeIn 1.5s ease-in; /* IE 10+, Fx 29+ */
-}
-
-#title {
-  position: relative;
-  margin: auto;
-  font-size: 45px;
-}
-
-.menu {
-  position: relative;
-  max-width: 500px;
-  max-height: 500px;
-  margin: auto;
-  padding: 100px 0;
-  text-align: center;
-
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-.menu #disco {
-  position: relative;
-  width: 16px;
-  height: 16px;
-  display: inline;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
   background-color: black;
 }
 
-.menu select {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-
-  position: relative;
-  font-family: Lucida Console;
-  background-color: black;
-
-  text-align: center;
-  display: inline-block;
-  border-radius: 0px;
-  margin: 4px 2px;
-}
-
-.button {
-  background-color: black;
-  text-align: center;
-  font-size: 40px;
-  font-family: Lucida Console;
-  transition-duration: 0.4s;
-  display: inline-block;
-  border-radius: 0px;
-  margin: 4px 2px;
-  min-height: 50px;
-  min-width: 450px;
-}
-
-#button3 {
-  min-height: 100px;
-  white-space: nowrap;
-}
-
-#button3.active {
-  padding: 0px;
-}
-
-#footer {
-  font-size: 7px;
-  text-align: left;
-  bottom: 10px;
-  width: 50%;
-
-  bottom: 0;
-  width: 100%;
-  position: fixed;
-  left: 0;
-  right: 0;
-  padding: 1rem;
-  /* text-align: center; */
-}
-
-#myCanvas {
-  display: none;
-  background: black;
-}
-
-.frameCount {
-  display: none;
-}
-
-@-webkit-keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-@-moz-keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-@-o-keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
 @keyframes fadeIn {
   0% {
     opacity: 0;
@@ -131,4 +18,8 @@ body {
   100% {
     opacity: 1;
   }
+}
+
+.fade-in {
+  animation: fadeIn 1.5s ease-in;
 }

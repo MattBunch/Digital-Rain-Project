@@ -170,17 +170,11 @@ export class InputHandler {
   }
 
   resetToMenu(): void {
-    clearInterval(this.engine.intervalValid);
-    // if (this.engine.menuInterval) clearInterval(this.engine.menuInterval); // menuInterval is in UIManager, but CoreEngine handles it too?
-    // Actually UIManager seems to have engine.menuInterval. Let's check CoreEngine.ts.
-    // CoreEngine.ts doesn't have menuInterval. UIManager.js sets it ON the engine.
-    // I should add menuInterval to CoreEngine.ts or keep it in UIManager.
-    // I'll add it to CoreEngine.ts to be safe as it's being used there in legacy JS.
-
-    // I will go back and add menuInterval to CoreEngine.ts in a bit if needed.
-    // For now I'll cast to any or just check if it exists.
-    if ((this.engine as any).menuInterval) {
-      clearInterval((this.engine as any).menuInterval);
+    if (this.engine.intervalValid) {
+      clearInterval(this.engine.intervalValid);
+    }
+    if (this.engine.menuInterval) {
+      clearInterval(this.engine.menuInterval);
     }
 
     if (this.engine.ctx && this.engine.canvas) {

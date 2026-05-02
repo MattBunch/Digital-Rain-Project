@@ -103,5 +103,6 @@ export function getMiddleLevel<T>(inputArray: T[]): T {
   // It returns an element. So inputArray[element] only works if element is a valid key.
   // Actually, getMiddleElementOfArray returns T. If T is number, it might work as index.
   // Let's look at the usage if possible. For now, I'll keep it as is to maintain behavior.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (inputArray as any)[getMiddleElementOfArray(inputArray) as any];
 }

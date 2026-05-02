@@ -14,7 +14,7 @@ Do **not** delete `src/app.js` so you can use it as a reference for how the func
 
 ## linting, formatting
 
-Always run the following two commands after completing each implemention to ensure linting/formatting is followed, and no errors in testing: 
+Always run the following two commands after completing each implemention to ensure linting/formatting is followed, and no errors in testing:
 
 ```bash
 npx eslint . --fix
