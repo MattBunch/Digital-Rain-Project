@@ -638,8 +638,6 @@ export class CoreEngine {
     this.words = [];
     this.all4DirectionsArray = [];
     this.direction = 'south';
-    this.discoOn = false;
-    this.chosenColor = 0;
     this.discoFrameCounter = 0;
     this.intervalSpeed = 50;
     this.fontSize = 20;

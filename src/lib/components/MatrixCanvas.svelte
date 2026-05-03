@@ -2,11 +2,21 @@
   import { canvasSetup } from '$lib/utils/CoordinateUtils';
   import type { CoreEngine } from '$lib/engine/CoreEngine';
 
-  const { engine, mode, onReturn } = $props<{
+  /* eslint-disable prefer-const, no-useless-assignment */
+  let {
+    engine,
+    mode,
+    onReturn,
+    discoOn = $bindable(false),
+    chosenColor = $bindable('green'),
+  } = $props<{
     engine: CoreEngine;
     mode: 'normal' | 'square';
     onReturn: () => void;
+    discoOn: boolean;
+    chosenColor: string;
   }>();
+  /* eslint-enable prefer-const, no-useless-assignment */
 
   let canvas: HTMLCanvasElement;
 
@@ -52,7 +62,7 @@
         engine.clearScreen();
         break;
       case 'd':
-        engine.discoOn = !engine.discoOn;
+        discoOn = !discoOn;
         break;
       case 'PageUp':
         if (engine.ctx != null || !engine.squareAnimationOn) {
@@ -65,29 +75,29 @@
         }
         break;
       case '1':
-        engine.switchColor('green');
+        chosenColor = 'green';
         break;
       case '2':
-        engine.switchColor('red');
+        chosenColor = 'red';
         break;
       case '3':
-        engine.switchColor('yellow');
+        chosenColor = 'yellow';
         break;
       case '4':
-        engine.switchColor('blue');
+        chosenColor = 'blue';
         break;
       case '5':
-        engine.switchColor('orange');
+        chosenColor = 'orange';
         break;
       case '6':
-        engine.switchColor('pink');
+        chosenColor = 'pink';
         break;
       case '7':
-        engine.switchColor('cyan');
+        chosenColor = 'cyan';
         break;
       case '8':
         engine.updateRandomColor();
-        engine.switchColor('random');
+        chosenColor = 'random';
         break;
       case 'w':
         engine.controlFontSize(true);

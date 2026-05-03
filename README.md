@@ -59,6 +59,7 @@ refer to docs/plan.md
 - adapt values to work with any size monitor for consistent views no matter the screen size
 - bugs in main menu - colours mismatching, disco colours staying on
 - rename square boundry left side right side names switched - fix this naming inconsistency
+- Svelte component tests, e2e tests with cypress?
 
 - Colour wheel selector.
 - Up and down keys work in menu.
