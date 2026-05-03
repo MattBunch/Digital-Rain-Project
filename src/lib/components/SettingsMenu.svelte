@@ -31,12 +31,9 @@
   /* eslint-enable prefer-const */
 
   let menuInterval: ReturnType<typeof setInterval> | null = null;
-  const localUiColors = $state({
-    main: colorMatrixGreen,
-    random1: getRandomColor(),
-    random2: getRandomColor(),
-    random3: getRandomColor(),
-  });
+  let discoColors = $state([getRandomColor(), getRandomColor(), getRandomColor()]);
+  let cachedRandomColor = getRandomColor();
+  let lastChosenColor = chosenColor;
 
   const colorMap: Record<string, string> = {
     green: colorMatrixGreen,
@@ -50,27 +47,23 @@
 
   const currentColor = $derived.by(() => {
     if (discoOn) {
-      return localUiColors.random1;
+      return discoColors[0];
     }
     if (chosenColor === 'random') {
-      return localUiColors.main;
+      if (lastChosenColor !== 'random') {
+        cachedRandomColor = getRandomColor();
+      }
+      lastChosenColor = chosenColor;
+      return cachedRandomColor;
     }
-    return colorMap[chosenColor] || colorMatrixGreen;
-  });
-
-  $effect(() => {
-    // Generate new random color when switching to random mode OR when turning off disco
-    if (chosenColor === 'random' && !discoOn) {
-      localUiColors.main = getRandomColor();
-    }
+    lastChosenColor = chosenColor;
+    return colorMap[chosenColor] ?? colorMatrixGreen;
   });
 
   $effect(() => {
     if (discoOn) {
       menuInterval = setInterval(() => {
-        localUiColors.random1 = getRandomColor();
-        localUiColors.random2 = getRandomColor();
-        localUiColors.random3 = getRandomColor();
+        discoColors = [getRandomColor(), getRandomColor(), getRandomColor()];
       }, 1000);
     } else {
       if (menuInterval) {
@@ -100,7 +93,7 @@
       <button
         class="menu-button"
         style:border-color={currentColor}
-        style:color={discoOn ? localUiColors.random2 : currentColor}
+        style:color={discoOn ? discoColors[1] : currentColor}
         onclick={() => onStartNormal()}
       >
         START
@@ -109,7 +102,7 @@
       <button
         class="menu-button"
         style:border-color={currentColor}
-        style:color={discoOn ? localUiColors.random3 : currentColor}
+        style:color={discoOn ? discoColors[2] : currentColor}
         onclick={() => onStartSquare()}
       >
         SQUARE
@@ -122,10 +115,10 @@
         style:border-color={currentColor}
         style:background-color={all4Directions
           ? discoOn
-            ? localUiColors.random1
+            ? discoColors[0]
             : currentColor
           : 'black'}
-        style:color={all4Directions ? 'black' : discoOn ? localUiColors.random2 : currentColor}
+        style:color={all4Directions ? 'black' : discoOn ? discoColors[1] : currentColor}
         onclick={() => (all4Directions = !all4Directions)}
       >
         {all4DirectionsLabel}
@@ -134,7 +127,7 @@
       <button
         class="menu-button"
         style:border-color={currentColor}
-        style:color={discoOn ? localUiColors.random3 : currentColor}
+        style:color={discoOn ? discoColors[2] : currentColor}
         onclick={showHelp}
       >
         HELP
@@ -170,7 +163,7 @@
             max="100"
             style:border-color={currentColor}
             style:color={currentColor}
-            style:background-color={localUiColors.random2}
+            style:background-color={discoColors[1]}
           />
         </label>
       {/if}
