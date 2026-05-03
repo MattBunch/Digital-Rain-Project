@@ -10,6 +10,15 @@
     colorCyan,
   } from '$lib/constants/Assets';
 
+  interface Props {
+    discoOn?: boolean;
+    chosenColor?: string;
+    all4Directions?: boolean;
+    frameCount?: number;
+    onStartNormal: () => void;
+    onStartSquare: () => void;
+  }
+
   /* eslint-disable prefer-const */
   let {
     discoOn = $bindable(false),
@@ -18,7 +27,7 @@
     frameCount = $bindable(10),
     onStartNormal,
     onStartSquare,
-  } = $props();
+  }: Props = $props();
   /* eslint-enable prefer-const */
 
   let menuInterval: ReturnType<typeof setInterval> | null = null;
@@ -39,9 +48,22 @@
     cyan: colorCyan,
   };
 
-  const currentColor = $derived(
-    discoOn ? localUiColors.random1 : colorMap[chosenColor] || colorMatrixGreen,
-  );
+  const currentColor = $derived.by(() => {
+    if (discoOn) {
+      return localUiColors.random1;
+    }
+    if (chosenColor === 'random') {
+      return localUiColors.main;
+    }
+    return colorMap[chosenColor] || colorMatrixGreen;
+  });
+
+  $effect(() => {
+    // Generate new random color when switching to random mode OR when turning off disco
+    if (chosenColor === 'random' && !discoOn) {
+      localUiColors.main = getRandomColor();
+    }
+  });
 
   $effect(() => {
     if (discoOn) {

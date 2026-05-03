@@ -59,7 +59,7 @@
       onStartSquare={handleStartSquare}
     />
   {:else}
-    <MatrixCanvas {engine} {mode} onReturn={handleReturnToMenu} />
+    <MatrixCanvas {engine} {mode} onReturn={handleReturnToMenu} bind:discoOn bind:chosenColor />
   {/if}
 </main>
 
