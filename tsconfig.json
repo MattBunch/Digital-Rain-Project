@@ -25,8 +25,9 @@
     "forceConsistentCasingInFileNames": true,
     "paths": {
       "$lib/*": ["./src/lib/*"]
-    }
+    },
+    "types": ["node"]
   },
-  "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.svelte"],
+  "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.svelte", "*.config.ts", "playwright.config.ts"],
   "exclude": ["node_modules", "dist"]
 }

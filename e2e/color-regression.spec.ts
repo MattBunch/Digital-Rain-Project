@@ -38,6 +38,8 @@ test.describe('E2E Color Regression', () => {
         // Change the select value
         await colorSelect.selectOption(color.name);
 
+        await page.waitForTimeout(1);
+
         if (color.name === 'random') {
           // For random, we just check if it's a valid rgb color
           const currentColor = await menuContainer.evaluate(
