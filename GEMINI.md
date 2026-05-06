@@ -20,4 +20,5 @@ Always run the following two commands after completing each implemention to ensu
 npx eslint . --fix
 npx prettier --write .
 npm test
+npm test:e2e
 ```
