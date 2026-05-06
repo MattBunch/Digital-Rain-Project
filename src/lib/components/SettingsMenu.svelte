@@ -1,5 +1,6 @@
 <script lang="ts">
   import { getRandomColor } from '$lib/utils/MathUtils';
+  import CyberButton from '$lib/components/CyberButton.svelte';
   import {
     colorMatrixGreen,
     colorRed,
@@ -82,96 +83,92 @@
     alert(helpText);
   }
 
-  const all4DirectionsLabel = $derived(`All 4 Directions:\n${all4Directions ? 'ON' : 'OFF'}`);
+  const all4DirectionsLabel = $derived(`All 4 Directions: ${all4Directions ? 'ON' : 'OFF'}`);
 </script>
 
-<div class="menu-container" style:color={currentColor}>
-  <h1 class="fade-in">DIGITAL RAIN</h1>
+<div class="menu-container" style:--theme-color={currentColor}>
+  <div class="hud-frame">
+    <h1 class="fade-in">DIGITAL RAIN</h1>
 
-  <div class="menu-controls fade-in">
-    <div class="control-group">
-      <button
-        class="menu-button"
-        style:border-color={currentColor}
-        style:color={discoOn ? discoColors[1] : currentColor}
-        onclick={() => onStartNormal()}
-      >
-        START
-      </button>
-
-      <button
-        class="menu-button"
-        style:border-color={currentColor}
-        style:color={discoOn ? discoColors[2] : currentColor}
-        onclick={() => onStartSquare()}
-      >
-        SQUARE
-      </button>
-    </div>
-
-    <div class="control-group">
-      <button
-        class="menu-button all4-button"
-        style:border-color={currentColor}
-        style:background-color={all4Directions
-          ? discoOn
-            ? discoColors[0]
-            : currentColor
-          : 'black'}
-        style:color={all4Directions ? 'black' : discoOn ? discoColors[1] : currentColor}
-        onclick={() => (all4Directions = !all4Directions)}
-      >
-        {all4DirectionsLabel}
-      </button>
-
-      <button
-        class="menu-button"
-        style:border-color={currentColor}
-        style:color={discoOn ? discoColors[2] : currentColor}
-        onclick={showHelp}
-      >
-        HELP
-      </button>
-    </div>
-
-    <div class="settings-grid">
-      <label id="colorsLabel" style:display={discoOn ? 'none' : 'inline-block'}>
-        Colors:
-        <select
-          bind:value={chosenColor}
-          style:border-color={currentColor}
-          style:color={currentColor}
+    <div class="menu-controls fade-in">
+      <div class="control-group">
+        <CyberButton
+          color={discoOn ? discoColors[1] : currentColor}
+          onclick={onStartNormal}
+          variant="primary"
         >
-          <option value="green">Green</option>
-          <option value="red">Red</option>
-          <option value="yellow">Yellow</option>
-          <option value="blue">Blue</option>
-          <option value="orange">Orange</option>
-          <option value="pink">Pink</option>
-          <option value="cyan">Cyan</option>
-          <option value="random">Random</option>
-        </select>
-      </label>
+          START
+        </CyberButton>
 
-      {#if discoOn}
-        <label class="fade-in">
-          Frame Count:
-          <input
-            type="number"
-            bind:value={frameCount}
-            min="1"
-            max="100"
+        <CyberButton
+          color={discoOn ? discoColors[2] : currentColor}
+          onclick={onStartSquare}
+          variant="secondary"
+        >
+          SQUARE
+        </CyberButton>
+      </div>
+
+      <div class="control-group">
+        <CyberButton
+          color={discoOn ? discoColors[0] : currentColor}
+          onclick={() => (all4Directions = !all4Directions)}
+          variant="secondary"
+          class={all4Directions ? 'active' : ''}
+        >
+          {all4DirectionsLabel}
+        </CyberButton>
+
+        <CyberButton
+          color={discoOn ? discoColors[2] : currentColor}
+          onclick={showHelp}
+          variant="primary"
+        >
+          HELP
+        </CyberButton>
+      </div>
+
+      <div class="settings-grid">
+        <div class="setting-item" style:display={discoOn ? 'none' : 'flex'}>
+          <label for="color-select">SYSTEM_COLOR:</label>
+          <select
+            id="color-select"
+            bind:value={chosenColor}
             style:border-color={currentColor}
             style:color={currentColor}
-            style:background-color={discoColors[1]}
-          />
-        </label>
-      {/if}
+          >
+            <option value="green">GREEN</option>
+            <option value="red">RED</option>
+            <option value="yellow">YELLOW</option>
+            <option value="blue">BLUE</option>
+            <option value="orange">ORANGE</option>
+            <option value="pink">PINK</option>
+            <option value="cyan">CYAN</option>
+            <option value="random">RANDOM</option>
+          </select>
+        </div>
 
-      <label>
-        Disco:
-        <input type="checkbox" bind:checked={discoOn} />
-      </label>
+        {#if discoOn}
+          <div class="setting-item fade-in">
+            <label for="frame-count">REFRESH_RATE:</label>
+            <input
+              id="frame-count"
+              type="number"
+              bind:value={frameCount}
+              min="1"
+              max="100"
+              style:border-color={currentColor}
+              style:color={currentColor}
+              style:background-color="transparent"
+            />
+          </div>
+        {/if}
+
+        <div class="setting-item">
+          <label for="disco-toggle">DISCO_MODE:</label>
+          <input id="disco-toggle" type="checkbox" bind:checked={discoOn} />
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -179,19 +176,54 @@
 <style>
   .menu-container {
     text-align: center;
-    background-color: black;
+    background-color: transparent;
     height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-family: 'Consolas', 'Lucida Console', monospace;
+    color: var(--theme-color);
+  }
+
+  .hud-frame {
+    padding: 3rem;
+    border: 1px solid rgba(var(--theme-color), 0.3);
+    background: rgba(0, 0, 0, 0.8);
+    position: relative;
+    backdrop-filter: blur(5px);
+  }
+
+  .hud-frame::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    width: 20px;
+    height: 20px;
+    border-top: 2px solid var(--theme-color);
+    border-left: 2px solid var(--theme-color);
+  }
+
+  .hud-frame::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    right: -5px;
+    width: 20px;
+    height: 20px;
+    border-bottom: 2px solid var(--theme-color);
+    border-right: 2px solid var(--theme-color);
   }
 
   h1 {
+    font-family: var(--font-title);
     font-size: 5rem;
     margin-bottom: 2rem;
     letter-spacing: 0.5rem;
+    text-shadow:
+      2px 0 #ff003c,
+      -2px 0 #00e5ff,
+      0 0 10px var(--theme-color);
   }
 
   .menu-controls {
@@ -202,40 +234,40 @@
 
   .control-group {
     display: flex;
-    gap: 1rem;
+    gap: 1.5rem;
     justify-content: center;
   }
 
-  .menu-button {
-    background: black;
-    border: 1px solid;
-    padding: 10px 20px;
-    font-size: 1.2rem;
-    cursor: pointer;
-    min-width: 150px;
-    transition: all 0.2s;
-    font-family: inherit;
-    white-space: pre-wrap;
-  }
-
-  .menu-button:hover {
-    filter: brightness(1.2);
-  }
-
   .settings-grid {
-    margin-top: 1rem;
+    margin-top: 2rem;
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    align-items: flex-end;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+  }
+
+  .setting-item {
+    display: flex;
     align-items: center;
+    gap: 1rem;
   }
 
   select,
   input[type='number'] {
-    background: black;
-    border: 1px solid;
-    padding: 5px;
+    background: transparent;
+    border: 1px solid var(--theme-color);
+    padding: 5px 10px;
+    color: var(--theme-color);
     font-family: inherit;
+    outline: none;
+  }
+
+  input[type='checkbox'] {
+    accent-color: var(--theme-color);
+    width: 18px;
+    height: 18px;
   }
 
   .fade-in {
@@ -251,7 +283,8 @@
     }
   }
 
-  .all4-button {
-    line-height: 1.2;
+  :global(.active) {
+    background: var(--theme-color) !important;
+    color: black !important;
   }
 </style>

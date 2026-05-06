@@ -6,7 +6,7 @@
   "scripts": {
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
-    "lint": "eslint . && svelte-check",
+    "lint": "eslint . && prettier --write . && svelte-check",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",

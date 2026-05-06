@@ -6,26 +6,27 @@ test.describe('Animation Flow', () => {
   });
 
   test('clicking START hides the menu and shows the canvas', async ({ page }) => {
-    await page.getByRole('button', { name: 'START' }).click();
+    await page.getByRole('button', { name: 'START' }).first().click();
 
     await expect(page.locator('h1')).not.toBeVisible();
-    await expect(page.locator('canvas')).toBeVisible();
+    await expect(page.locator('main > canvas')).toBeVisible();
 
     // Pressing Escape returns to menu
     await page.keyboard.press('Escape');
     await expect(page.locator('h1')).toBeVisible();
-    await expect(page.locator('canvas')).not.toBeVisible();
+    // The canvas should be the background one now, so main > canvas (the simulation one) should be gone
+    await expect(page.locator('main > canvas')).not.toBeVisible();
   });
 
   test('clicking SQUARE hides the menu and shows the canvas', async ({ page }) => {
-    await page.getByRole('button', { name: 'SQUARE' }).click();
+    await page.getByRole('button', { name: 'SQUARE' }).first().click();
 
     await expect(page.locator('h1')).not.toBeVisible();
-    await expect(page.locator('canvas')).toBeVisible();
+    await expect(page.locator('main > canvas')).toBeVisible();
 
     // Pressing Escape returns to menu
     await page.keyboard.press('Escape');
     await expect(page.locator('h1')).toBeVisible();
-    await expect(page.locator('canvas')).not.toBeVisible();
+    await expect(page.locator('main > canvas')).not.toBeVisible();
   });
 });

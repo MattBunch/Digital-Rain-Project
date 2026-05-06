@@ -5,21 +5,25 @@ test.describe('Menu', () => {
     await page.goto('/');
   });
 
-  test('page loads showing the menu', async ({ page }) => {
+  test('page loads showing the menu and CRT effects', async ({ page }) => {
     await expect(page.locator('h1')).toHaveText('DIGITAL RAIN');
     await expect(page.getByRole('button', { name: 'START' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'SQUARE' })).toBeVisible();
+
+    // Check for CRT overlay elements
+    await expect(page.locator('.scanlines')).toBeVisible();
+    await expect(page.locator('.vignette')).toBeVisible();
   });
 
   test('clicking the disco checkbox toggles UI elements', async ({ page }) => {
-    const colorSelect = page.getByLabel('Colors:');
-    const discoCheckbox = page.getByLabel('Disco:');
+    const colorSelect = page.getByLabel('SYSTEM_COLOR:');
+    const discoCheckbox = page.getByLabel('DISCO_MODE:');
 
     await expect(colorSelect).toBeVisible();
 
     await discoCheckbox.check();
     await expect(colorSelect).not.toBeVisible();
-    await expect(page.getByLabel('Frame Count:')).toBeVisible();
+    await expect(page.getByLabel('REFRESH_RATE:')).toBeVisible();
 
     await discoCheckbox.uncheck();
     await expect(colorSelect).toBeVisible();

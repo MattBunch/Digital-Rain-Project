@@ -11,37 +11,37 @@ describe('SettingsMenu', () => {
 
   it('renders START and SQUARE buttons', () => {
     render(SettingsMenu, { props: defaultProps });
-    expect(screen.getByText('START')).toBeInTheDocument();
-    expect(screen.getByText('SQUARE')).toBeInTheDocument();
+    // Using getAllByText because CyberButton has multiple layers of the same text for glitch effects
+    expect(screen.getAllByText('START')[0]).toBeInTheDocument();
+    expect(screen.getAllByText('SQUARE')[0]).toBeInTheDocument();
   });
 
   it('clicking START calls onStartNormal prop', async () => {
     const onStartNormal = vi.fn();
     render(SettingsMenu, { props: { ...defaultProps, onStartNormal } });
-    await fireEvent.click(screen.getByText('START'));
+    await fireEvent.click(screen.getAllByText('START')[0]);
     expect(onStartNormal).toHaveBeenCalled();
   });
 
   it('clicking SQUARE calls onStartSquare prop', async () => {
     const onStartSquare = vi.fn();
     render(SettingsMenu, { props: { ...defaultProps, onStartSquare } });
-    await fireEvent.click(screen.getByText('SQUARE'));
+    await fireEvent.click(screen.getAllByText('SQUARE')[0]);
     expect(onStartSquare).toHaveBeenCalled();
   });
 
   it('disco checkbox toggles discoOn binding', async () => {
-    // Svelte 5 bindable props in tests can be tricky, but we can check internal state side effects
     render(SettingsMenu, { props: defaultProps });
-    const discoCheckbox = screen.getByLabelText(/Disco:/i);
+    const discoCheckbox = screen.getByLabelText(/DISCO_MODE:/i);
 
     // Initially false, color select should be visible
-    expect(screen.getByLabelText(/Colors:/i)).toBeVisible();
+    expect(screen.getByLabelText(/SYSTEM_COLOR:/i)).toBeVisible();
 
     await fireEvent.click(discoCheckbox);
 
     // Now true, color select should be hidden (display: none)
-    expect(screen.queryByLabelText(/Colors:/i)).not.toBeVisible();
-    expect(screen.getByLabelText(/Frame Count:/i)).toBeVisible();
+    expect(screen.queryByLabelText(/SYSTEM_COLOR:/i)).not.toBeVisible();
+    expect(screen.getByLabelText(/REFRESH_RATE:/i)).toBeVisible();
   });
 
   it('all4Directions button text changes when toggled', async () => {
@@ -56,7 +56,7 @@ describe('SettingsMenu', () => {
   it('COLOR REGRESSION TEST: cycles through colors and updates style correctly', async () => {
     const { container } = render(SettingsMenu, { props: defaultProps });
     const menuContainer = container.querySelector('.menu-container') as HTMLElement;
-    const colorSelect = screen.getByLabelText(/Colors:/i) as HTMLSelectElement;
+    const colorSelect = screen.getByLabelText(/SYSTEM_COLOR:/i) as HTMLSelectElement;
 
     const colors = [
       { name: 'green', value: Assets.colorMatrixGreen },
@@ -77,22 +77,16 @@ describe('SettingsMenu', () => {
           () => {
             const style = menuContainer.getAttribute('style') || '';
             if (color.name === 'random') {
-              const match = style.match(/color:\s*(rgb\(\d+,\s*\d+,\s*\d+\)|#[0-9A-Fa-f]{6})/);
+              const match = style.match(
+                /--theme-color:\s*(rgb\(\d+,\s*\d+,\s*\d+\)|#[0-9A-Fa-f]{6})/,
+              );
               expect(match).toBeTruthy();
             } else {
-              // Note: browser might normalize color values, but style:color in Svelte usually keeps hex or normalizes to rgb
-              // Testing-library/jsdom usually keeps what was set if possible or converts to rgb
-              // But style:color={currentColor} should set the property.
-              // Let's check computed style or the attribute itself.
-              const styleString = menuContainer.style.color;
-              // jsdom often converts hex to rgb in .style.color
-              // Assets are hex. Let's compare loosely or helper function.
-              if (styleString.startsWith('rgb')) {
-                // Simple hex to rgb conversion for assertion if needed,
-                // but let's see if we can just check if it contains the value or a valid color.
-                expect(styleString).not.toBe('');
+              const themeColor = menuContainer.style.getPropertyValue('--theme-color').trim();
+              if (themeColor.startsWith('rgb')) {
+                expect(themeColor).not.toBe('');
               } else {
-                expect(styleString.toLowerCase()).toBe(color.value.toLowerCase());
+                expect(themeColor.toLowerCase()).toBe(color.value.toLowerCase());
               }
             }
           },

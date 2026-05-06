@@ -28,6 +28,12 @@
     },
     "types": ["node"]
   },
-  "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.svelte", "*.config.ts", "playwright.config.ts"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.js",
+    "src/**/*.svelte",
+    "*.config.ts",
+    "playwright.config.ts"
+  ],
   "exclude": ["node_modules", "dist"]
 }

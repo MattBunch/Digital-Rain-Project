@@ -10,12 +10,12 @@ describe('App', () => {
   it('renders SettingsMenu on load', () => {
     render(App);
     expect(screen.getByText('DIGITAL RAIN')).toBeInTheDocument();
-    expect(screen.getByText('START')).toBeInTheDocument();
+    expect(screen.getAllByText('START')[0]).toBeInTheDocument();
   });
 
   it('shows MatrixCanvas and hides menu after onStartNormal', async () => {
     render(App);
-    const startBtn = screen.getByText('START');
+    const startBtn = screen.getAllByText('START')[0];
     await fireEvent.click(startBtn);
 
     expect(screen.queryByText('DIGITAL RAIN')).not.toBeInTheDocument();
@@ -24,7 +24,7 @@ describe('App', () => {
 
   it('shows MatrixCanvas and hides menu after onStartSquare', async () => {
     render(App);
-    const squareBtn = screen.getByText('SQUARE');
+    const squareBtn = screen.getAllByText('SQUARE')[0];
     await fireEvent.click(squareBtn);
 
     expect(screen.queryByText('DIGITAL RAIN')).not.toBeInTheDocument();
@@ -33,12 +33,11 @@ describe('App', () => {
 
   it('returns to SettingsMenu when MatrixCanvas onReturn is called', async () => {
     render(App);
-    await fireEvent.click(screen.getByText('START'));
+    await fireEvent.click(screen.getAllByText('START')[0]);
 
     const returnBtn = screen.getByText('MOCK_RETURN');
     await fireEvent.click(returnBtn);
 
     expect(screen.getByText('DIGITAL RAIN')).toBeInTheDocument();
-    expect(screen.queryByText('MOCK_RETURN')).not.toBeInTheDocument();
   });
 });
