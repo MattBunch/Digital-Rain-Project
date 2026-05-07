@@ -1,6 +1,7 @@
 <script lang="ts">
   import { getRandomColor } from '$lib/utils/MathUtils';
   import CyberButton from '$lib/components/CyberButton.svelte';
+  import HelpModal from '$lib/components/HelpModal.svelte';
   import {
     colorMatrixGreen,
     colorRed,
@@ -35,6 +36,7 @@
   let discoColors = $state([getRandomColor(), getRandomColor(), getRandomColor()]);
   let cachedRandomColor = getRandomColor();
   let lastChosenColor = chosenColor;
+  let isHelpOpen = $state(false);
 
   const colorMap: Record<string, string> = {
     green: colorMatrixGreen,
@@ -78,9 +80,8 @@
     };
   });
 
-  async function showHelp() {
-    const { helpText } = await import('$lib/constants/Assets');
-    alert(helpText);
+  function showHelp() {
+    isHelpOpen = true;
   }
 
   const all4DirectionsLabel = $derived(`All 4 Directions: ${all4Directions ? 'ON' : 'OFF'}`);
@@ -172,6 +173,8 @@
     </div>
   </div>
 </div>
+
+<HelpModal isOpen={isHelpOpen} onClose={() => (isHelpOpen = false)} color={currentColor} />
 
 <style>
   .menu-container {

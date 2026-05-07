@@ -36,4 +36,27 @@ test.describe('Cyber UI Effects', () => {
     const fontFamily = await title.evaluate((el) => window.getComputedStyle(el).fontFamily);
     expect(fontFamily).toContain('Rubik Glitch Pop');
   });
+
+  test('help modal has cyberpunk styling and key caps', async ({ page }) => {
+    await page.getByRole('button', { name: 'HELP' }).click();
+
+    const modal = page.locator('.modal-container');
+    await expect(modal).toBeVisible();
+
+    // Check for backdrop blur
+    const backdrop = page.locator('.modal-backdrop');
+    const backdropFilter = await backdrop.evaluate(
+      (el) => window.getComputedStyle(el).backdropFilter,
+    );
+    expect(backdropFilter).toContain('blur');
+
+    // Check for key caps
+    const keyCap = page.locator('.key-cap').first();
+    await expect(keyCap).toBeVisible();
+
+    // Check for HUD frame borders
+    const hudFrame = modal.locator('.hud-frame');
+    const border = await hudFrame.evaluate((el) => window.getComputedStyle(el).border);
+    expect(border).not.toBe('none');
+  });
 });

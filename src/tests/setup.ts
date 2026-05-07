@@ -15,3 +15,16 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: vi.fn(),
   })),
 });
+
+// Mock Element.prototype.animate for Svelte transitions
+if (typeof Element !== 'undefined' && !Element.prototype.animate) {
+  Element.prototype.animate = vi.fn().mockReturnValue({
+    finished: Promise.resolve(),
+    cancel: vi.fn(),
+    pause: vi.fn(),
+    play: vi.fn(),
+    reverse: vi.fn(),
+    onfinish: null,
+    oncancel: null,
+  });
+}

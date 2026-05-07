@@ -29,6 +29,18 @@ test.describe('Menu', () => {
     await expect(colorSelect).toBeVisible();
   });
 
+  test('help button opens the help modal', async ({ page }) => {
+    await page.getByRole('button', { name: 'HELP' }).click();
+    await expect(page.getByText('SYSTEM_MANUAL')).toBeVisible();
+
+    // Check for a few keys
+    await expect(page.getByText('Arrows').first()).toBeVisible();
+    await expect(page.getByText('Esc')).toBeVisible();
+    // Close the modal
+    await page.getByRole('button', { name: 'DISMISS' }).click();
+    await expect(page.getByText('SYSTEM_MANUAL')).not.toBeVisible();
+  });
+
   test('All 4 Directions button text changes on click', async ({ page }) => {
     const all4Btn = page.getByRole('button', { name: /All 4 Directions/ });
     await expect(all4Btn).toContainText('OFF');

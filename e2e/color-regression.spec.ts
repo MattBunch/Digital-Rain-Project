@@ -42,14 +42,14 @@ test.describe('E2E Color Regression', () => {
 
         if (color.name === 'random') {
           // For random, we just check if it's a valid rgb color
-          const currentThemeColor = await menuContainer.evaluate(
-            (el) => el.style.getPropertyValue('--theme-color').trim(),
+          const currentThemeColor = await menuContainer.evaluate((el) =>
+            el.style.getPropertyValue('--theme-color').trim(),
           );
           expect(currentThemeColor).toMatch(/^(rgb\(\d+,\s*\d+,\s*\d+\)|#[0-9A-Fa-f]{6})$/);
         } else {
           // For fixed colors, assert the theme color variable
-          const currentThemeColor = await menuContainer.evaluate(
-            (el) => el.style.getPropertyValue('--theme-color').trim(),
+          const currentThemeColor = await menuContainer.evaluate((el) =>
+            el.style.getPropertyValue('--theme-color').trim(),
           );
           // Playwright/Browser might keep hex or convert to rgb depending on how it's set
           if (currentThemeColor.startsWith('rgb')) {

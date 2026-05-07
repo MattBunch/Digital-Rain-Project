@@ -53,6 +53,18 @@ describe('SettingsMenu', () => {
     expect(all4Btn).toHaveTextContent(/ON/);
   });
 
+  it('clicking HELP opens the HelpModal', async () => {
+    render(SettingsMenu, { props: defaultProps });
+
+    // HelpModal should not be visible initially
+    expect(screen.queryByText('SYSTEM_MANUAL')).not.toBeInTheDocument();
+
+    await fireEvent.click(screen.getAllByText('HELP')[0]);
+
+    // HelpModal should now be visible
+    expect(screen.getByText('SYSTEM_MANUAL')).toBeInTheDocument();
+  });
+
   it('COLOR REGRESSION TEST: cycles through colors and updates style correctly', async () => {
     const { container } = render(SettingsMenu, { props: defaultProps });
     const menuContainer = container.querySelector('.menu-container') as HTMLElement;

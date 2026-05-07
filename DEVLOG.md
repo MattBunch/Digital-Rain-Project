@@ -209,4 +209,8 @@ Added `buttonDiscoChecked()` to the button mouseover functionality for changing 
 
 ## 02/05/2025
 
-- Migrated to typescript, unit test coverage expanded.
+- Migrated to typescript, unit test coverage expanded. Svelte migrated.
+
+## 07/05/2025
+
+- Styles overhauled. e2e tests the last few days.
