@@ -83,8 +83,6 @@
   function showHelp() {
     isHelpOpen = true;
   }
-
-  const all4DirectionsLabel = $derived(`All 4 Directions: ${all4Directions ? 'ON' : 'OFF'}`);
 </script>
 
 <div class="menu-container" style:--theme-color={currentColor}>
@@ -111,15 +109,6 @@
       </div>
 
       <div class="control-group">
-        <CyberButton
-          color={discoOn ? discoColors[0] : currentColor}
-          onclick={() => (all4Directions = !all4Directions)}
-          variant="secondary"
-          class={all4Directions ? 'active' : ''}
-        >
-          {all4DirectionsLabel}
-        </CyberButton>
-
         <CyberButton
           color={discoOn ? discoColors[2] : currentColor}
           onclick={showHelp}
@@ -164,6 +153,11 @@
             />
           </div>
         {/if}
+
+        <div class="setting-item">
+          <label for="all4-toggle">ALL_4_DIRECTIONS:</label>
+          <input id="all4-toggle" type="checkbox" bind:checked={all4Directions} />
+        </div>
 
         <div class="setting-item">
           <label for="disco-toggle">DISCO_MODE:</label>

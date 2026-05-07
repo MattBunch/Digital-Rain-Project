@@ -44,13 +44,13 @@ describe('SettingsMenu', () => {
     expect(screen.getByLabelText(/REFRESH_RATE:/i)).toBeVisible();
   });
 
-  it('all4Directions button text changes when toggled', async () => {
+  it('all4Directions checkbox toggles state', async () => {
     render(SettingsMenu, { props: defaultProps });
-    const all4Btn = screen.getByRole('button', { name: /All 4 Directions/i });
-    expect(all4Btn).toHaveTextContent(/OFF/);
+    const all4Checkbox = screen.getByLabelText(/ALL_4_DIRECTIONS:/i);
+    expect(all4Checkbox).not.toBeChecked();
 
-    await fireEvent.click(all4Btn);
-    expect(all4Btn).toHaveTextContent(/ON/);
+    await fireEvent.click(all4Checkbox);
+    expect(all4Checkbox).toBeChecked();
   });
 
   it('clicking HELP opens the HelpModal', async () => {

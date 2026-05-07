@@ -55,9 +55,9 @@ refer to docs/plan.md
 
 ## Possible extensions in further versions:
 
-- **IMPORTANT**: Svelte component tests, e2e tests with cypress? - refer to file "docs/component_e2e_testing_prompt.md"
 - adapt values to work with any size monitor for consistent views no matter the screen size
 - bugs in main menu - colours mismatching, disco colours staying on
+  - all 4 directions: text doesn't match the state - update component
 - rename square boundry left side right side names switched - fix this naming inconsistency
 
 - Colour wheel selector.

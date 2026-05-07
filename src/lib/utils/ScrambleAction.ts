@@ -2,9 +2,20 @@
  * Svelte action that scrambles text on hover.
  */
 export function scramble(node: HTMLElement, duration = 300) {
-  const originalText = node.textContent || '';
+  let originalText = node.textContent || '';
   const chars = '!@#$%^&*()_+-=[]{}|;:,.<>?';
   let interval: ReturnType<typeof setInterval> | null = null;
+
+  // MutationObserver to watch for text changes
+  const observer = new MutationObserver(() => {
+    // Only update originalText if we're not currently scrambling
+    // to avoid infinite loops or capturing intermediate scrambled text
+    if (!interval) {
+      originalText = node.textContent || '';
+    }
+  });
+
+  observer.observe(node, { characterData: true, childList: true, subtree: true });
 
   function startScrambling() {
     if (interval) {
@@ -40,7 +51,10 @@ export function scramble(node: HTMLElement, duration = 300) {
         })
         .join('');
 
+      // Temporarily disconnect observer during scramble to prevent self-triggering
+      observer.disconnect();
       node.textContent = scrambled;
+      observer.observe(node, { characterData: true, childList: true, subtree: true });
     }, 40);
   }
 
@@ -57,6 +71,7 @@ export function scramble(node: HTMLElement, duration = 300) {
 
   return {
     destroy() {
+      observer.disconnect();
       node.removeEventListener('mouseenter', startScrambling);
       node.removeEventListener('mouseleave', stopScrambling);
       if (interval) {

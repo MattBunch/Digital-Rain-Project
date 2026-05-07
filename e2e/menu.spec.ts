@@ -41,11 +41,11 @@ test.describe('Menu', () => {
     await expect(page.getByText('SYSTEM_MANUAL')).not.toBeVisible();
   });
 
-  test('All 4 Directions button text changes on click', async ({ page }) => {
-    const all4Btn = page.getByRole('button', { name: /All 4 Directions/ });
-    await expect(all4Btn).toContainText('OFF');
+  test('All 4 Directions checkbox toggles state', async ({ page }) => {
+    const all4Checkbox = page.getByLabel('ALL_4_DIRECTIONS:');
+    await expect(all4Checkbox).not.toBeChecked();
 
-    await all4Btn.click();
-    await expect(all4Btn).toContainText('ON');
+    await all4Checkbox.check();
+    await expect(all4Checkbox).toBeChecked();
   });
 });
