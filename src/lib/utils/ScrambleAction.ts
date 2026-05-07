@@ -1,21 +1,25 @@
 /**
  * Svelte action that scrambles text on hover.
  */
-export function scramble(node: HTMLElement, duration = 300) {
-  let originalText = node.textContent || '';
+export function scramble(
+  node: HTMLElement,
+  params: { text?: string; duration?: number } | string | number = {},
+) {
+  let textParam: string | undefined;
+  let duration = 300;
+
+  if (typeof params === 'string') {
+    textParam = params;
+  } else if (typeof params === 'number') {
+    duration = params;
+  } else if (typeof params === 'object') {
+    textParam = params.text;
+    duration = params.duration || 300;
+  }
+
+  let originalText = textParam || node.textContent || '';
   const chars = '!@#$%^&*()_+-=[]{}|;:,.<>?';
   let interval: ReturnType<typeof setInterval> | null = null;
-
-  // MutationObserver to watch for text changes
-  const observer = new MutationObserver(() => {
-    // Only update originalText if we're not currently scrambling
-    // to avoid infinite loops or capturing intermediate scrambled text
-    if (!interval) {
-      originalText = node.textContent || '';
-    }
-  });
-
-  observer.observe(node, { characterData: true, childList: true, subtree: true });
 
   function startScrambling() {
     if (interval) {
@@ -51,10 +55,7 @@ export function scramble(node: HTMLElement, duration = 300) {
         })
         .join('');
 
-      // Temporarily disconnect observer during scramble to prevent self-triggering
-      observer.disconnect();
       node.textContent = scrambled;
-      observer.observe(node, { characterData: true, childList: true, subtree: true });
     }, 40);
   }
 
@@ -70,8 +71,24 @@ export function scramble(node: HTMLElement, duration = 300) {
   node.addEventListener('mouseleave', stopScrambling);
 
   return {
+    update(newParams: { text?: string; duration?: number } | string | number = {}) {
+      if (typeof newParams === 'string') {
+        textParam = newParams;
+      } else if (typeof newParams === 'number') {
+        duration = newParams;
+      } else if (typeof newParams === 'object') {
+        textParam = newParams.text;
+        duration = newParams.duration || 300;
+      }
+
+      if (textParam !== undefined && textParam !== originalText) {
+        originalText = textParam;
+        if (!interval) {
+          node.textContent = originalText;
+        }
+      }
+    },
     destroy() {
-      observer.disconnect();
       node.removeEventListener('mouseenter', startScrambling);
       node.removeEventListener('mouseleave', stopScrambling);
       if (interval) {

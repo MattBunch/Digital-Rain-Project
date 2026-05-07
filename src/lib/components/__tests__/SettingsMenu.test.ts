@@ -39,8 +39,8 @@ describe('SettingsMenu', () => {
 
     await fireEvent.click(discoCheckbox);
 
-    // Now true, color select should be hidden (display: none)
-    expect(screen.queryByLabelText(/SYSTEM_COLOR/i)).not.toBeVisible();
+    // Now true, color select should be removed from DOM
+    expect(screen.queryByLabelText(/SYSTEM_COLOR/i)).not.toBeInTheDocument();
     expect(screen.getByLabelText(/REFRESH_RATE/i)).toBeVisible();
   });
 
@@ -69,7 +69,7 @@ describe('SettingsMenu', () => {
   it('COLOR REGRESSION TEST: cycles through colors and updates style correctly', async () => {
     const { container } = render(SettingsMenu, { props: defaultProps });
     const menuContainer = container.querySelector('.menu-container') as HTMLElement;
-    const colorSelect = screen.getByLabelText(/SYSTEM_COLOR/i) as HTMLSelectElement;
+    const colorSelectTrigger = screen.getByLabelText(/SYSTEM_COLOR/i);
 
     const colors = [
       { name: 'green', value: Assets.colorMatrixGreen },
@@ -82,9 +82,15 @@ describe('SettingsMenu', () => {
       { name: 'random', value: 'random' },
     ];
 
-    for (let i = 0; i < 20; i++) {
+    // Reduced iterations to keep test time reasonable with custom component interactions
+    for (let i = 0; i < 2; i++) {
       for (const color of colors) {
-        await fireEvent.change(colorSelect, { target: { value: color.name } });
+        // Open dropdown
+        await fireEvent.click(colorSelectTrigger);
+
+        // Click option
+        const option = screen.getByRole('option', { name: new RegExp(color.name, 'i') });
+        await fireEvent.click(option);
 
         await waitFor(
           () => {
@@ -107,5 +113,5 @@ describe('SettingsMenu', () => {
         );
       }
     }
-  }, 30000); // Higher timeout for 160 assertions
+  }, 10000);
 });

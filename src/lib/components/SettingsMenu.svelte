@@ -2,6 +2,7 @@
   import { getRandomColor } from '$lib/utils/MathUtils';
   import CyberButton from '$lib/components/CyberButton.svelte';
   import CyberCheckbox from '$lib/components/CyberCheckbox.svelte';
+  import CyberSelect from '$lib/components/CyberSelect.svelte';
   import HelpModal from '$lib/components/HelpModal.svelte';
   import { fallingLetters } from '$lib/utils/FallingLettersAction';
   import {
@@ -121,41 +122,29 @@
       </div>
 
       <div class="settings-grid">
-        <div class="setting-item" style:display={discoOn ? 'none' : 'flex'}>
-          <label for="color-select">SYSTEM_COLOR:</label>
-          <select
-            id="color-select"
-            bind:value={chosenColor}
-            style:border-color={currentColor}
-            style:color={currentColor}
-            use:fallingLetters={{ value: chosenColor, color: currentColor }}
-          >
-            <option value="green">GREEN</option>
-            <option value="red">RED</option>
-            <option value="yellow">YELLOW</option>
-            <option value="blue">BLUE</option>
-            <option value="orange">ORANGE</option>
-            <option value="pink">PINK</option>
-            <option value="cyan">CYAN</option>
-            <option value="random">RANDOM</option>
-          </select>
-        </div>
-
-        {#if discoOn}
-          <div class="setting-item fade-in">
-            <label for="frame-count">REFRESH_RATE:</label>
-            <input
-              id="frame-count"
-              type="number"
-              bind:value={frameCount}
-              min="1"
-              max="100"
-              style:border-color={currentColor}
-              style:color={currentColor}
-              style:background-color="transparent"
+        <div class="setting-item">
+          {#if discoOn}
+            <div class="cyber-input-group fade-in">
+              <label for="frame-count" class="cyber-label">REFRESH_RATE</label>
+              <input
+                id="frame-count"
+                type="number"
+                bind:value={frameCount}
+                min="1"
+                max="100"
+                style:--theme-color={currentColor}
+              />
+            </div>
+          {:else}
+            <CyberSelect
+              id="color-select"
+              bind:value={chosenColor}
+              color={currentColor}
+              label="SYSTEM_COLOR"
+              options={['green', 'red', 'yellow', 'blue', 'orange', 'pink', 'cyan', 'random']}
             />
-          </div>
-        {/if}
+          {/if}
+        </div>
 
         <div
           class="setting-item"
@@ -263,29 +252,45 @@
     display: flex;
     align-items: center;
     gap: 1rem;
+    min-height: 70px; /* Prevent layout shifting */
+    justify-content: flex-end;
   }
 
-  select,
-  input[type='number'] {
-    background: transparent;
-    border: 1px solid var(--theme-color);
-    padding: 5px 10px;
+  .cyber-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-end;
+    width: 200px;
+  }
+
+  .cyber-label {
     color: var(--theme-color);
-    font-family: inherit;
-    outline: none;
-  }
-
-  select option {
-    background-color: #000; /* Dark background */
-    color: var(--theme-color); /* Neon text */
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
     font-family: var(--font-mono);
-    padding: 10px;
   }
 
-  input[type='checkbox'] {
-    accent-color: var(--theme-color);
-    width: 18px;
-    height: 18px;
+  input[type='number'] {
+    background: rgba(0, 0, 0, 0.85);
+    border: 1px solid var(--theme-color);
+    padding: 10px 15px;
+    color: var(--theme-color);
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+    clip-path: polygon(0 0, 100% 0, 100% 70%, 90% 100%, 0 100%);
+    transition: all 0.2s ease;
+  }
+
+  input[type='number']:hover,
+  input[type='number']:focus {
+    box-shadow: 0 0 15px var(--theme-color);
+    background: rgba(var(--theme-color), 0.15);
   }
 
   .fade-in {
