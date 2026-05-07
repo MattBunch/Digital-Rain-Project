@@ -57,9 +57,10 @@ refer to docs/plan.md
 
 - cyberpunk themed select drop down - https://gemini.google.com/share/fa481cc37275
 - screenshake on pressing button or input.
-- new menu option - about button - links to my website, linkedin,
-
+- new menu option - about button - links to my website, linkedin, etc.
+- transition effect on the select element fading into frame rate option, when pressing the disco button - cool cyberpunk effect on the transition to show it changing.
 - cool cyberpunk television transition effect when switching from "menu" to "digital rain canvas" view
+
 - adapt values to work with any size monitor for consistent views no matter the screen size
 - bugs in main menu - colours mismatching, disco colours staying on
 
