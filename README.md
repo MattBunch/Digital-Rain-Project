@@ -49,25 +49,22 @@ Same as Normal Mode except:
 - P: Increase random square speed
 - ;: Decrease random square speed
 
-## Plan
-
-refer to docs/plan.md
 
 ## Possible extensions in further versions:
 
-- cyberpunk themed select drop down - https://gemini.google.com/share/fa481cc37275
-- screenshake on pressing button or input.
-- new menu option - about button - links to my website, linkedin, etc.
+- disco color options - button 1 & button 2 + 3 have same colors
+- cyberpunk style on refresh rate input - https://gemini.google.com/share/d5632e806ed4
+- slight screenshake on pressing button or input.
+- new menu option - about button - opens modal with links to my website, linkedin, etc.
 - transition effect on the select element fading into frame rate option, when pressing the disco button - cool cyberpunk effect on the transition to show it changing.
 - cool cyberpunk television transition effect when switching from "menu" to "digital rain canvas" view
+- BUGFIX: cyberbutton glitch layer effect sometimes doesn't trigger on buttons - hovering from sides compared to top & bottom?
 
 - adapt values to work with any size monitor for consistent views no matter the screen size
 - bugs in main menu - colours mismatching, disco colours staying on
 
 - Colour wheel selector.
 - Up and down keys work in menu.
-
-- modal window for button presses instead of just "alert" built in browser functionality.
 
 ## Misc
 
