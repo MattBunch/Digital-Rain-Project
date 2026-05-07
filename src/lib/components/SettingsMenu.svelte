@@ -1,7 +1,9 @@
 <script lang="ts">
   import { getRandomColor } from '$lib/utils/MathUtils';
   import CyberButton from '$lib/components/CyberButton.svelte';
+  import CyberCheckbox from '$lib/components/CyberCheckbox.svelte';
   import HelpModal from '$lib/components/HelpModal.svelte';
+  import { fallingLetters } from '$lib/utils/FallingLettersAction';
   import {
     colorMatrixGreen,
     colorRed,
@@ -126,6 +128,7 @@
             bind:value={chosenColor}
             style:border-color={currentColor}
             style:color={currentColor}
+            use:fallingLetters={{ value: chosenColor, color: currentColor }}
           >
             <option value="green">GREEN</option>
             <option value="red">RED</option>
@@ -154,14 +157,25 @@
           </div>
         {/if}
 
-        <div class="setting-item">
-          <label for="all4-toggle">ALL_4_DIRECTIONS:</label>
-          <input id="all4-toggle" type="checkbox" bind:checked={all4Directions} />
+        <div
+          class="setting-item"
+          use:fallingLetters={{ value: all4Directions, color: currentColor }}
+        >
+          <CyberCheckbox
+            id="all4-toggle"
+            bind:checked={all4Directions}
+            color={currentColor}
+            label="ALL_4_DIRECTIONS"
+          />
         </div>
 
-        <div class="setting-item">
-          <label for="disco-toggle">DISCO_MODE:</label>
-          <input id="disco-toggle" type="checkbox" bind:checked={discoOn} />
+        <div class="setting-item" use:fallingLetters={{ value: discoOn, color: currentColor }}>
+          <CyberCheckbox
+            id="disco-toggle"
+            bind:checked={discoOn}
+            color={currentColor}
+            label="DISCO_MODE"
+          />
         </div>
       </div>
     </div>
@@ -259,6 +273,13 @@
     color: var(--theme-color);
     font-family: inherit;
     outline: none;
+  }
+
+  select option {
+    background-color: #000; /* Dark background */
+    color: var(--theme-color); /* Neon text */
+    font-family: var(--font-mono);
+    padding: 10px;
   }
 
   input[type='checkbox'] {

@@ -16,16 +16,16 @@ test.describe('Menu', () => {
   });
 
   test('clicking the disco checkbox toggles UI elements', async ({ page }) => {
-    const colorSelect = page.getByLabel('SYSTEM_COLOR:');
-    const discoCheckbox = page.getByLabel('DISCO_MODE:');
+    const colorSelect = page.getByLabel(/SYSTEM_COLOR/i);
+    const discoCheckbox = page.getByRole('checkbox', { name: /DISCO_MODE/i });
 
     await expect(colorSelect).toBeVisible();
 
-    await discoCheckbox.check();
+    await discoCheckbox.click();
     await expect(colorSelect).not.toBeVisible();
-    await expect(page.getByLabel('REFRESH_RATE:')).toBeVisible();
+    await expect(page.getByLabel(/REFRESH_RATE/i)).toBeVisible();
 
-    await discoCheckbox.uncheck();
+    await discoCheckbox.click();
     await expect(colorSelect).toBeVisible();
   });
 
@@ -42,10 +42,10 @@ test.describe('Menu', () => {
   });
 
   test('All 4 Directions checkbox toggles state', async ({ page }) => {
-    const all4Checkbox = page.getByLabel('ALL_4_DIRECTIONS:');
-    await expect(all4Checkbox).not.toBeChecked();
+    const all4Checkbox = page.getByRole('checkbox', { name: /ALL_4_DIRECTIONS/i });
+    await expect(all4Checkbox).toHaveAttribute('aria-checked', 'false');
 
-    await all4Checkbox.check();
-    await expect(all4Checkbox).toBeChecked();
+    await all4Checkbox.click();
+    await expect(all4Checkbox).toHaveAttribute('aria-checked', 'true');
   });
 });

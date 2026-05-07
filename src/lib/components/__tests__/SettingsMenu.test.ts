@@ -32,25 +32,26 @@ describe('SettingsMenu', () => {
 
   it('disco checkbox toggles discoOn binding', async () => {
     render(SettingsMenu, { props: defaultProps });
-    const discoCheckbox = screen.getByLabelText(/DISCO_MODE:/i);
+    const discoCheckbox = screen.getByRole('checkbox', { name: /DISCO_MODE/i });
 
     // Initially false, color select should be visible
-    expect(screen.getByLabelText(/SYSTEM_COLOR:/i)).toBeVisible();
+    expect(screen.getByLabelText(/SYSTEM_COLOR/i)).toBeVisible();
 
     await fireEvent.click(discoCheckbox);
 
     // Now true, color select should be hidden (display: none)
-    expect(screen.queryByLabelText(/SYSTEM_COLOR:/i)).not.toBeVisible();
-    expect(screen.getByLabelText(/REFRESH_RATE:/i)).toBeVisible();
+    expect(screen.queryByLabelText(/SYSTEM_COLOR/i)).not.toBeVisible();
+    expect(screen.getByLabelText(/REFRESH_RATE/i)).toBeVisible();
   });
 
   it('all4Directions checkbox toggles state', async () => {
     render(SettingsMenu, { props: defaultProps });
-    const all4Checkbox = screen.getByLabelText(/ALL_4_DIRECTIONS:/i);
-    expect(all4Checkbox).not.toBeChecked();
+    const all4Checkbox = screen.getByRole('checkbox', { name: /ALL_4_DIRECTIONS/i });
+
+    expect(all4Checkbox).toHaveAttribute('aria-checked', 'false');
 
     await fireEvent.click(all4Checkbox);
-    expect(all4Checkbox).toBeChecked();
+    expect(all4Checkbox).toHaveAttribute('aria-checked', 'true');
   });
 
   it('clicking HELP opens the HelpModal', async () => {
@@ -68,7 +69,7 @@ describe('SettingsMenu', () => {
   it('COLOR REGRESSION TEST: cycles through colors and updates style correctly', async () => {
     const { container } = render(SettingsMenu, { props: defaultProps });
     const menuContainer = container.querySelector('.menu-container') as HTMLElement;
-    const colorSelect = screen.getByLabelText(/SYSTEM_COLOR:/i) as HTMLSelectElement;
+    const colorSelect = screen.getByLabelText(/SYSTEM_COLOR/i) as HTMLSelectElement;
 
     const colors = [
       { name: 'green', value: Assets.colorMatrixGreen },

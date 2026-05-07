@@ -55,15 +55,17 @@ refer to docs/plan.md
 
 ## Possible extensions in further versions:
 
+- cyberpunk themed select drop down - https://gemini.google.com/share/fa481cc37275
+- screenshake on pressing button or input.
+- new menu option - about button - links to my website, linkedin,
+
+- cool cyberpunk television transition effect when switching from "menu" to "digital rain canvas" view
 - adapt values to work with any size monitor for consistent views no matter the screen size
 - bugs in main menu - colours mismatching, disco colours staying on
-  - all 4 directions: text doesn't match the state - update component
-- rename square boundry left side right side names switched - fix this naming inconsistency
 
 - Colour wheel selector.
 - Up and down keys work in menu.
 
-- more interesting dynamic menu - highlight effect where letters fall off the mouse/sides of buttons, canvas background showing the digital rain effect etc. be creative.
 - modal window for button presses instead of just "alert" built in browser functionality.
 
 ## Misc

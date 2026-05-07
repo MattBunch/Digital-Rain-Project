@@ -59,4 +59,37 @@ test.describe('Cyber UI Effects', () => {
     const border = await hudFrame.evaluate((el) => window.getComputedStyle(el).border);
     expect(border).not.toBe('none');
   });
+
+  test('CyberCheckbox has correct styling and state', async ({ page }) => {
+    const checkbox = page.locator('.cyber-checkbox').first();
+
+    // Check for clip-path styling
+    const clipPath = await checkbox.evaluate((el) => window.getComputedStyle(el).clipPath);
+    expect(clipPath).toContain('polygon');
+
+    // Toggle and check aria-checked
+    await checkbox.click();
+    await expect(checkbox).toHaveAttribute('aria-checked', 'true');
+
+    // Check for checkmark visibility
+    const checkmark = checkbox.locator('.checkmark');
+    await expect(checkmark).toBeVisible();
+  });
+
+  test('falling letters appear on interaction', async ({ page }) => {
+    // Initial check: no falling letters (spans in body)
+    const initialSpans = await page.locator('body > span').count();
+
+    // Interact with a checkbox
+    await page.locator('.cyber-checkbox').first().click();
+
+    // Spans should be spawned
+    const activeSpans = await page.locator('body > span').count();
+    expect(activeSpans).toBeGreaterThan(initialSpans);
+
+    // Check color of a spawned letter (it should be green by default or match theme)
+    const span = page.locator('body > span').first();
+    const color = await span.evaluate((el) => window.getComputedStyle(el).color);
+    expect(color).toMatch(/rgb/);
+  });
 });

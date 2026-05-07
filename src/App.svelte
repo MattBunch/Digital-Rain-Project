@@ -57,7 +57,13 @@
   <main>
     {#if menuVisible}
       <div class="background-rain">
-        <MatrixCanvas engine={backgroundEngine} mode="normal" />
+        <MatrixCanvas
+          engine={backgroundEngine}
+          mode="normal"
+          onReturn={handleReturnToMenu}
+          bind:discoOn
+          bind:chosenColor
+        />
       </div>
       <SettingsMenu
         bind:discoOn
