@@ -54,23 +54,25 @@
           <div class="header-line"></div>
         </header>
 
-        <div class="scroll-area">
-          <div class="groups-container">
-            {#each helpGroups as group (group.title)}
-              <section class="help-group">
-                <h3>{group.title}</h3>
-                <div class="items-grid">
-                  {#each group.items as item (item.key)}
-                    <div class="help-item">
-                      <div class="key-wrapper">
-                        <KeyCap {color}>{item.key}</KeyCap>
+        <div class="scroll-container">
+          <div class="scroll-area">
+            <div class="groups-container">
+              {#each helpGroups as group (group.title)}
+                <section class="help-group">
+                  <h3>{group.title}</h3>
+                  <div class="items-grid">
+                    {#each group.items as item (item.key)}
+                      <div class="help-item">
+                        <div class="key-wrapper">
+                          <KeyCap {color}>{item.key}</KeyCap>
+                        </div>
+                        <span class="description">{item.description}</span>
                       </div>
-                      <span class="description">{item.description}</span>
-                    </div>
-                  {/each}
-                </div>
-              </section>
-            {/each}
+                    {/each}
+                  </div>
+                </section>
+              {/each}
+            </div>
           </div>
         </div>
 
@@ -155,22 +157,74 @@
     margin-top: 0.5rem;
   }
 
-  .scroll-area {
-    overflow-y: auto;
-    padding-right: 1rem;
+  .scroll-container {
+    position: relative;
     margin-bottom: 1.5rem;
+    overflow: hidden;
   }
 
-  /* Custom Scrollbar */
+  /* Tech markers at the top and bottom of the scroll track */
+  .scroll-container::before,
+  .scroll-container::after {
+    content: '▼';
+    position: absolute;
+    right: 0;
+    font-size: 8px;
+    color: var(--theme-color);
+    opacity: 0.5;
+    width: 6px;
+    text-align: center;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .scroll-container::before {
+    content: '▲';
+    top: 0;
+  }
+
+  .scroll-container::after {
+    bottom: 0;
+  }
+
+  .scroll-area {
+    overflow-y: auto;
+    padding-right: 1.5rem;
+    max-height: 50vh; /* Ensure it scrolls */
+    scrollbar-width: thin;
+    scrollbar-color: var(--theme-color) rgba(0, 0, 0, 0.3);
+  }
+
+  /* --- Advanced Cyberpunk Scrollbar --- */
   .scroll-area::-webkit-scrollbar {
-    width: 4px;
+    width: 6px;
   }
+
   .scroll-area::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.4);
+    border-left: 1px dashed rgba(var(--theme-color), 0.2);
+    margin-block: 10px;
   }
+
   .scroll-area::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      var(--theme-color),
+      var(--theme-color),
+      transparent
+    );
+    border-radius: 0px;
+    box-shadow:
+      0 0 10px var(--theme-color),
+      inset 0 0 2px rgba(255, 255, 255, 0.8);
+    border: 1px solid black;
+  }
+
+  .scroll-area::-webkit-scrollbar-thumb:hover {
     background: var(--theme-color);
-    box-shadow: 0 0 5px var(--theme-color);
+    box-shadow: 0 0 20px var(--theme-color);
+    cursor: pointer;
   }
 
   .groups-container {

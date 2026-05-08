@@ -79,24 +79,26 @@
 
     {#if isOpen}
       <div
-        class="options-dropdown"
-        role="listbox"
+        class="options-container"
         transition:fade={{ duration: transitionDuration }}
+        style:--theme-color={color}
       >
         <div class="scanline"></div>
-        {#each options as opt (opt)}
-          <button
-            type="button"
-            class="option-item"
-            class:active={value === opt}
-            role="option"
-            aria-selected={value === opt}
-            onclick={() => selectOption(opt)}
-            use:fallingLetters={{ value: value === opt, color }}
-          >
-            {opt.toUpperCase()}
-          </button>
-        {/each}
+        <div class="options-dropdown" role="listbox">
+          {#each options as opt (opt)}
+            <button
+              type="button"
+              class="option-item"
+              class:active={value === opt}
+              role="option"
+              aria-selected={value === opt}
+              onclick={() => selectOption(opt)}
+              use:fallingLetters={{ value: value === opt, color }}
+            >
+              {opt.toUpperCase()}
+            </button>
+          {/each}
+        </div>
       </div>
     {/if}
   </div>
@@ -226,20 +228,84 @@
     transform: rotate(180deg);
   }
 
-  .options-dropdown {
+  .options-container {
     position: absolute;
     top: 100%;
     left: 0;
     width: 100%;
+    z-index: 10;
     background: rgba(0, 0, 0, 0.98);
     border: 1px solid var(--theme-color);
     border-top: none;
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(15px);
     overflow: hidden;
+  }
+
+  /* Tech markers for dropdown scrollbar */
+  .options-container::before,
+  .options-container::after {
+    content: '▼';
+    position: absolute;
+    right: 2px;
+    font-size: 8px;
+    color: var(--theme-color);
+    opacity: 0.5;
+    width: 6px;
+    text-align: center;
+    pointer-events: none;
+    z-index: 12;
+  }
+
+  .options-container::before {
+    content: '▲';
+    top: 5px;
+  }
+
+  .options-container::after {
+    bottom: 5px;
+  }
+
+  .options-dropdown {
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    scrollbar-width: thin;
+    scrollbar-color: var(--theme-color) rgba(0, 0, 0, 0.3);
+  }
+
+  /* --- Advanced Cyberpunk Scrollbar --- */
+  .options-dropdown::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .options-dropdown::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.4);
+    border-left: 1px dashed rgba(var(--theme-color), 0.2);
+    margin-block: 10px;
+  }
+
+  .options-dropdown::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      var(--theme-color),
+      var(--theme-color),
+      transparent
+    );
+    border-radius: 0px;
+    box-shadow:
+      0 0 10px var(--theme-color),
+      inset 0 0 2px rgba(255, 255, 255, 0.8);
+    border: 1px solid black;
+  }
+
+  .options-dropdown::-webkit-scrollbar-thumb:hover {
+    background: var(--theme-color);
+    box-shadow: 0 0 20px var(--theme-color);
+    cursor: pointer;
   }
 
   .option-item {
@@ -255,6 +321,7 @@
     position: relative;
     text-transform: uppercase;
     font-weight: bold;
+    flex-shrink: 0;
   }
 
   .option-item:hover,
@@ -279,13 +346,13 @@
       to bottom,
       rgba(255, 255, 255, 0) 0%,
       rgba(255, 255, 255, 0) 50%,
-      rgba(0, 0, 0, 0.15) 50%,
-      rgba(0, 0, 0, 0.15) 100%
+      rgba(0, 0, 0, 0.1) 50%,
+      rgba(0, 0, 0, 0.1) 100%
     );
     background-size: 100% 4px;
     pointer-events: none;
     z-index: 11;
-    opacity: 0.4;
+    opacity: 0.3;
   }
 
   .options-dropdown::after {
@@ -297,5 +364,6 @@
     height: 100%;
     background: linear-gradient(transparent, rgba(var(--theme-color), 0.08));
     pointer-events: none;
+    z-index: 1;
   }
 </style>
