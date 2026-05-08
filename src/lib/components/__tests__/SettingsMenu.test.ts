@@ -39,8 +39,13 @@ describe('SettingsMenu', () => {
 
     await fireEvent.click(discoCheckbox);
 
-    // Now true, color select should be removed from DOM
-    expect(screen.queryByLabelText(/SYSTEM_COLOR/i)).not.toBeInTheDocument();
+    // Now true, wait for transitions to finish before checking the DOM
+    await waitFor(
+      () => {
+        expect(screen.queryByLabelText(/SYSTEM_COLOR/i)).not.toBeInTheDocument();
+      },
+      { timeout: 2000 },
+    );
     expect(screen.getByLabelText(/REFRESH_RATE/i)).toBeVisible();
   });
 

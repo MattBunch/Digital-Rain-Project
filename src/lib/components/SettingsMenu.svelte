@@ -91,6 +91,33 @@
   function getRandomColors(count = 5) {
     return Array.from({ length: count }, () => getRandomColor());
   }
+
+  function signalMorph(node: HTMLElement, { duration = 300 }) {
+    const isTest = typeof process !== 'undefined' && process.env.NODE_ENV === 'test';
+    const activeDuration = isTest ? 0 : duration;
+
+    return {
+      duration: activeDuration,
+      tick: (t: number) => {
+        // Create a "jitter" effect during the mid-transition
+        const jitter = t > 0.1 && t < 0.9 ? (Math.random() - 0.5) * 4 : 0;
+        const blur = (1 - t) * 2;
+        node.style.transform = `translateX(${jitter}px)`;
+        node.style.filter = `blur(${blur}px) brightness(${t < 0.5 ? 1.5 : 1})`;
+        node.style.opacity = `${t}`;
+
+        // Chromatic Aberration effect via text-shadow
+        if (t < 1) {
+          const shadowDist = (1 - t) * 5;
+          node.style.textShadow = ` ${shadowDist}px 0 rgba(255,0,0,0.7), -${shadowDist}px 0 rgba(0,255,255,0.7) `;
+        } else {
+          node.style.textShadow = 'none';
+          node.style.transform = 'none';
+          node.style.filter = 'none';
+        }
+      },
+    };
+  }
 </script>
 
 <div class="menu-container" style:--theme-color={currentColor}>
@@ -129,24 +156,38 @@
       <div class="settings-grid">
         <div class="setting-item">
           {#if discoOn}
-            <div class="fade-in">
-              <CyberNumericInput
-                id="frame-count"
-                bind:value={frameCount}
-                min={1}
-                max={100}
-                color={currentColor}
-                label="REFRESH_RATE:"
-              />
+            <div
+              class="glitch-wrapper"
+              in:signalMorph={{ duration: 400 }}
+              out:signalMorph={{ duration: 200 }}
+            >
+              <div class="component-wrapper">
+                <CyberNumericInput
+                  id="frame-count"
+                  bind:value={frameCount}
+                  min={1}
+                  max={100}
+                  color={currentColor}
+                  label="REFRESH_RATE:"
+                />
+              </div>
             </div>
           {:else}
-            <CyberSelect
-              id="color-select"
-              bind:value={chosenColor}
-              color={currentColor}
-              label="SYSTEM_COLOR:"
-              options={['green', 'red', 'yellow', 'blue', 'orange', 'pink', 'cyan', 'random']}
-            />
+            <div
+              class="glitch-wrapper"
+              in:signalMorph={{ duration: 400 }}
+              out:signalMorph={{ duration: 200 }}
+            >
+              <div class="component-wrapper">
+                <CyberSelect
+                  id="color-select"
+                  bind:value={chosenColor}
+                  color={currentColor}
+                  label="SYSTEM_COLOR:"
+                  options={['green', 'red', 'yellow', 'blue', 'orange', 'pink', 'cyan', 'random']}
+                />
+              </div>
+            </div>
           {/if}
         </div>
 
@@ -253,10 +294,33 @@
   }
 
   .setting-item {
+    display: grid;
+    grid-template-areas: 'stack';
+    align-items: center;
+    min-height: 80px;
+    justify-content: flex-end;
+  }
+
+  .setting-item:nth-child(n + 2) {
     display: flex;
     align-items: center;
     gap: 1rem;
-    min-height: 70px; /* Prevent layout shifting */
+    min-height: 70px;
+    justify-content: flex-end;
+  }
+
+  .glitch-wrapper {
+    grid-area: stack;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    position: relative;
+  }
+
+  .component-wrapper {
+    width: 100%;
+    display: flex;
     justify-content: flex-end;
   }
 
