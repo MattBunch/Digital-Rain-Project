@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { hexToRgb } from '$lib/utils/MathUtils';
+
   interface Props {
     checked: boolean;
     id?: string;
@@ -9,6 +11,8 @@
   /* eslint-disable prefer-const */
   let { checked = $bindable(false), id, color = '#00ff41', label }: Props = $props();
   /* eslint-enable prefer-const */
+
+  const colorRgb = $derived(hexToRgb(color));
 
   function toggle() {
     checked = !checked;
@@ -41,6 +45,7 @@
       onclick={toggle}
       onkeydown={handleKeydown}
       style:--theme-color={color}
+      style:--theme-color-rgb={colorRgb}
     >
       <div class="inner-box">
         {#if checked}
@@ -111,7 +116,7 @@
   }
 
   .cyber-checkbox.checked {
-    background: rgba(var(--theme-color), 0.1);
+    background: rgba(var(--theme-color-rgb), 0.1);
     box-shadow: inset 0 0 10px var(--theme-color);
   }
 

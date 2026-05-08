@@ -1,5 +1,6 @@
 <script lang="ts">
   import { scramble } from '$lib/utils/ScrambleAction';
+  import { hexToRgb } from '$lib/utils/MathUtils';
 
   interface Props {
     value: number;
@@ -13,6 +14,8 @@
   /* eslint-disable prefer-const */
   let { value = $bindable(10), min = 1, max = 100, color = '#00ff41', label, id }: Props = $props();
   /* eslint-enable prefer-const */
+
+  const colorRgb = $derived(hexToRgb(color));
 
   function increment() {
     value = Math.min(max, value + 1);
@@ -43,7 +46,7 @@
   }
 </script>
 
-<div class="cyber-numeric-container" style:--theme-color={color}>
+<div class="cyber-numeric-container" style:--theme-color={color} style:--theme-color-rgb={colorRgb}>
   {#if label}
     <label for={id} class="cyber-label" use:scramble={label}>
       {label}
@@ -133,8 +136,8 @@
 
   .cyber-input:hover,
   .cyber-input:focus {
-    background: rgba(var(--theme-color), 0.15);
-    box-shadow: inset 0 0 10px rgba(var(--theme-color), 0.3);
+    background: rgba(var(--theme-color-rgb), 0.15);
+    box-shadow: inset 0 0 10px rgba(var(--theme-color-rgb), 0.3);
   }
 
   .step-btn {

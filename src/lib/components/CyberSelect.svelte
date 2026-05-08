@@ -3,6 +3,7 @@
   import { fade } from 'svelte/transition';
   import { scramble } from '$lib/utils/ScrambleAction';
   import { fallingLetters } from '$lib/utils/FallingLettersAction';
+  import { hexToRgb } from '$lib/utils/MathUtils';
 
   interface Props {
     value: string;
@@ -18,6 +19,8 @@
 
   let isOpen = $state(false);
   let container = $state<HTMLDivElement | null>(null);
+
+  const colorRgb = $derived(hexToRgb(color));
 
   function toggle() {
     isOpen = !isOpen;
@@ -52,7 +55,12 @@
     typeof process !== 'undefined' && process.env.NODE_ENV === 'test' ? 0 : 150;
 </script>
 
-<div class="cyber-select-container" bind:this={container} style:--theme-color={color}>
+<div
+  class="cyber-select-container"
+  bind:this={container}
+  style:--theme-color={color}
+  style:--theme-color-rgb={colorRgb}
+>
   {#if label}
     <label for={id} class="cyber-label">
       {label}
@@ -150,7 +158,7 @@
   .select-trigger:hover,
   .select-trigger:focus-visible {
     box-shadow: 0 0 15px var(--theme-color);
-    background: rgba(var(--theme-color), 0.15);
+    background: rgba(var(--theme-color-rgb), 0.15);
   }
 
   .select-trigger.open {
@@ -332,7 +340,7 @@
   }
 
   .option-item.active {
-    background: rgba(var(--theme-color), 0.2);
+    background: rgba(var(--theme-color-rgb), 0.2);
     text-decoration: underline;
   }
 
@@ -362,7 +370,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(transparent, rgba(var(--theme-color), 0.08));
+    background: linear-gradient(transparent, rgba(var(--theme-color-rgb), 0.08));
     pointer-events: none;
     z-index: 1;
   }

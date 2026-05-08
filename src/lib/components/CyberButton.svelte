@@ -17,13 +17,32 @@
     class: className = '',
   }: Props = $props();
 
-  const glowStyle = $derived(`
-    --glow-color: ${color};
-    --border-color: ${color};
-  `);
+  $effect(() => {
+    // Aggressive logging for any color change
+    const label = node?.textContent?.trim() || 'unlabeled';
+    const isValid = !!(color && typeof color === 'string' && color.startsWith('#'));
+
+    // console.log(`[CyberButton:${label}] color updated:`, {
+    //   color,
+    //   type: typeof color,
+    //   isValid,
+    // });
+
+    if (!isValid) {
+      console.warn(`[CyberButton:${label}] INVALID COLOR! Falling back to default green.`);
+    }
+  });
+
+  let node = $state<HTMLElement>();
 </script>
 
-<button class="cyber-button {variant} {className}" style={glowStyle} {onclick}>
+<button
+  bind:this={node}
+  class="cyber-button {variant} {className}"
+  style:--glow-color={color || '#00ff41'}
+  style:--border-color={color || '#00ff41'}
+  {onclick}
+>
   <span class="glitch-layer" aria-hidden="true">{@render children?.()}</span>
   <span class="content" use:scramble>{@render children?.()}</span>
   <span class="glitch-layer" aria-hidden="true">{@render children?.()}</span>

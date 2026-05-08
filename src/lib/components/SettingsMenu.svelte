@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getRandomColor } from '$lib/utils/MathUtils';
+  import { getRandomColor, hexToRgb } from '$lib/utils/MathUtils';
   import CyberButton from '$lib/components/CyberButton.svelte';
   import CyberCheckbox from '$lib/components/CyberCheckbox.svelte';
   import CyberSelect from '$lib/components/CyberSelect.svelte';
@@ -37,9 +37,9 @@
   /* eslint-enable prefer-const */
 
   let menuInterval: ReturnType<typeof setInterval> | null = null;
-  let discoColors = $state(getRandomColors());
-  let cachedRandomColor = getRandomColor();
-  let lastChosenColor = chosenColor;
+  const discoColors = $state(getRandomColors());
+  let cachedRandomColor = $state(getRandomColor());
+  let lastChosenColor = $state(chosenColor);
   let isHelpOpen = $state(false);
 
   const colorMap: Record<string, string> = {
@@ -54,32 +54,68 @@
 
   const currentColor = $derived.by(() => {
     if (discoOn) {
-      return discoColors[0];
+      return discoColors[0] || colorMatrixGreen;
     }
     if (chosenColor === 'random') {
-      if (lastChosenColor !== 'random') {
-        cachedRandomColor = getRandomColor();
-      }
-      lastChosenColor = chosenColor;
-      return cachedRandomColor;
+      return cachedRandomColor || colorMatrixGreen;
+    }
+    return colorMap[chosenColor] ?? colorMatrixGreen;
+  });
+
+  const currentColorRgb = $derived(hexToRgb(currentColor));
+
+  // Safe button colors with fallbacks
+  const startBtnColor = $derived(discoOn ? discoColors[1] || currentColor : currentColor);
+  const squareBtnColor = $derived(discoOn ? discoColors[2] || currentColor : currentColor);
+  const helpBtnColor = $derived(discoOn ? discoColors[3] || currentColor : currentColor);
+
+  $effect(() => {
+    if (chosenColor === 'random' && lastChosenColor !== 'random') {
+      cachedRandomColor = getRandomColor();
     }
     lastChosenColor = chosenColor;
-    return colorMap[chosenColor] ?? colorMatrixGreen;
+  });
+
+  $effect(() => {
+    if (discoOn) {
+      // console.log('[SettingsMenu] Disco Mode ON. Current colors:', $state.snapshot(discoColors));
+
+      const invalidColors = discoColors.filter(
+        (c) => !c || typeof c !== 'string' || !c.startsWith('#'),
+      );
+      if (invalidColors.length > 0) {
+        console.error('[SettingsMenu] CRITICAL: Invalid disco colors detected!', {
+          allColors: $state.snapshot(discoColors),
+          invalidCount: invalidColors.length,
+          invalidValues: invalidColors,
+        });
+      }
+    }
   });
 
   $effect(() => {
     if (discoOn) {
       menuInterval = setInterval(() => {
-        discoColors = getRandomColors();
+        // console.log('[SettingsMenu] Interval Tick - updating colors');
+        // Mutate existing array to avoid transient undefined states during reassignment
+        for (let i = 0; i < discoColors.length; i++) {
+          const newColor = getRandomColor();
+          if (!newColor || !newColor.startsWith('#')) {
+            console.error(`[SettingsMenu] getRandomColor() returned invalid color: "${newColor}"`);
+          }
+          discoColors[i] = newColor;
+        }
       }, 1000);
     } else {
       if (menuInterval) {
         clearInterval(menuInterval);
+        menuInterval = null;
       }
     }
     return () => {
       if (menuInterval) {
         clearInterval(menuInterval);
+        menuInterval = null;
       }
     };
   });
@@ -120,37 +156,27 @@
   }
 </script>
 
-<div class="menu-container" style:--theme-color={currentColor}>
+<div
+  class="menu-container"
+  style:--theme-color={currentColor}
+  style:--theme-color-rgb={currentColorRgb}
+>
   <div class="hud-frame">
     <h1 class="fade-in">DIGITAL RAIN</h1>
 
     <div class="menu-controls fade-in">
       <div class="control-group">
-        <CyberButton
-          color={discoOn ? discoColors[1] : currentColor}
-          onclick={onStartNormal}
-          variant="primary"
-        >
+        <CyberButton color={startBtnColor} onclick={onStartNormal} variant="primary">
           START
         </CyberButton>
 
-        <CyberButton
-          color={discoOn ? discoColors[2] : currentColor}
-          onclick={onStartSquare}
-          variant="secondary"
-        >
+        <CyberButton color={squareBtnColor} onclick={onStartSquare} variant="secondary">
           SQUARE
         </CyberButton>
       </div>
 
       <div class="control-group">
-        <CyberButton
-          color={discoOn ? discoColors[3] : currentColor}
-          onclick={showHelp}
-          variant="primary"
-        >
-          HELP
-        </CyberButton>
+        <CyberButton color={helpBtnColor} onclick={showHelp} variant="primary">HELP</CyberButton>
       </div>
 
       <div class="settings-grid">
@@ -232,7 +258,7 @@
 
   .hud-frame {
     padding: 3rem;
-    border: 1px solid rgba(var(--theme-color), 0.3);
+    border: 1px solid rgba(var(--theme-color-rgb), 0.3);
     background: rgba(0, 0, 0, 0.8);
     position: relative;
     backdrop-filter: blur(5px);
