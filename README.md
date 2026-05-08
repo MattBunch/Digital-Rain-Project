@@ -53,11 +53,13 @@ Same as Normal Mode except:
 
 - slight component/screen shake on pressing button or input.
 - new menu option - about button - opens modal with links to my website, linkedin, etc.
-- transition effect on the select element fading into frame rate option, when pressing the disco button - cool cyberpunk effect on the transition to show it changing.
 - cool cyberpunk television transition effect when switching from "menu" to "digital rain canvas" view - very quick, 200ms - 400 ms max
 - update plan in docs/engine-refactor-plan.md for current - create new plan with requestAnimationFrame instead of set Interval
+- remove commented out console logging from button & settings menu
 
 - deployment, cicd pipeline, personal website.
+  - matt-bunch-dev.com - astro.js landing page, links (typical developer portfolio website)
+  - matt-bunch-dev.com/digital-rain - this application is at this url
 
 - adapt values to work with any size monitor for consistent views no matter the screen size
 - bugs in main menu - colours mismatching, disco colours staying on
