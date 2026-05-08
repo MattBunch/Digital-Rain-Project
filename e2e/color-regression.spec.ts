@@ -35,8 +35,11 @@ test.describe('E2E Color Regression', () => {
 
     for (let i = 0; i < 20; i++) {
       for (const color of colors) {
-        // Change the select value
-        await colorSelect.selectOption(color.name);
+        // Open the custom select
+        await colorSelect.click();
+
+        // Click the option
+        await page.getByRole('option', { name: color.name.toUpperCase() }).click();
 
         await page.waitForTimeout(1);
 

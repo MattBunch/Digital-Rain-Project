@@ -49,10 +49,8 @@ Same as Normal Mode except:
 - P: Increase random square speed
 - ;: Decrease random square speed
 
-
 ## Possible extensions in further versions:
 
-- cyberpunk style on refresh rate input - https://gemini.google.com/share/d5632e806ed4
 - cyberpunk style on modal scroll bar.
 - slight component/screen shake on pressing button or input.
 - new menu option - about button - opens modal with links to my website, linkedin, etc.

@@ -3,6 +3,7 @@
   import CyberButton from '$lib/components/CyberButton.svelte';
   import CyberCheckbox from '$lib/components/CyberCheckbox.svelte';
   import CyberSelect from '$lib/components/CyberSelect.svelte';
+  import CyberNumericInput from '$lib/components/CyberNumericInput.svelte';
   import HelpModal from '$lib/components/HelpModal.svelte';
   import { fallingLetters } from '$lib/utils/FallingLettersAction';
   import {
@@ -128,15 +129,14 @@
       <div class="settings-grid">
         <div class="setting-item">
           {#if discoOn}
-            <div class="cyber-input-group fade-in">
-              <label for="frame-count" class="cyber-label">REFRESH_RATE</label>
-              <input
+            <div class="fade-in">
+              <CyberNumericInput
                 id="frame-count"
-                type="number"
                 bind:value={frameCount}
-                min="1"
-                max="100"
-                style:--theme-color={currentColor}
+                min={1}
+                max={100}
+                color={currentColor}
+                label="REFRESH_RATE:"
               />
             </div>
           {:else}
@@ -144,7 +144,7 @@
               id="color-select"
               bind:value={chosenColor}
               color={currentColor}
-              label="SYSTEM_COLOR"
+              label="SYSTEM_COLOR:"
               options={['green', 'red', 'yellow', 'blue', 'orange', 'pink', 'cyan', 'random']}
             />
           {/if}
@@ -158,7 +158,7 @@
             id="all4-toggle"
             bind:checked={all4Directions}
             color={currentColor}
-            label="ALL_4_DIRECTIONS"
+            label="ALL_4_DIRECTIONS:"
           />
         </div>
 
@@ -167,7 +167,7 @@
             id="disco-toggle"
             bind:checked={discoOn}
             color={currentColor}
-            label="DISCO_MODE"
+            label="DISCO_MODE:"
           />
         </div>
       </div>
@@ -258,43 +258,6 @@
     gap: 1rem;
     min-height: 70px; /* Prevent layout shifting */
     justify-content: flex-end;
-  }
-
-  .cyber-input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    align-items: flex-end;
-    width: 200px;
-  }
-
-  .cyber-label {
-    color: var(--theme-color);
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 2px;
-    font-family: var(--font-mono);
-  }
-
-  input[type='number'] {
-    background: rgba(0, 0, 0, 0.85);
-    border: 1px solid var(--theme-color);
-    padding: 10px 15px;
-    color: var(--theme-color);
-    font-family: var(--font-mono);
-    font-size: 1rem;
-    outline: none;
-    width: 100%;
-    box-sizing: border-box;
-    clip-path: polygon(0 0, 100% 0, 100% 70%, 90% 100%, 0 100%);
-    transition: all 0.2s ease;
-  }
-
-  input[type='number']:hover,
-  input[type='number']:focus {
-    box-shadow: 0 0 15px var(--theme-color);
-    background: rgba(var(--theme-color), 0.15);
   }
 
   .fade-in {
