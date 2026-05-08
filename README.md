@@ -52,9 +52,9 @@ Same as Normal Mode except:
 
 ## Possible extensions in further versions:
 
-- disco color options - button 1 & button 2 + 3 have same colors
 - cyberpunk style on refresh rate input - https://gemini.google.com/share/d5632e806ed4
-- slight screenshake on pressing button or input.
+- cyberpunk style on modal scroll bar.
+- slight component/screen shake on pressing button or input.
 - new menu option - about button - opens modal with links to my website, linkedin, etc.
 - transition effect on the select element fading into frame rate option, when pressing the disco button - cool cyberpunk effect on the transition to show it changing.
 - cool cyberpunk television transition effect when switching from "menu" to "digital rain canvas" view

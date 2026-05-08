@@ -36,7 +36,7 @@
   /* eslint-enable prefer-const */
 
   let menuInterval: ReturnType<typeof setInterval> | null = null;
-  let discoColors = $state([getRandomColor(), getRandomColor(), getRandomColor()]);
+  let discoColors = $state(getRandomColors());
   let cachedRandomColor = getRandomColor();
   let lastChosenColor = chosenColor;
   let isHelpOpen = $state(false);
@@ -69,7 +69,7 @@
   $effect(() => {
     if (discoOn) {
       menuInterval = setInterval(() => {
-        discoColors = [getRandomColor(), getRandomColor(), getRandomColor()];
+        discoColors = getRandomColors();
       }, 1000);
     } else {
       if (menuInterval) {
@@ -85,6 +85,10 @@
 
   function showHelp() {
     isHelpOpen = true;
+  }
+
+  function getRandomColors(count = 5) {
+    return Array.from({ length: count }, () => getRandomColor());
   }
 </script>
 
@@ -113,7 +117,7 @@
 
       <div class="control-group">
         <CyberButton
-          color={discoOn ? discoColors[2] : currentColor}
+          color={discoOn ? discoColors[3] : currentColor}
           onclick={showHelp}
           variant="primary"
         >
