@@ -52,16 +52,19 @@ Same as Normal Mode except:
 ## Possible extensions in further versions:
 
 ### features
-- new menu option - about button - opens modal with links to my website, linkedin, etc. license, github link
+
 - Colour wheel selector.
 - Up and down keys work in menu.
 
 ### deployment
+
 - deployment, cicd pipeline, personal website.
   - matt-bunch-dev.com - astro.js landing page, links (typical developer portfolio website, links to projects)
   - matt-bunch-dev.com/digital-rain - this application is at this url
 
 ### UI bugfixes, effects
+
+- about modal button effect - scramble effect.
 - remove commented out console logging from button & settings menu
 - slight component/screen shake on pressing button or input.
 - cool cyberpunk television transition effect when switching from "menu" to "digital rain canvas" view - very quick, 200ms - 400 ms max
