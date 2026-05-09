@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { CoreEngine } from '../CoreEngine';
 
 describe('CoreEngine', () => {
@@ -7,6 +7,16 @@ describe('CoreEngine', () => {
   let mockCtx: Partial<CanvasRenderingContext2D>;
 
   beforeEach(() => {
+    vi.useFakeTimers();
+    vi.stubGlobal(
+      'requestAnimationFrame',
+      vi.fn().mockImplementation((cb) => setTimeout(() => cb(performance.now()), 16)),
+    );
+    vi.stubGlobal(
+      'cancelAnimationFrame',
+      vi.fn().mockImplementation((id) => clearTimeout(id)),
+    );
+
     engine = new CoreEngine();
     mockCtx = {
       clearRect: vi.fn(),
@@ -25,6 +35,43 @@ describe('CoreEngine', () => {
       getContext: vi.fn().mockReturnValue(mockCtx),
     } as unknown as Partial<HTMLCanvasElement>;
     engine.setContext(mockCanvas as HTMLCanvasElement, mockCtx as CanvasRenderingContext2D);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.useRealTimers();
+  });
+
+  describe('Animation Lifecycle (RAF)', () => {
+    it('should start animation when run is called', () => {
+      engine.run(true);
+      expect(engine.animationOn).toBe(true);
+      expect(window.requestAnimationFrame).toHaveBeenCalled();
+    });
+
+    it('should toggle animation when pause is called', () => {
+      engine.run(true);
+      expect(engine.animationOn).toBe(true);
+
+      engine.pause();
+      expect(engine.animationOn).toBe(false);
+      expect(window.cancelAnimationFrame).toHaveBeenCalled();
+
+      engine.pause();
+      expect(engine.animationOn).toBe(true);
+    });
+
+    it('should calculate deltaTime and call draw in the loop', async () => {
+      const drawSpy = vi.spyOn(engine, 'draw');
+      engine.run(true);
+
+      await vi.advanceTimersByTimeAsync(32); // Advance enough for ~2 frames
+
+      expect(drawSpy).toHaveBeenCalled();
+      // speedFactor should be roughly 16.6 / 50 = 0.33 per frame
+      const speedFactor = drawSpy.mock.calls[0][2];
+      expect(speedFactor).toBeGreaterThan(0);
+    });
   });
 
   describe('Pure Logic: matchColorToIndex', () => {

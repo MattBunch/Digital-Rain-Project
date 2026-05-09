@@ -34,7 +34,8 @@ export class CoreEngine {
   direction: string;
   discoOn: boolean;
   chosenColor: number;
-  intervalValid: ReturnType<typeof setInterval> | null;
+  requestId: number | null;
+  lastTime: number;
   menuInterval: ReturnType<typeof setInterval> | null;
   animationOn: boolean;
   discoFrameCounter: number;
@@ -81,7 +82,8 @@ export class CoreEngine {
     this.direction = 'south';
     this.discoOn = false;
     this.chosenColor = 0;
-    this.intervalValid = null;
+    this.requestId = null;
+    this.lastTime = 0;
     this.menuInterval = null;
     this.animationOn = false;
     this.discoFrameCounter = 0;
@@ -234,7 +236,7 @@ export class CoreEngine {
     this.words = []; // Clear for consistency
   }
 
-  draw(inputWords: MatrixString[], passThroughToDraw: boolean): void {
+  draw(inputWords: MatrixString[], passThroughToDraw: boolean, speedFactor: number = 1): void {
     if (!this.ctx || !this.canvas) {
       return;
     }
@@ -242,7 +244,7 @@ export class CoreEngine {
       this.discoFrameCounter++;
     }
     if (this.all4Directions && !passThroughToDraw) {
-      this.drawAll4Directions();
+      this.drawAll4Directions(speedFactor);
       return;
     }
     this.ctx.font = this.fontSize + "px 'Consolas', 'Lucida Console'";
@@ -261,6 +263,7 @@ export class CoreEngine {
 
     for (let i = 0; i < inputWords.length; i++) {
       this.changeWordCheck(inputWords[i], inputWords[i].word.length);
+      const movement = (this.fontSize + Math.abs(inputWords[i].ySpeed)) * speedFactor;
       if (this.direction === 'south') {
         if (inputWords[i].y > this.canvas.height) {
           inputWords[i].ySpeed = generateSpeed();
@@ -274,7 +277,7 @@ export class CoreEngine {
             this.canvas.height,
           );
         } else {
-          inputWords[i].y = inputWords[i].y + (this.fontSize + Math.abs(inputWords[i].ySpeed));
+          inputWords[i].y = inputWords[i].y + movement;
         }
       } else if (this.direction === 'north') {
         if (inputWords[i].y < 0 - this.canvas.height * 1.5) {
@@ -285,7 +288,7 @@ export class CoreEngine {
           );
           inputWords[i].fontSize = generateFontSize(this.fontSize);
         } else {
-          inputWords[i].y = inputWords[i].y - (this.fontSize + Math.abs(inputWords[i].ySpeed));
+          inputWords[i].y = inputWords[i].y - movement;
         }
       } else if (this.direction === 'east') {
         if (inputWords[i].x < 0 - this.canvas.width) {
@@ -296,7 +299,7 @@ export class CoreEngine {
           );
           inputWords[i].fontSize = generateFontSize(this.fontSize);
         } else {
-          inputWords[i].x = inputWords[i].x - (this.fontSize + Math.abs(inputWords[i].xSpeed));
+          inputWords[i].x = inputWords[i].x - movement;
         }
       } else if (this.direction === 'west') {
         if (inputWords[i].x > this.canvas.width) {
@@ -312,7 +315,7 @@ export class CoreEngine {
             this.canvas.height,
           );
         } else {
-          inputWords[i].x = inputWords[i].x + (this.fontSize + Math.abs(inputWords[i].xSpeed));
+          inputWords[i].x = inputWords[i].x + movement;
         }
       }
       this.ctx.font = inputWords[i].fontSize + "px 'Consolas', 'Lucida Console'";
@@ -334,11 +337,11 @@ export class CoreEngine {
     }
   }
 
-  drawAll4Directions(): void {
+  drawAll4Directions(speedFactor: number = 1): void {
     const directions = ['north', 'south', 'east', 'west'];
     directions.forEach((dir, i) => {
       this.direction = dir;
-      this.draw(this.all4DirectionsArray[i], true);
+      this.draw(this.all4DirectionsArray[i], true, speedFactor);
     });
   }
 
@@ -648,20 +651,35 @@ export class CoreEngine {
 
   pause(): void {
     if (this.animationOn) {
-      if (this.intervalValid) {
-        clearInterval(this.intervalValid);
+      if (this.requestId !== null) {
+        cancelAnimationFrame(this.requestId);
+        this.requestId = null;
       }
       this.animationOn = false;
     } else {
-      this.intervalValid = setInterval(() => {
-        if (this.squareAnimationOn) {
-          this.drawAlternative();
-        } else {
-          this.draw(this.words, !this.all4Directions);
-        }
-      }, this.intervalSpeed);
+      this.lastTime = performance.now();
       this.animationOn = true;
+      this.requestId = requestAnimationFrame(this.loop.bind(this));
     }
+  }
+
+  loop(timestamp: number): void {
+    if (!this.animationOn) {
+      return;
+    }
+
+    const deltaTime = timestamp - this.lastTime;
+    this.lastTime = timestamp;
+
+    const speedFactor = deltaTime / this.intervalSpeed;
+
+    if (this.squareAnimationOn) {
+      this.drawAlternative();
+    } else {
+      this.draw(this.words, !this.all4Directions, speedFactor);
+    }
+
+    this.requestId = requestAnimationFrame(this.loop.bind(this));
   }
 
   clearScreen(): void {
@@ -697,16 +715,6 @@ export class CoreEngine {
     } else {
       this.intervalSpeed *= 2;
     }
-    if (this.intervalValid) {
-      clearInterval(this.intervalValid);
-    }
-    this.intervalValid = setInterval(() => {
-      if (this.squareAnimationOn) {
-        this.drawAlternative();
-      } else {
-        this.draw(this.words, !this.all4Directions);
-      }
-    }, this.intervalSpeed);
   }
 
   controlFontSize(increase: boolean): void {
@@ -771,13 +779,8 @@ export class CoreEngine {
     this.squareAnimationOn = !original;
     this.resetWordsArray();
 
-    this.intervalValid = setInterval(() => {
-      if (original) {
-        this.draw(this.words, !this.all4Directions);
-      } else {
-        this.drawAlternative();
-      }
-    }, this.intervalSpeed);
+    this.lastTime = performance.now();
     this.animationOn = true;
+    this.requestId = requestAnimationFrame(this.loop.bind(this));
   }
 }
