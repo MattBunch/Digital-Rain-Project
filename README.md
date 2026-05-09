@@ -69,6 +69,6 @@ Same as Normal Mode except:
 
 ## Misc
 
-The core of this program was written while I was learning JS, mostly completed on 18/08/20 and 19/08/20. Then on April 29 2025, I started the process of rewriting and modernizng this program in Node.js with TypeScript, with the help of Gemini AI to expediate the process.
+The core of this program was written while I was learning JS, mostly completed on 18/08/20 and 19/08/20. Then on April 29 2026, I started the process of rewriting and modernizng this program in Node.js with TypeScript, with the help of Gemini AI to expediate the process.
 
 I had completed another Digital Rain animation program in Java previously, which serves as a prototype of this current program.
