@@ -10,7 +10,7 @@
 
 ## project structure
 
-Do **not** delete `src/app.js` so you can use it as a reference for how the functionality is supposed to work - (legacy file) - don't write unit tests for it either.
+Refer to docs/REFERENCE_REPO for project structure.
 
 ## linting, formatting
 
