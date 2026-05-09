@@ -49,23 +49,23 @@ Same as Normal Mode except:
 - P: Increase random square speed
 - ;: Decrease random square speed
 
-## Plan
-
-refer to docs/plan.md
-
 ## Possible extensions in further versions:
 
-- execute the plan in docs/plan.md
-- adapt values to work with any size monitor for consistent views no matter the screen size
-- bugs in main menu - colours mismatching, disco colours staying on
-- rename square boundry left side right side names switched - fix this naming inconsistency
-- Svelte component tests, e2e tests with cypress?
-
+### features
+- new menu option - about button - opens modal with links to my website, linkedin, etc. license, github link
 - Colour wheel selector.
 - Up and down keys work in menu.
 
-- more interesting dynamic menu - highlight effect where letters fall off the mouse/sides of buttons, canvas background showing the digital rain effect etc. be creative.
-- modal window for button presses instead of just "alert" built in browser functionality.
+### deployment
+- deployment, cicd pipeline, personal website.
+  - matt-bunch-dev.com - astro.js landing page, links (typical developer portfolio website, links to projects)
+  - matt-bunch-dev.com/digital-rain - this application is at this url
+
+### UI bugfixes, effects
+- remove commented out console logging from button & settings menu
+- slight component/screen shake on pressing button or input.
+- cool cyberpunk television transition effect when switching from "menu" to "digital rain canvas" view - very quick, 200ms - 400 ms max
+- adapt matrix string values to work with any size monitor for consistent views no matter the screen size
 
 ## Misc
 

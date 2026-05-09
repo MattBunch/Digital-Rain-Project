@@ -1,5 +1,11 @@
 <script lang="ts">
-  import { getRandomColor } from '$lib/utils/MathUtils';
+  import { getRandomColor, hexToRgb } from '$lib/utils/MathUtils';
+  import CyberButton from '$lib/components/CyberButton.svelte';
+  import CyberCheckbox from '$lib/components/CyberCheckbox.svelte';
+  import CyberSelect from '$lib/components/CyberSelect.svelte';
+  import CyberNumericInput from '$lib/components/CyberNumericInput.svelte';
+  import HelpModal from '$lib/components/HelpModal.svelte';
+  import { fallingLetters } from '$lib/utils/FallingLettersAction';
   import {
     colorMatrixGreen,
     colorRed,
@@ -31,12 +37,10 @@
   /* eslint-enable prefer-const */
 
   let menuInterval: ReturnType<typeof setInterval> | null = null;
-  const localUiColors = $state({
-    main: colorMatrixGreen,
-    random1: getRandomColor(),
-    random2: getRandomColor(),
-    random3: getRandomColor(),
-  });
+  const discoColors = $state(getRandomColors());
+  let cachedRandomColor = $state(getRandomColor());
+  let lastChosenColor = $state(chosenColor);
+  let isHelpOpen = $state(false);
 
   const colorMap: Record<string, string> = {
     green: colorMatrixGreen,
@@ -50,155 +54,247 @@
 
   const currentColor = $derived.by(() => {
     if (discoOn) {
-      return localUiColors.random1;
+      return discoColors[0] || colorMatrixGreen;
     }
     if (chosenColor === 'random') {
-      return localUiColors.main;
+      return cachedRandomColor || colorMatrixGreen;
     }
-    return colorMap[chosenColor] || colorMatrixGreen;
+    return colorMap[chosenColor] ?? colorMatrixGreen;
+  });
+
+  const currentColorRgb = $derived(hexToRgb(currentColor));
+
+  // Safe button colors with fallbacks
+  const startBtnColor = $derived(discoOn ? discoColors[1] || currentColor : currentColor);
+  const squareBtnColor = $derived(discoOn ? discoColors[2] || currentColor : currentColor);
+  const helpBtnColor = $derived(discoOn ? discoColors[3] || currentColor : currentColor);
+
+  $effect(() => {
+    if (chosenColor === 'random' && lastChosenColor !== 'random') {
+      cachedRandomColor = getRandomColor();
+    }
+    lastChosenColor = chosenColor;
   });
 
   $effect(() => {
-    // Generate new random color when switching to random mode OR when turning off disco
-    if (chosenColor === 'random' && !discoOn) {
-      localUiColors.main = getRandomColor();
+    if (discoOn) {
+      // console.log('[SettingsMenu] Disco Mode ON. Current colors:', $state.snapshot(discoColors));
+
+      const invalidColors = discoColors.filter(
+        (c) => !c || typeof c !== 'string' || !c.startsWith('#'),
+      );
+      if (invalidColors.length > 0) {
+        console.error('[SettingsMenu] CRITICAL: Invalid disco colors detected!', {
+          allColors: $state.snapshot(discoColors),
+          invalidCount: invalidColors.length,
+          invalidValues: invalidColors,
+        });
+      }
     }
   });
 
   $effect(() => {
     if (discoOn) {
       menuInterval = setInterval(() => {
-        localUiColors.random1 = getRandomColor();
-        localUiColors.random2 = getRandomColor();
-        localUiColors.random3 = getRandomColor();
+        // console.log('[SettingsMenu] Interval Tick - updating colors');
+        // Mutate existing array to avoid transient undefined states during reassignment
+        for (let i = 0; i < discoColors.length; i++) {
+          const newColor = getRandomColor();
+          if (!newColor || !newColor.startsWith('#')) {
+            console.error(`[SettingsMenu] getRandomColor() returned invalid color: "${newColor}"`);
+          }
+          discoColors[i] = newColor;
+        }
       }, 1000);
     } else {
       if (menuInterval) {
         clearInterval(menuInterval);
+        menuInterval = null;
       }
     }
     return () => {
       if (menuInterval) {
         clearInterval(menuInterval);
+        menuInterval = null;
       }
     };
   });
 
-  async function showHelp() {
-    const { helpText } = await import('$lib/constants/Assets');
-    alert(helpText);
+  function showHelp() {
+    isHelpOpen = true;
   }
 
-  const all4DirectionsLabel = $derived(`All 4 Directions:\n${all4Directions ? 'ON' : 'OFF'}`);
+  function getRandomColors(count = 5) {
+    return Array.from({ length: count }, () => getRandomColor());
+  }
+
+  function signalMorph(node: HTMLElement, { duration = 300 }) {
+    const isTest = typeof process !== 'undefined' && process.env.NODE_ENV === 'test';
+    const activeDuration = isTest ? 0 : duration;
+
+    return {
+      duration: activeDuration,
+      tick: (t: number) => {
+        // Create a "jitter" effect during the mid-transition
+        const jitter = t > 0.1 && t < 0.9 ? (Math.random() - 0.5) * 4 : 0;
+        const blur = (1 - t) * 2;
+        node.style.transform = `translateX(${jitter}px)`;
+        node.style.filter = `blur(${blur}px) brightness(${t < 0.5 ? 1.5 : 1})`;
+        node.style.opacity = `${t}`;
+
+        // Chromatic Aberration effect via text-shadow
+        if (t < 1) {
+          const shadowDist = (1 - t) * 5;
+          node.style.textShadow = ` ${shadowDist}px 0 rgba(255,0,0,0.7), -${shadowDist}px 0 rgba(0,255,255,0.7) `;
+        } else {
+          node.style.textShadow = 'none';
+          node.style.transform = 'none';
+          node.style.filter = 'none';
+        }
+      },
+    };
+  }
 </script>
 
-<div class="menu-container" style:color={currentColor}>
-  <h1 class="fade-in">DIGITAL RAIN</h1>
+<div
+  class="menu-container"
+  style:--theme-color={currentColor}
+  style:--theme-color-rgb={currentColorRgb}
+>
+  <div class="hud-frame">
+    <h1 class="fade-in">DIGITAL RAIN</h1>
 
-  <div class="menu-controls fade-in">
-    <div class="control-group">
-      <button
-        class="menu-button"
-        style:border-color={currentColor}
-        style:color={discoOn ? localUiColors.random2 : currentColor}
-        onclick={() => onStartNormal()}
-      >
-        START
-      </button>
+    <div class="menu-controls fade-in">
+      <div class="control-group">
+        <CyberButton color={startBtnColor} onclick={onStartNormal} variant="primary">
+          START
+        </CyberButton>
 
-      <button
-        class="menu-button"
-        style:border-color={currentColor}
-        style:color={discoOn ? localUiColors.random3 : currentColor}
-        onclick={() => onStartSquare()}
-      >
-        SQUARE
-      </button>
-    </div>
+        <CyberButton color={squareBtnColor} onclick={onStartSquare} variant="secondary">
+          SQUARE
+        </CyberButton>
+      </div>
 
-    <div class="control-group">
-      <button
-        class="menu-button all4-button"
-        style:border-color={currentColor}
-        style:background-color={all4Directions
-          ? discoOn
-            ? localUiColors.random1
-            : currentColor
-          : 'black'}
-        style:color={all4Directions ? 'black' : discoOn ? localUiColors.random2 : currentColor}
-        onclick={() => (all4Directions = !all4Directions)}
-      >
-        {all4DirectionsLabel}
-      </button>
+      <div class="control-group">
+        <CyberButton color={helpBtnColor} onclick={showHelp} variant="primary">HELP</CyberButton>
+      </div>
 
-      <button
-        class="menu-button"
-        style:border-color={currentColor}
-        style:color={discoOn ? localUiColors.random3 : currentColor}
-        onclick={showHelp}
-      >
-        HELP
-      </button>
-    </div>
+      <div class="settings-grid">
+        <div class="setting-item">
+          {#if discoOn}
+            <div
+              class="glitch-wrapper"
+              in:signalMorph={{ duration: 400 }}
+              out:signalMorph={{ duration: 200 }}
+            >
+              <div class="component-wrapper">
+                <CyberNumericInput
+                  id="frame-count"
+                  bind:value={frameCount}
+                  min={1}
+                  max={100}
+                  color={currentColor}
+                  label="REFRESH_RATE:"
+                />
+              </div>
+            </div>
+          {:else}
+            <div
+              class="glitch-wrapper"
+              in:signalMorph={{ duration: 400 }}
+              out:signalMorph={{ duration: 200 }}
+            >
+              <div class="component-wrapper">
+                <CyberSelect
+                  id="color-select"
+                  bind:value={chosenColor}
+                  color={currentColor}
+                  label="SYSTEM_COLOR:"
+                  options={['green', 'red', 'yellow', 'blue', 'orange', 'pink', 'cyan', 'random']}
+                />
+              </div>
+            </div>
+          {/if}
+        </div>
 
-    <div class="settings-grid">
-      <label id="colorsLabel" style:display={discoOn ? 'none' : 'inline-block'}>
-        Colors:
-        <select
-          bind:value={chosenColor}
-          style:border-color={currentColor}
-          style:color={currentColor}
+        <div
+          class="setting-item"
+          use:fallingLetters={{ value: all4Directions, color: currentColor }}
         >
-          <option value="green">Green</option>
-          <option value="red">Red</option>
-          <option value="yellow">Yellow</option>
-          <option value="blue">Blue</option>
-          <option value="orange">Orange</option>
-          <option value="pink">Pink</option>
-          <option value="cyan">Cyan</option>
-          <option value="random">Random</option>
-        </select>
-      </label>
-
-      {#if discoOn}
-        <label class="fade-in">
-          Frame Count:
-          <input
-            type="number"
-            bind:value={frameCount}
-            min="1"
-            max="100"
-            style:border-color={currentColor}
-            style:color={currentColor}
-            style:background-color={localUiColors.random2}
+          <CyberCheckbox
+            id="all4-toggle"
+            bind:checked={all4Directions}
+            color={currentColor}
+            label="ALL_4_DIRECTIONS:"
           />
-        </label>
-      {/if}
+        </div>
 
-      <label>
-        Disco:
-        <input type="checkbox" bind:checked={discoOn} />
-      </label>
+        <div class="setting-item" use:fallingLetters={{ value: discoOn, color: currentColor }}>
+          <CyberCheckbox
+            id="disco-toggle"
+            bind:checked={discoOn}
+            color={currentColor}
+            label="DISCO_MODE:"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
+<HelpModal isOpen={isHelpOpen} onClose={() => (isHelpOpen = false)} color={currentColor} />
+
 <style>
   .menu-container {
     text-align: center;
-    background-color: black;
+    background-color: transparent;
     height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-family: 'Consolas', 'Lucida Console', monospace;
+    color: var(--theme-color);
+  }
+
+  .hud-frame {
+    padding: 3rem;
+    border: 1px solid rgba(var(--theme-color-rgb), 0.3);
+    background: rgba(0, 0, 0, 0.8);
+    position: relative;
+    backdrop-filter: blur(5px);
+  }
+
+  .hud-frame::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    width: 20px;
+    height: 20px;
+    border-top: 2px solid var(--theme-color);
+    border-left: 2px solid var(--theme-color);
+  }
+
+  .hud-frame::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    right: -5px;
+    width: 20px;
+    height: 20px;
+    border-bottom: 2px solid var(--theme-color);
+    border-right: 2px solid var(--theme-color);
   }
 
   h1 {
+    font-family: var(--font-title);
     font-size: 5rem;
     margin-bottom: 2rem;
     letter-spacing: 0.5rem;
+    text-shadow:
+      2px 0 #ff003c,
+      -2px 0 #00e5ff,
+      0 0 10px var(--theme-color);
   }
 
   .menu-controls {
@@ -209,40 +305,49 @@
 
   .control-group {
     display: flex;
-    gap: 1rem;
+    gap: 1.5rem;
     justify-content: center;
   }
 
-  .menu-button {
-    background: black;
-    border: 1px solid;
-    padding: 10px 20px;
-    font-size: 1.2rem;
-    cursor: pointer;
-    min-width: 150px;
-    transition: all 0.2s;
-    font-family: inherit;
-    white-space: pre-wrap;
-  }
-
-  .menu-button:hover {
-    filter: brightness(1.2);
-  }
-
   .settings-grid {
-    margin-top: 1rem;
+    margin-top: 2rem;
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    align-items: center;
+    align-items: flex-end;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
   }
 
-  select,
-  input[type='number'] {
-    background: black;
-    border: 1px solid;
-    padding: 5px;
-    font-family: inherit;
+  .setting-item {
+    display: grid;
+    grid-template-areas: 'stack';
+    align-items: center;
+    min-height: 80px;
+    justify-content: flex-end;
+  }
+
+  .setting-item:nth-child(n + 2) {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-height: 70px;
+    justify-content: flex-end;
+  }
+
+  .glitch-wrapper {
+    grid-area: stack;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    position: relative;
+  }
+
+  .component-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
   }
 
   .fade-in {
@@ -258,7 +363,8 @@
     }
   }
 
-  .all4-button {
-    line-height: 1.2;
+  :global(.active) {
+    background: var(--theme-color) !important;
+    color: black !important;
   }
 </style>
