@@ -180,6 +180,14 @@
 <canvas
   bind:this={canvas}
   onclick={onReturn}
+  onkeydown={(e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      onReturn();
+    }
+  }}
+  role="button"
+  tabindex="0"
+  aria-label="Return to settings"
   style:display="block"
   style:background="black"
   style:cursor="pointer"

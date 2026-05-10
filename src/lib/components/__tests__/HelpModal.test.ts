@@ -28,6 +28,7 @@ describe('HelpModal', () => {
     const onClose = vi.fn();
     render(HelpModal, { props: { isOpen: true, onClose } });
 
+    // Backdrop has role="button" but is not focusable (tabindex="-1")
     const backdrop = screen.getByLabelText('Close modal');
     await fireEvent.click(backdrop);
     expect(onClose).toHaveBeenCalled();
@@ -47,5 +48,23 @@ describe('HelpModal', () => {
     expect(screen.getAllByText('Arrows')[0]).toBeInTheDocument();
     expect(screen.getByText('Space')).toBeInTheDocument();
     expect(screen.getByText('Esc')).toBeInTheDocument();
+  });
+
+  it('traps focus when open', async () => {
+    const onClose = vi.fn();
+    render(HelpModal, { props: { isOpen: true, onClose } });
+
+    // Wait for the auto-focus effect
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    // DISMISS button should be focused (it's in the footer snippet)
+    const dismissBtn = screen.getAllByText('DISMISS')[0].closest('button');
+    expect(document.activeElement).toBe(dismissBtn);
+
+    // In HelpModal, the only focusable element is usually the DISMISS button
+    // unless there are links in the content. Let's verify Tab stays on it if it's the only one
+    // OR if there are others, it cycles.
+    await fireEvent.keyDown(window, { key: 'Tab' });
+    expect(document.activeElement).toBe(dismissBtn);
   });
 });

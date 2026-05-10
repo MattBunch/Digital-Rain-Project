@@ -5,26 +5,31 @@ This program displays a digital rain animation within the window browser, as see
 ## Local development setup
 
 Install:
+
 ```bash
 npm ci
 ```
 
 Run locally:
+
 ```bash
 npm run dev
 ```
 
 Build:
+
 ```bash
 npm run build
 ```
 
 Linting:
+
 ```bash
 npm run lint
 ```
 
 Tests:
+
 ```bash
 npm run test
 npm run test:e2e

@@ -137,7 +137,9 @@
   .cyber-input:hover,
   .cyber-input:focus {
     background: rgba(var(--theme-color-rgb), 0.15);
-    box-shadow: inset 0 0 10px rgba(var(--theme-color-rgb), 0.3);
+    box-shadow:
+      inset 0 0 10px rgba(var(--theme-color-rgb), 0.3),
+      0 0 10px var(--theme-color);
   }
 
   .step-btn {
@@ -150,9 +152,11 @@
     padding: 5px;
     transition: all 0.2s ease;
     user-select: none;
+    outline: none;
   }
 
-  .step-btn:hover {
+  .step-btn:hover,
+  .step-btn:focus-visible {
     text-shadow: 0 0 10px var(--theme-color);
     transform: scale(1.2);
     filter: brightness(1.2);

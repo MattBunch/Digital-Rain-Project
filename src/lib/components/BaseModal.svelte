@@ -12,13 +12,64 @@
 
   const { isOpen, onClose, title, color, children, footer }: Props = $props();
 
+  let modalElement = $state<HTMLElement | null>(null);
+  let previousActiveElement = $state<HTMLElement | null>(null);
+
   $effect(() => {
-    function handleKeydown(event: KeyboardEvent) {
-      if (event.key === 'Escape' && isOpen) {
-        onClose();
-      }
+    if (isOpen) {
+      previousActiveElement = document.activeElement as HTMLElement;
+      // Small delay to ensure the modal is rendered before focusing
+      setTimeout(() => {
+        const focusable = getFocusableElements();
+        if (focusable.length > 0) {
+          focusable[0].focus();
+        }
+      }, 50);
+    } else if (previousActiveElement) {
+      previousActiveElement.focus();
+    }
+  });
+
+  function getFocusableElements() {
+    if (!modalElement) {
+      return [];
+    }
+    return Array.from(
+      modalElement.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      ),
+    );
+  }
+
+  function handleKeydown(event: KeyboardEvent) {
+    if (event.key === 'Escape' && isOpen) {
+      onClose();
     }
 
+    if (event.key === 'Tab' && isOpen) {
+      const focusable = getFocusableElements();
+      if (focusable.length === 0) {
+        return;
+      }
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey) {
+        if (document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    }
+  }
+
+  $effect(() => {
     if (isOpen) {
       window.addEventListener('keydown', handleKeydown);
     }
@@ -33,12 +84,6 @@
       onClose();
     }
   }
-
-  function handleBackdropKeydown(event: KeyboardEvent) {
-    if (event.key === 'Enter' || event.key === ' ') {
-      onClose();
-    }
-  }
 </script>
 
 {#if isOpen}
@@ -46,19 +91,27 @@
     class="modal-backdrop"
     transition:fade={{ duration: 200 }}
     onclick={handleBackdropClick}
-    onkeydown={handleBackdropKeydown}
+    onkeydown={(e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        onClose();
+      }
+    }}
     role="button"
-    tabindex="0"
+    tabindex="-1"
     aria-label="Close modal"
   >
     <div
+      bind:this={modalElement}
       class="modal-container"
       transition:scale={{ duration: 300, start: 0.95 }}
       style:--theme-color={color}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
     >
       <div class="hud-frame">
         <header>
-          <h2>{title}</h2>
+          <h2 id="modal-title">{title}</h2>
           <div class="header-line"></div>
         </header>
 
