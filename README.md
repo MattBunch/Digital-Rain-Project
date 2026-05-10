@@ -88,7 +88,6 @@ Same as Normal Mode except:
 
 ### UI bugfixes, effects
 
-- about modal button effect - scramble effect.
 - remove commented out console logging from button & settings menu
 - slight component/screen shake on pressing button or input.
 - cool cyberpunk television transition effect when switching from "menu" to "digital rain canvas" view - very quick, 200ms - 400 ms max
