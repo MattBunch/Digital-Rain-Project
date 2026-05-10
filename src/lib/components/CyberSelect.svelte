@@ -20,25 +20,74 @@
   let isOpen = $state(false);
   let container = $state<HTMLDivElement | null>(null);
 
+  let focusedIndex = $state(-1);
+
   const colorRgb = $derived(hexToRgb(color));
 
   function toggle() {
     isOpen = !isOpen;
+    if (isOpen) {
+      focusedIndex = options.indexOf(value);
+    } else {
+      focusedIndex = -1;
+    }
   }
 
   function selectOption(opt: string) {
     value = opt;
     isOpen = false;
+    focusedIndex = -1;
   }
 
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Escape') {
-      isOpen = false;
+      if (isOpen) {
+        isOpen = false;
+        focusedIndex = -1;
+        event.stopPropagation();
+      }
     } else if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
-      toggle();
+      if (isOpen && focusedIndex >= 0) {
+        selectOption(options[focusedIndex]);
+      } else {
+        toggle();
+      }
+    } else if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      if (!isOpen) {
+        toggle();
+      } else {
+        focusedIndex = (focusedIndex + 1) % options.length;
+      }
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      if (!isOpen) {
+        toggle();
+      } else {
+        focusedIndex = (focusedIndex - 1 + options.length) % options.length;
+      }
+    } else if (event.key === 'Home') {
+      if (isOpen) {
+        event.preventDefault();
+        focusedIndex = 0;
+      }
+    } else if (event.key === 'End') {
+      if (isOpen) {
+        event.preventDefault();
+        focusedIndex = options.length - 1;
+      }
     }
   }
+
+  $effect(() => {
+    if (isOpen && focusedIndex >= 0) {
+      const optionElements = container?.querySelectorAll('.option-item');
+      if (optionElements && optionElements[focusedIndex]) {
+        (optionElements[focusedIndex] as HTMLElement).focus();
+      }
+    }
+  });
 
   onMount(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -93,13 +142,15 @@
       >
         <div class="scanline"></div>
         <div class="options-dropdown" role="listbox">
-          {#each options as opt (opt)}
+          {#each options as opt, i (opt)}
             <button
               type="button"
               class="option-item"
               class:active={value === opt}
+              class:focused={focusedIndex === i}
               role="option"
               aria-selected={value === opt}
+              tabindex="-1"
               onclick={() => selectOption(opt)}
               use:fallingLetters={{ value: value === opt, color }}
             >
@@ -330,10 +381,12 @@
     text-transform: uppercase;
     font-weight: bold;
     flex-shrink: 0;
+    outline: none;
   }
 
   .option-item:hover,
-  .option-item:focus-visible {
+  .option-item:focus-visible,
+  .option-item.focused {
     background: var(--theme-color);
     color: #000 !important;
     outline: none;

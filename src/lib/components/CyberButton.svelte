@@ -83,13 +83,17 @@
     z-index: -1;
   }
 
-  .cyber-button:hover {
+  .cyber-button:hover,
+  .cyber-button:focus-visible {
     color: black;
     text-shadow: none;
     box-shadow: 0 0 20px var(--glow-color);
+    outline: none;
+    transform: scale(1.05);
   }
 
-  .cyber-button:hover::before {
+  .cyber-button:hover::before,
+  .cyber-button:focus-visible::before {
     opacity: 1;
   }
 
@@ -113,7 +117,8 @@
     opacity: 0.8;
   }
 
-  .cyber-button:hover .glitch-layer {
+  .cyber-button:hover .glitch-layer,
+  .cyber-button:focus-visible .glitch-layer {
     display: flex;
     animation: glitch 0.3s infinite;
   }
