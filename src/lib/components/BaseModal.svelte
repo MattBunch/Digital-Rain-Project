@@ -91,6 +91,11 @@
     class="modal-backdrop"
     transition:fade={{ duration: 200 }}
     onclick={handleBackdropClick}
+    onkeydown={(e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        onClose();
+      }
+    }}
     role="button"
     tabindex="-1"
     aria-label="Close modal"
