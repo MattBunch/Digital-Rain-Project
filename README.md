@@ -2,9 +2,33 @@
 
 This program displays a digital rain animation within the window browser, as seen in the film The Matrix (1999) or Ghost in the Shell (1995). The user can customize the animation both through the menu and keyboard inputs.
 
-## Built With:
+## Local development setup
 
-- JavaScript, HTML, CSS
+Install:
+```bash
+npm ci
+```
+
+Run locally:
+```bash
+npm run dev
+```
+
+Build:
+```bash
+npm run build
+```
+
+Linting:
+```bash
+npm run lint
+```
+
+Tests:
+```bash
+npm run test
+npm run test:e2e
+```
 
 ## Keyboard inputs:
 

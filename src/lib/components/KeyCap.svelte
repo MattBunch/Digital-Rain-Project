@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { scramble } from '$lib/utils/ScrambleAction';
+  import { glitchClick } from '$lib/utils/GlitchAction';
+
   interface Props {
     children?: import('svelte').Snippet;
     color?: string;
@@ -7,7 +10,7 @@
   const { children, color = 'var(--theme-color, #00ff41)' }: Props = $props();
 </script>
 
-<span class="key-cap" style:--key-color={color}>
+<span class="key-cap" style:--key-color={color} use:scramble use:glitchClick={{ color }}>
   {@render children?.()}
 </span>
 
