@@ -5,6 +5,7 @@
   import CyberSelect from '$lib/components/CyberSelect.svelte';
   import CyberNumericInput from '$lib/components/CyberNumericInput.svelte';
   import HelpModal from '$lib/components/HelpModal.svelte';
+  import AboutModal from '$lib/components/AboutModal.svelte';
   import { fallingLetters } from '$lib/utils/FallingLettersAction';
   import {
     colorMatrixGreen,
@@ -41,6 +42,7 @@
   let cachedRandomColor = $state(getRandomColor());
   let lastChosenColor = $state(chosenColor);
   let isHelpOpen = $state(false);
+  let isAboutOpen = $state(false);
 
   const colorMap: Record<string, string> = {
     green: colorMatrixGreen,
@@ -68,6 +70,7 @@
   const startBtnColor = $derived(discoOn ? discoColors[1] || currentColor : currentColor);
   const squareBtnColor = $derived(discoOn ? discoColors[2] || currentColor : currentColor);
   const helpBtnColor = $derived(discoOn ? discoColors[3] || currentColor : currentColor);
+  const aboutBtnColor = $derived(discoOn ? discoColors[4] || currentColor : currentColor);
 
   $effect(() => {
     if (chosenColor === 'random' && lastChosenColor !== 'random') {
@@ -119,10 +122,6 @@
       }
     };
   });
-
-  function showHelp() {
-    isHelpOpen = true;
-  }
 
   function getRandomColors(count = 5) {
     return Array.from({ length: count }, () => getRandomColor());
@@ -176,7 +175,12 @@
       </div>
 
       <div class="control-group">
-        <CyberButton color={helpBtnColor} onclick={showHelp} variant="primary">HELP</CyberButton>
+        <CyberButton color={helpBtnColor} onclick={() => (isHelpOpen = true)} variant="primary">
+          HELP
+        </CyberButton>
+        <CyberButton color={aboutBtnColor} onclick={() => (isAboutOpen = true)} variant="secondary">
+          ABOUT
+        </CyberButton>
       </div>
 
       <div class="settings-grid">
@@ -243,6 +247,7 @@
 </div>
 
 <HelpModal isOpen={isHelpOpen} onClose={() => (isHelpOpen = false)} color={currentColor} />
+<AboutModal isOpen={isAboutOpen} onClose={() => (isAboutOpen = false)} color={currentColor} />
 
 <style>
   .menu-container {

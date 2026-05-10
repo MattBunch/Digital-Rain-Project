@@ -6,14 +6,14 @@ A Matrix-style digital rain animation for the browser, originally written in van
 
 ## Tech Stack
 
-| Tool | Purpose |
-|---|---|
-| Svelte 5 (Runes mode) | UI framework |
-| TypeScript 6 | Type safety |
-| Vite 8 | Build tool & HMR |
-| Vitest 4 | Unit testing |
-| Playwright | E2E testing |
-| ESLint + Prettier | Linting & formatting |
+| Tool                  | Purpose              |
+| --------------------- | -------------------- |
+| Svelte 5 (Runes mode) | UI framework         |
+| TypeScript 6          | Type safety          |
+| Vite 8                | Build tool & HMR     |
+| Vitest 4              | Unit testing         |
+| Playwright            | E2E testing          |
+| ESLint + Prettier     | Linting & formatting |
 
 ---
 
@@ -104,6 +104,7 @@ CoreEngine.run()
 ### Canvas Mirroring (Important Gotcha)
 
 The canvas is horizontally mirrored using:
+
 ```ts
 ctx.translate(canvas.width, 0);
 ctx.scale(-1, 1);
@@ -120,6 +121,7 @@ This means **visual left = positive X** and **visual right = negative X**. The `
 The central state machine and draw coordinator.
 
 **Key properties:**
+
 - `words: MatrixString[]` — active strings for current direction
 - `all4DirectionsArray: MatrixString[][]` — [north, south, east, west] arrays
 - `direction: string` — `'north' | 'south' | 'east' | 'west'`
@@ -128,6 +130,7 @@ The central state machine and draw coordinator.
 - `colorChoiceArray: string[][]` — indexed color arrays (0=green … 7=random)
 
 **Key methods:**
+
 - `setContext(canvas, ctx)` — wires up the canvas after mount
 - `run(original)` — starts RAF loop; `original=true` → normal mode, `false` → square mode
 - `draw(inputWords, passThroughToDraw, speedFactor)` — main draw call
@@ -144,6 +147,7 @@ Represents one falling string of characters.
 **Key properties:** `word, x, y, xSpeed, ySpeed, fontSize, XYCoordinates`
 
 **Key methods:**
+
 - `show(ctx, colorArray, config, discoCallback)` — normal mode render
 - `showAlternative(ctx, colorArray, config, squareConfig)` — square mode render
 - `setColors(ctx, i, colorArray, direction)` — applies color gradient (white tip → full color)
@@ -154,31 +158,33 @@ Represents one falling string of characters.
 ## Utility Functions
 
 ### `MathUtils.ts`
-| Function | Description |
-|---|---|
-| `generateRandomNumber(min, max)` | Uniform random float in range |
-| `onePercentChance()` | Returns true ~1% of the time |
-| `twentyfivePercentChance()` | Returns true ~25% of the time |
-| `generateWord(size)` | Random string of `size` chars from alphabet |
-| `getRandomChar()` | Single random char from alphabet |
-| `generateFontSize(base)` | `base ± 5`, floored |
-| `generateSpeed()` | Random float `0.001–9.999` |
-| `generateWordSizeRand(min, max)` | Floored random int in range |
-| `getRandomColor()` | Random `#RRGGBB` hex string |
-| `generateRandomColorArray()` | Array of 3 random hex colors |
-| `hexToRgb(hex)` | Converts `#RRGGBB` → `"r, g, b"` string (for CSS vars) |
-| `doubleInt(n)` | `n * 2` |
+
+| Function                         | Description                                            |
+| -------------------------------- | ------------------------------------------------------ |
+| `generateRandomNumber(min, max)` | Uniform random float in range                          |
+| `onePercentChance()`             | Returns true ~1% of the time                           |
+| `twentyfivePercentChance()`      | Returns true ~25% of the time                          |
+| `generateWord(size)`             | Random string of `size` chars from alphabet            |
+| `getRandomChar()`                | Single random char from alphabet                       |
+| `generateFontSize(base)`         | `base ± 5`, floored                                    |
+| `generateSpeed()`                | Random float `0.001–9.999`                             |
+| `generateWordSizeRand(min, max)` | Floored random int in range                            |
+| `getRandomColor()`               | Random `#RRGGBB` hex string                            |
+| `generateRandomColorArray()`     | Array of 3 random hex colors                           |
+| `hexToRgb(hex)`                  | Converts `#RRGGBB` → `"r, g, b"` string (for CSS vars) |
+| `doubleInt(n)`                   | `n * 2`                                                |
 
 ### `CoordinateUtils.ts`
-| Function | Description |
-|---|---|
-| `canvasSetup(w, h, canvas, ctx, fontSize)` | Sets canvas dimensions, mirrors canvas, returns `{columns, rows}` |
-| `generateYSouth(wordLen, fontSize, height)` | Starting Y above viewport (for southward strings) |
-| `generateYNorth(height)` | Starting Y below viewport (for northward strings) |
-| `generateXEast(width, height)` | Starting X right of viewport |
-| `generateXWest(wordLen, fontSize, width, height)` | Starting X left of viewport |
-| `isCanvasLarge(height)` | `height > 1000` |
-| `calculateAverageStartingPosition(coords, direction)` | Debug/utility: average X or Y of coord array |
+
+| Function                                              | Description                                                       |
+| ----------------------------------------------------- | ----------------------------------------------------------------- |
+| `canvasSetup(w, h, canvas, ctx, fontSize)`            | Sets canvas dimensions, mirrors canvas, returns `{columns, rows}` |
+| `generateYSouth(wordLen, fontSize, height)`           | Starting Y above viewport (for southward strings)                 |
+| `generateYNorth(height)`                              | Starting Y below viewport (for northward strings)                 |
+| `generateXEast(width, height)`                        | Starting X right of viewport                                      |
+| `generateXWest(wordLen, fontSize, width, height)`     | Starting X left of viewport                                       |
+| `isCanvasLarge(height)`                               | `height > 1000`                                                   |
+| `calculateAverageStartingPosition(coords, direction)` | Debug/utility: average X or Y of coord array                      |
 
 ---
 
@@ -203,11 +209,13 @@ colorChoiceArray index:
 ## Animation Modes
 
 ### Normal Mode (`original = true`)
+
 - Strings fall/rise/travel in one direction
 - Direction: `north | south | east | west` or all 4 simultaneously
 - Strings reset to off-screen when they leave the viewport
 
 ### Square Mode (`original = false`)
+
 - Same strings but constrained to fill the screen
 - A white square (bounding box `x1,y1 → x2,y2`) is drawn
 - Strings inside the box render white; outside render in chosen color
@@ -218,28 +226,30 @@ colorChoiceArray index:
 ## Keyboard Controls
 
 ### Normal Mode
-| Key | Action |
-|---|---|
-| Arrow keys | Change direction |
-| Space | Pause |
-| C | Clear (reset string positions) |
-| D | Toggle disco mode |
-| W / S | Increase / decrease font size |
-| Q / A | Increase / decrease string length |
-| R | Toggle rapid word change |
-| M | Switch between Normal and Square mode |
-| I | Toggle all 4 directions simultaneously |
-| O | Toggle background fade |
-| PageUp / PageDown | Speed up / slow down |
-| 1–8 | Change color (green/red/yellow/blue/orange/pink/cyan/random) |
-| Escape | Return to menu |
+
+| Key               | Action                                                       |
+| ----------------- | ------------------------------------------------------------ |
+| Arrow keys        | Change direction                                             |
+| Space             | Pause                                                        |
+| C                 | Clear (reset string positions)                               |
+| D                 | Toggle disco mode                                            |
+| W / S             | Increase / decrease font size                                |
+| Q / A             | Increase / decrease string length                            |
+| R                 | Toggle rapid word change                                     |
+| M                 | Switch between Normal and Square mode                        |
+| I                 | Toggle all 4 directions simultaneously                       |
+| O                 | Toggle background fade                                       |
+| PageUp / PageDown | Speed up / slow down                                         |
+| 1–8               | Change color (green/red/yellow/blue/orange/pink/cyan/random) |
+| Escape            | Return to menu                                               |
 
 ### Square Mode (additions / overrides)
-| Key | Action |
-|---|---|
-| Arrow keys | Move the square |
-| G | Toggle fixed word length |
-| P / ; | Increase / decrease random square speed |
+
+| Key        | Action                                  |
+| ---------- | --------------------------------------- |
+| Arrow keys | Move the square                         |
+| G          | Toggle fixed word length                |
+| P / ;      | Increase / decrease random square speed |
 
 ---
 
@@ -253,6 +263,7 @@ npm run test:e2e:ui   # Playwright with interactive UI
 ```
 
 **Unit test targets (100% coverage goal):**
+
 - `MathUtils.ts` — all pure math functions
 - `CoordinateUtils.ts` — all coordinate generators
 - `CoreEngine.ts` — animation lifecycle, color logic, square movement
@@ -285,7 +296,7 @@ npm run format     # Prettier write-in-place
 ## Known Quirks & Notes
 
 - **`app.js`** is kept as a legacy reference. Do not write tests for it or import from it.
-- **`getMiddleLevel`** in `CoordinateUtils.ts` preserves a quirk from the original JS: it indexes an array using the *value* of the middle element (works because the array contains sequential integers). This is intentional for bug-compatibility.
+- **`getMiddleLevel`** in `CoordinateUtils.ts` preserves a quirk from the original JS: it indexes an array using the _value_ of the middle element (works because the array contains sequential integers). This is intentional for bug-compatibility.
 - **`src/lib/constants/matrix.ts`** duplicates some content from `Assets.ts`. `Assets.ts` is the canonical source used throughout the app.
 - The `ScrambleAction` and `FallingLettersAction` are cosmetic Svelte actions and have no effect on animation logic.
 - Google Fonts (Rubik Glitch Pop, Orbitron, Kode Mono) are loaded via `index.html` — no local font files.
