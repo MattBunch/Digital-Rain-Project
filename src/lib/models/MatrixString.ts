@@ -100,8 +100,6 @@ export class MatrixString {
       }
 
       ctx.fillText(letter, xCoordinate, yCoordinate);
-
-      this.XYCoordinates = this.generateXYCoordinates();
     }
   }
 
@@ -134,8 +132,6 @@ export class MatrixString {
       this.drawSquare(ctx, xCoordinate, yCoordinate, inputColorArray, config, squareConfig);
 
       ctx.fillText(letter, xCoordinate, yCoordinate);
-
-      this.XYCoordinates = this.generateXYCoordinates();
     }
   }
 

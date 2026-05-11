@@ -83,7 +83,6 @@ Same as Normal Mode except:
 ### features
 
 - Colour wheel selector.
-- Up and down keys work in menu.
 
 ### deployment
 
@@ -93,6 +92,7 @@ Same as Normal Mode except:
 
 ### UI bugfixes, effects
 
+- disco effect on menu -> needs to show in the background matrix canvas
 - remove commented out console logging from button & settings menu
 - slight component/screen shake on pressing button or input.
 - cool cyberpunk television transition effect when switching from "menu" to "digital rain canvas" view - very quick, 200ms - 400 ms max

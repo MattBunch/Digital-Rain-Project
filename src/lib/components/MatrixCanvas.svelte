@@ -155,12 +155,7 @@
 
       return () => {
         window.removeEventListener('resize', handleResize);
-        if (engine.intervalValid) {
-          clearInterval(engine.intervalValid);
-        }
-        if (engine.menuInterval) {
-          clearInterval(engine.menuInterval);
-        }
+        engine.stop();
       };
     }
 

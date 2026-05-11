@@ -36,12 +36,7 @@
   }
 
   function handleReturnToMenu() {
-    if (engine.intervalValid) {
-      clearInterval(engine.intervalValid);
-    }
-    if (engine.menuInterval) {
-      clearInterval(engine.menuInterval);
-    }
+    engine.stop();
 
     if (engine.ctx && engine.canvas) {
       engine.ctx.fillStyle = '#000000';

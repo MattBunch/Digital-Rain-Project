@@ -1,5 +1,6 @@
 // src/engine/CoreEngine.ts
 import { MatrixString, IMatrixStringConfig, ISquareConfig } from '../models/MatrixString.ts';
+import { Direction } from '../types/index.ts';
 import {
   generateWord,
   generateWordSizeRand,
@@ -31,11 +32,12 @@ import {
 export class CoreEngine {
   words: MatrixString[];
   all4DirectionsArray: MatrixString[][];
-  direction: string;
+  direction: Direction;
   discoOn: boolean;
   chosenColor: number;
   requestId: number | null;
   lastTime: number;
+  intervalValid: ReturnType<typeof setInterval> | null;
   menuInterval: ReturnType<typeof setInterval> | null;
   animationOn: boolean;
   discoFrameCounter: number;
@@ -75,6 +77,7 @@ export class CoreEngine {
   colorChoiceArray: string[][];
   canvas?: HTMLCanvasElement;
   ctx?: CanvasRenderingContext2D;
+  private currentFont: string = '';
 
   constructor() {
     this.words = [];
@@ -84,12 +87,14 @@ export class CoreEngine {
     this.chosenColor = 0;
     this.requestId = null;
     this.lastTime = 0;
+    this.intervalValid = null;
     this.menuInterval = null;
     this.animationOn = false;
     this.discoFrameCounter = 0;
     this.discoFrameCounterTurnoverPoint = 10;
     this.savedColor = '#00ff41';
     this.selectColor = '#00ff41';
+    this.currentFont = '';
     this.intervalSpeed = 50;
     this.defaultFontSize = 20;
     this.fontSize = 20;
@@ -247,7 +252,13 @@ export class CoreEngine {
       this.drawAll4Directions(speedFactor);
       return;
     }
-    this.ctx.font = this.fontSize + "px 'Consolas', 'Lucida Console'";
+
+    const mainFont = this.fontSize + "px 'Consolas', 'Lucida Console'";
+    if (this.currentFont !== mainFont) {
+      this.ctx.font = mainFont;
+      this.currentFont = mainFont;
+    }
+
     const normalDrawBackground = this.drawBackgroundOn && !this.all4Directions;
     let all4DirectionsDrawBackground = false;
     if (this.all4Directions && this.drawBackgroundOn) {
@@ -318,7 +329,13 @@ export class CoreEngine {
           inputWords[i].x = inputWords[i].x + movement;
         }
       }
-      this.ctx.font = inputWords[i].fontSize + "px 'Consolas', 'Lucida Console'";
+
+      const wordFont = inputWords[i].fontSize + "px 'Consolas', 'Lucida Console'";
+      if (this.currentFont !== wordFont) {
+        this.ctx.font = wordFont;
+        this.currentFont = wordFont;
+      }
+
       const config: IMatrixStringConfig = {
         rapidWordChange: this.rapidWordChange,
         discoOn: this.discoOn,
@@ -338,7 +355,7 @@ export class CoreEngine {
   }
 
   drawAll4Directions(speedFactor: number = 1): void {
-    const directions = ['north', 'south', 'east', 'west'];
+    const directions: Direction[] = ['north', 'south', 'east', 'west'];
     directions.forEach((dir, i) => {
       this.direction = dir;
       this.draw(this.all4DirectionsArray[i], true, speedFactor);
@@ -386,7 +403,12 @@ export class CoreEngine {
       this.drawOpaqueRect();
     }
     this.ctx.fillStyle = colorWhite;
-    this.ctx.font = this.alternativeFontSize + 'px Arial';
+
+    const altFont = this.alternativeFontSize + 'px Arial';
+    if (this.currentFont !== altFont) {
+      this.ctx.font = altFont;
+      this.currentFont = altFont;
+    }
 
     if (this.squareCounter > this.squareCounterTurnoverPoint && this.rapidSquareOn) {
       this.squareCounter = 0;
@@ -775,7 +797,26 @@ export class CoreEngine {
     }
   }
 
+  stop(): void {
+    if (this.requestId !== null) {
+      cancelAnimationFrame(this.requestId);
+      this.requestId = null;
+    }
+    if (this.intervalValid) {
+      clearInterval(this.intervalValid);
+      this.intervalValid = null;
+    }
+    if (this.menuInterval) {
+      clearInterval(this.menuInterval);
+      this.menuInterval = null;
+    }
+    this.animationOn = false;
+  }
+
   run(original: boolean): void {
+    if (this.requestId !== null) {
+      cancelAnimationFrame(this.requestId);
+    }
     this.squareAnimationOn = !original;
     this.resetWordsArray();
 
