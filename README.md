@@ -82,6 +82,7 @@ Same as Normal Mode except:
 
 ### features
 
+- see docs/project_feature_ideas_and_improvements.md
 - Colour wheel selector.
 
 ### deployment
