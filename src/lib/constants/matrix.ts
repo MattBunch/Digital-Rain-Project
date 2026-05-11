@@ -1,4 +1,4 @@
-// src/constants/matrix.js
+// src/constants/matrix.ts
 
 export const ALPHABET =
   'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ｦｧｨｩｪｫｬｭｮｯｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ';
@@ -22,3 +22,8 @@ export const DEFAULT_CONFIG = {
   STRING_SIZE_MIN: 20,
   STRING_SIZE_MAX: 48,
 };
+
+export const DIRECTIONS = {
+  VERTICAL: 'vertical',
+  HORIZONTAL: 'horizontal',
+} as const;

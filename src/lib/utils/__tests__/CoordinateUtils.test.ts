@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import * as CoordinateUtils from '../CoordinateUtils';
-import { vertical, horizontal } from '../../constants/Assets';
+import { DIRECTIONS } from '../../constants/matrix';
 
 describe('CoordinateUtils', () => {
   describe('isCanvasLarge', () => {
@@ -96,30 +96,16 @@ describe('CoordinateUtils', () => {
     ];
 
     it('should calculate average Y for vertical direction', () => {
-      expect(CoordinateUtils.calculateAverageStartingPosition(coords, vertical)).toBe(30);
+      expect(CoordinateUtils.calculateAverageStartingPosition(coords, DIRECTIONS.VERTICAL)).toBe(30);
     });
 
     it('should calculate average X for horizontal direction', () => {
-      expect(CoordinateUtils.calculateAverageStartingPosition(coords, horizontal)).toBe(20);
+      expect(CoordinateUtils.calculateAverageStartingPosition(coords, DIRECTIONS.HORIZONTAL)).toBe(20);
     });
 
     it('should return 0/NaN for unknown direction or empty array', () => {
-      expect(CoordinateUtils.calculateAverageStartingPosition([], vertical)).toBeNaN();
+      expect(CoordinateUtils.calculateAverageStartingPosition([], DIRECTIONS.VERTICAL)).toBeNaN();
       expect(CoordinateUtils.calculateAverageStartingPosition(coords, 'unknown')).toBe(0);
-    });
-  });
-
-  describe('getMiddleElementOfArray', () => {
-    it('should return the middle element', () => {
-      expect(CoordinateUtils.getMiddleElementOfArray([1, 2, 3])).toBe(2);
-      expect(CoordinateUtils.getMiddleElementOfArray([1, 2, 3, 4])).toBe(3);
-    });
-  });
-
-  describe('getMiddleLevel', () => {
-    it('should return element at index of middle element (original logic)', () => {
-      const arr = [2, 0, 1];
-      expect(CoordinateUtils.getMiddleLevel(arr)).toBe(2);
     });
   });
 

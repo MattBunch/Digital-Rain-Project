@@ -1,5 +1,5 @@
 // src/utils/MathUtils.ts
-import { alphabet } from '../constants/Assets.ts';
+import { ALPHABET } from '../constants/matrix.ts';
 
 export function getRandomColor(): string {
   const letters = '0123456789ABCDEF';
@@ -80,7 +80,7 @@ export function generateWord(wordSize: number): string {
 }
 
 export function getRandomChar(): string {
-  return alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+  return ALPHABET.charAt(Math.floor(Math.random() * ALPHABET.length));
 }
 
 export function generateWordChangeTurnoverNumber(): number {

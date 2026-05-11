@@ -1,4 +1,4 @@
-import { alphabet } from '$lib/constants/Assets';
+import { ALPHABET } from '$lib/constants/matrix';
 
 /**
  * Svelte action that spawns falling Matrix characters on state changes.
@@ -14,7 +14,7 @@ export function fallingLetters(node: HTMLElement, params: { value: unknown; colo
 
     for (let i = 0; i < count; i++) {
       const span = document.createElement('span');
-      span.textContent = alphabet[Math.floor(Math.random() * alphabet.length)];
+      span.textContent = ALPHABET[Math.floor(Math.random() * ALPHABET.length)];
       span.style.position = 'fixed';
       span.style.left = `${rect.left + Math.random() * rect.width}px`;
       span.style.top = `${rect.top + Math.random() * rect.height}px`;

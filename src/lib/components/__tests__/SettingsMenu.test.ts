@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
 import { describe, it, expect, vi } from 'vitest';
 import SettingsMenu from '../SettingsMenu.svelte';
-import * as Assets from '$lib/constants/Assets';
+import * as matrix from '$lib/constants/matrix';
 
 describe('SettingsMenu', () => {
   const defaultProps = {
@@ -75,15 +75,14 @@ describe('SettingsMenu', () => {
     const { container } = render(SettingsMenu, { props: defaultProps });
     const menuContainer = container.querySelector('.menu-container') as HTMLElement;
     const colorSelectTrigger = screen.getByLabelText(/SYSTEM_COLOR/i);
-
     const colors = [
-      { name: 'green', value: Assets.colorMatrixGreen },
-      { name: 'red', value: Assets.colorRed },
-      { name: 'yellow', value: Assets.colorYellow },
-      { name: 'blue', value: Assets.colorBlue },
-      { name: 'orange', value: Assets.colorOrange },
-      { name: 'pink', value: Assets.colorPink },
-      { name: 'cyan', value: Assets.colorCyan },
+      { name: 'green', value: matrix.COLORS.MATRIX_GREEN },
+      { name: 'red', value: matrix.COLORS.RED_VARIANTS[2] },
+      { name: 'yellow', value: matrix.COLORS.YELLOW_VARIANTS[2] },
+      { name: 'blue', value: matrix.COLORS.BLUE_VARIANTS[2] },
+      { name: 'orange', value: matrix.COLORS.ORANGE_VARIANTS[2] },
+      { name: 'pink', value: matrix.COLORS.PINK_VARIANTS[2] },
+      { name: 'cyan', value: matrix.COLORS.CYAN_VARIANTS[2] },
       { name: 'random', value: 'random' },
     ];
 

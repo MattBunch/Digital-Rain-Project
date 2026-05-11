@@ -1,6 +1,6 @@
 // src/utils/CoordinateUtils.ts
 import { generateRandomNumber, doubleInt } from './MathUtils.ts';
-import { vertical, horizontal } from '../constants/Assets.ts';
+import { DIRECTIONS } from '../constants/matrix.ts';
 import { ICoordinate } from '../types/index.ts';
 
 export function canvasSetup(
@@ -81,28 +81,12 @@ export function calculateAverageStartingPosition(
   let total = 0;
   let counter = 0;
   for (let i = 0; i < inputArray.length; i++) {
-    if (inputDirection === vertical) {
+    if (inputDirection === DIRECTIONS.VERTICAL) {
       total += inputArray[i].y;
-    } else if (inputDirection === horizontal) {
+    } else if (inputDirection === DIRECTIONS.HORIZONTAL) {
       total += inputArray[i].x;
     }
     counter++;
   }
   return total / counter;
-}
-
-export function getMiddleElementOfArray<T>(inputArray: T[]): T {
-  return inputArray[Math.round((inputArray.length - 1) / 2)];
-}
-
-export function getMiddleLevel<T>(inputArray: T[]): T {
-  // Original JS was: return inputArray[getMiddleElementOfArray(inputArray)];
-  // This looks like a bug in original code if inputArray is an array and getMiddleElementOfArray returns an element.
-  // However, I'll stick to the logic for now but typed.
-  // If getMiddleElementOfArray returns an index (number), it works. Let's check getMiddleElementOfArray implementation above.
-  // It returns an element. So inputArray[element] only works if element is a valid key.
-  // Actually, getMiddleElementOfArray returns T. If T is number, it might work as index.
-  // Let's look at the usage if possible. For now, I'll keep it as is to maintain behavior.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return (inputArray as any)[getMiddleElementOfArray(inputArray) as any];
 }
