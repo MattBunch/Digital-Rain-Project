@@ -37,9 +37,7 @@ npm run test:e2e
 
 ## Keyboard inputs:
 
-### Normal Mode:
-
-- Arrowkeys: Switch directions
+- Arrowkeys: Switch directions (Move box in Square Mode)
 - Spacebar: Pause
 - C: Clear screen
 - D: Toggle disco
@@ -47,36 +45,13 @@ npm run test:e2e
 - S: Decrease font size
 - Q: Increase string length
 - A: Decrease string length
-- T: Increase disco speed
-- G: Decrease disco speed
 - R: Toggle rapid word change
 - M: Switch between modes
-- U: Toggle rapid square change
-- I: Toggle all 4 directions at once
-- O: Toggle drawing background
 - PageUp: Speed up
 - PageDown: Slow down
-- 1: Change colour to green
-- 2: Change colour to red
-- 3: Change colour to yellow
-- 4: Change colour to blue
-- 5: Change colour to orange
-- 6: Change colour to pink
-- 7: Change colour to cyan
-- 8: Change colour to random
+- 1-7: Change colors
+- 8: Random color
 - Escape: Quit to menu
-
-### Move Square Mode:
-
-Same as Normal Mode except:
-
-- Arrowkeys: move box directions
-- Altering speed disabled
-- Altering string length disabled
-- Altering font size disabled.
-- G: Toggle fixed word length.
-- P: Increase random square speed
-- ;: Decrease random square speed
 
 ## Possible extensions in further versions:
 

@@ -49,7 +49,10 @@ export class ColorManager {
     return this.colorChoiceArray[this.chosenColor];
   }
 
-  handleDiscoFrame(discoFrameCounter: number, turnoverPoint: number): { color: string; reset: boolean } {
+  handleDiscoFrame(
+    discoFrameCounter: number,
+    turnoverPoint: number,
+  ): { color: string; reset: boolean } {
     if (discoFrameCounter > turnoverPoint) {
       const newColor = getRandomColor();
       this.savedColor = newColor;

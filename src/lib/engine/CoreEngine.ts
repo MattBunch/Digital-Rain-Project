@@ -17,7 +17,7 @@ import {
   generateXEast,
   generateXWest,
 } from '../utils/CoordinateUtils.ts';
-import { COLORS } from '../constants/matrix.ts';
+import { COLORS, ENGINE_CONSTANTS, DEFAULT_CONFIG } from '../constants/matrix.ts';
 import { ColorManager } from './ColorManager';
 import { SquareController } from './SquareController';
 import { AnimationManager } from './AnimationManager';
@@ -183,12 +183,16 @@ export class CoreEngine {
   }
 
   updateBoundaries(): void {
-    if (!this.canvas) return;
+    if (!this.canvas) {
+      return;
+    }
     this.squareController.updateBoundaries(this.canvas.width, this.canvas.height);
   }
 
   createMatrixArray(inputDirectionMatrix: string): void {
-    if (!this.canvas) return;
+    if (!this.canvas) {
+      return;
+    }
 
     const columns = Math.floor(this.canvas.width / this.fontSize);
     const rows = Math.floor(this.canvas.height / this.fontSize);
@@ -198,9 +202,9 @@ export class CoreEngine {
         const xInput = this.fontSize * i;
         const newWord = generateWord(generateWordSizeRand(this.stringSizeMin, this.stringSizeMax));
         const newFontSize = generateFontSize(this.fontSize);
-        let yInput,
-          xSpeedInput = null,
-          ySpeedInput;
+        let yInput: number;
+        let ySpeedInput: number;
+        const xSpeedInput = 0;
 
         if (inputDirectionMatrix === 'south') {
           yInput = generateYSouth(newWord.length, newFontSize, this.canvas.height);
@@ -226,13 +230,20 @@ export class CoreEngine {
         const yInput = this.fontSize * i;
         const newWord = generateWord(generateWordSizeRand(this.stringSizeMin, this.stringSizeMax));
         const newFontSize = generateFontSize(this.fontSize);
-        let xInput, xSpeedInput, ySpeedInput = null;
+        let xInput: number;
+        let xSpeedInput: number;
+        const ySpeedInput = 0;
 
         if (inputDirectionMatrix === 'east') {
           xInput = generateXEast(this.canvas.width, this.canvas.height);
           xSpeedInput = generateSpeed();
         } else {
-          xInput = generateXWest(newWord.length, newFontSize, this.canvas.width, this.canvas.height);
+          xInput = generateXWest(
+            newWord.length,
+            newFontSize,
+            this.canvas.width,
+            this.canvas.height,
+          );
           xSpeedInput = -Math.abs(generateSpeed());
         }
 
@@ -261,9 +272,13 @@ export class CoreEngine {
   }
 
   draw(inputWords: MatrixString[], passThroughToDraw: boolean, speedFactor: number = 1): void {
-    if (!this.ctx || !this.canvas) return;
+    if (!this.ctx || !this.canvas) {
+      return;
+    }
 
-    if (this.colorManager.discoOn) this.discoFrameCounter++;
+    if (this.colorManager.discoOn) {
+      this.discoFrameCounter++;
+    }
 
     if (this.all4Directions && !passThroughToDraw) {
       this.drawAll4Directions(speedFactor);
@@ -305,7 +320,9 @@ export class CoreEngine {
           this.discoFrameCounterTurnoverPoint,
         );
         ctx.fillStyle = color;
-        if (reset) this.discoFrameCounter = 0;
+        if (reset) {
+          this.discoFrameCounter = 0;
+        }
       };
 
       inputWords[i].show(this.ctx, this.colorManager.getCurrentColorArray(), config, discoCallback);
@@ -313,7 +330,9 @@ export class CoreEngine {
   }
 
   private shouldDrawBackgroundAll4Directions(): boolean {
-    if (!this.all4Directions || !this.drawBackgroundOn) return false;
+    if (!this.all4Directions || !this.drawBackgroundOn) {
+      return false;
+    }
     this.drawBackgroundAll4DirectionsCounter++;
     if (this.drawBackgroundAll4DirectionsCounter > this.drawBackgroundAll4DirectionsCounterMax) {
       this.drawBackgroundAll4DirectionsCounter = 0;
@@ -323,7 +342,9 @@ export class CoreEngine {
   }
 
   private moveWord(word: MatrixString, speedFactor: number): void {
-    if (!this.canvas) return;
+    if (!this.canvas) {
+      return;
+    }
     const movement = (this.fontSize + Math.abs(word.ySpeed || word.xSpeed)) * speedFactor;
 
     switch (this.direction) {
@@ -338,7 +359,7 @@ export class CoreEngine {
         }
         break;
       case 'north':
-        if (word.y < 0 - this.canvas.height * 1.5) {
+        if (word.y < 0 - this.canvas.height * ENGINE_CONSTANTS.Y_NORTH_BOUNDARY_MULTIPLIER) {
           word.y = generateYNorth(this.canvas.height);
           word.ySpeed = -Math.abs(generateSpeed());
           word.word = generateWord(generateWordSizeRand(this.stringSizeMin, this.stringSizeMax));
@@ -362,7 +383,12 @@ export class CoreEngine {
           word.xSpeed = -Math.abs(generateSpeed());
           word.word = generateWord(generateWordSizeRand(this.stringSizeMin, this.stringSizeMax));
           word.fontSize = generateFontSize(this.fontSize);
-          word.x = generateXWest(word.word.length, word.fontSize, this.canvas.width, this.canvas.height);
+          word.x = generateXWest(
+            word.word.length,
+            word.fontSize,
+            this.canvas.width,
+            this.canvas.height,
+          );
         } else {
           word.x += movement;
         }
@@ -388,22 +414,32 @@ export class CoreEngine {
   }
 
   drawOpaqueRect(): void {
-    if (!this.ctx || !this.canvas) return;
-    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+    if (!this.ctx || !this.canvas) {
+      return;
+    }
+    this.ctx.fillStyle = `rgba(0, 0, 0, ${ENGINE_CONSTANTS.OPACITY_NORMAL})`;
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
   drawSolidRect(): void {
-    if (!this.ctx || !this.canvas) return;
-    this.ctx.fillStyle = 'rgba(0, 0, 0, 1)';
+    if (!this.ctx || !this.canvas) {
+      return;
+    }
+    this.ctx.fillStyle = `rgba(0, 0, 0, ${ENGINE_CONSTANTS.OPACITY_SOLID})`;
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
   drawAlternative(): void {
-    if (!this.ctx) return;
-    if (this.colorManager.discoOn) this.discoFrameCounter++;
+    if (!this.ctx) {
+      return;
+    }
+    if (this.colorManager.discoOn) {
+      this.discoFrameCounter++;
+    }
     this.squareCounter++;
-    if (this.drawBackgroundOn) this.drawOpaqueRect();
+    if (this.drawBackgroundOn) {
+      this.drawOpaqueRect();
+    }
 
     this.ctx.fillStyle = COLORS.WHITE;
     const altFont = `${this.alternativeFontSize}px Arial`;
@@ -414,8 +450,9 @@ export class CoreEngine {
 
     if (this.squareCounter > this.squareCounterTurnoverPoint && this.rapidSquareOn) {
       this.squareCounter = 0;
-      if (this.canvas)
+      if (this.canvas) {
         this.squareController.generateRandomSquarePositions(this.canvas.width, this.canvas.height);
+      }
     }
 
     const newWordSize = this.getNewWordSize();
@@ -438,7 +475,9 @@ export class CoreEngine {
           this.discoFrameCounterTurnoverPoint,
         );
         ctx.fillStyle = color;
-        if (reset) this.discoFrameCounter = 0;
+        if (reset) {
+          this.discoFrameCounter = 0;
+        }
       },
       getRandomColor: getRandomColor,
     };
@@ -446,7 +485,12 @@ export class CoreEngine {
     this.words.forEach((arrayItem) => {
       arrayItem.fontSize = this.alternativeFontSize;
       this.updateWordWord(arrayItem, newWordSize);
-      arrayItem.showAlternative(this.ctx!, this.colorManager.getCurrentColorArray(), config, squareConfig);
+      arrayItem.showAlternative(
+        this.ctx!,
+        this.colorManager.getCurrentColorArray(),
+        config,
+        squareConfig,
+      );
     });
   }
 
@@ -467,21 +511,35 @@ export class CoreEngine {
   }
 
   getNewWordSize(): number {
-    if (!this.canvas) return 80;
-    let output = 80;
-    if (this.canvas.height > 2000 || this.alternativeFontSize < 14)
+    if (!this.canvas) {
+      return ENGINE_CONSTANTS.DEFAULT_WORD_SIZE_ALT;
+    }
+    let output = ENGINE_CONSTANTS.DEFAULT_WORD_SIZE_ALT;
+    if (
+      this.canvas.height > ENGINE_CONSTANTS.CANVAS_HEIGHT_THRESHOLD_ALT ||
+      this.alternativeFontSize < 14
+    ) {
       output = doubleInt(output) * 1.5;
-    if (this.alternativeFontSize > 40) output /= 2;
+    }
+    if (this.alternativeFontSize > ENGINE_CONSTANTS.FONT_SIZE_THRESHOLD_ALT) {
+      output /= 2;
+    }
     return output;
   }
 
   giveEachWordNewWord(): void {
-    if (!this.canvas) return;
+    if (!this.canvas) {
+      return;
+    }
     const newWordSize = this.getNewWordSize();
     this.words.forEach((arrayWord) => {
       if (this.hangingWords) {
         let hangingWordSize = generateWordSizeRandHanging(this.stringSizeMin, this.stringSizeMax);
-        if (this.canvas!.height < 1000) hangingWordSize = Math.round(hangingWordSize * 0.6);
+        if (this.canvas!.height < ENGINE_CONSTANTS.CANVAS_LARGE_THRESHOLD) {
+          hangingWordSize = Math.round(
+            hangingWordSize * ENGINE_CONSTANTS.HANGING_WORD_SIZE_MULTIPLIER,
+          );
+        }
         arrayWord.word = generateWord(hangingWordSize);
       } else {
         arrayWord.word = generateWord(newWordSize);
@@ -491,7 +549,9 @@ export class CoreEngine {
   }
 
   resetAllWordsYPositions(): void {
-    if (!this.canvas) return;
+    if (!this.canvas) {
+      return;
+    }
     this.words.forEach((word) => {
       switch (this.direction) {
         case 'south':
@@ -511,7 +571,10 @@ export class CoreEngine {
   }
 
   moveSquareLeft(forceMove: boolean): void {
-    this.squareController.moveLeft(this.alternativeFontSize, this.colorManager.discoOn || forceMove);
+    this.squareController.moveLeft(
+      this.alternativeFontSize,
+      this.colorManager.discoOn || forceMove,
+    );
   }
 
   moveSquareUp(forceMove: boolean): void {
@@ -519,11 +582,17 @@ export class CoreEngine {
   }
 
   moveSquareRight(forceMove: boolean): void {
-    this.squareController.moveRight(this.alternativeFontSize, this.colorManager.discoOn || forceMove);
+    this.squareController.moveRight(
+      this.alternativeFontSize,
+      this.colorManager.discoOn || forceMove,
+    );
   }
 
   moveSquareDown(forceMove: boolean): void {
-    this.squareController.moveDown(this.alternativeFontSize, this.colorManager.discoOn || forceMove, this.canvas?.height || 0);
+    this.squareController.moveDown(
+      this.alternativeFontSize,
+      this.colorManager.discoOn || forceMove,
+    );
   }
 
   returnAlternativeFadeCondition(
@@ -561,20 +630,26 @@ export class CoreEngine {
     const topCon2 = !(
       xCoordinate < x1 - alternativeFontSize || xCoordinate > x2 + alternativeFontSize
     );
-    if (direction === 'north') topCon1 = yCoordinate - 6 == yPos1;
+    if (direction === 'north') {
+      topCon1 = yCoordinate - ENGINE_CONSTANTS.ALT_FADE_OFFSET_NORTH == yPos1;
+    }
     const topCon = topCon1 && (topCon2 || yCon3);
     let bottomCon1 = yCoordinate == y2 + coordinateNum;
     const bottomCon2 = !(
       xCoordinate < x1 - alternativeFontSize || xCoordinate > x2 + alternativeFontSize
     );
-    if (direction === 'north') bottomCon1 = yCoordinate + 14 == y2 + coordinateNum;
+    if (direction === 'north') {
+      bottomCon1 =
+        yCoordinate + ENGINE_CONSTANTS.ALT_FADE_OFFSET_NORTH_BOTTOM == y2 + coordinateNum;
+    }
     const bottomCon = bottomCon1 && (bottomCon2 || yCon3);
     return rightCon || leftCon || topCon || bottomCon;
   }
 
   generateRandomSquarePositions(): void {
-    if (this.canvas)
+    if (this.canvas) {
       this.squareController.generateRandomSquarePositions(this.canvas.width, this.canvas.height);
+    }
   }
 
   matchColorToIndex(input: string): number {
@@ -594,11 +669,11 @@ export class CoreEngine {
     this.all4DirectionsArray = [];
     this.direction = 'south';
     this.discoFrameCounter = 0;
-    this.animationManager.intervalSpeed = 50;
-    this.fontSize = 20;
-    this.stringSizeMin = 20;
-    this.stringSizeMax = 48;
-    this.alternativeFontSize = 20;
+    this.animationManager.intervalSpeed = DEFAULT_CONFIG.SPEED;
+    this.fontSize = DEFAULT_CONFIG.FONT_SIZE;
+    this.stringSizeMin = DEFAULT_CONFIG.STRING_SIZE_MIN;
+    this.stringSizeMax = DEFAULT_CONFIG.STRING_SIZE_MAX;
+    this.alternativeFontSize = DEFAULT_CONFIG.FONT_SIZE;
   }
 
   pause(): void {
@@ -606,7 +681,9 @@ export class CoreEngine {
   }
 
   loop(timestamp: number): void {
-    if (!this.animationManager.animationOn) return;
+    if (!this.animationManager.animationOn) {
+      return;
+    }
 
     const deltaTime = this.animationManager.getDeltaTime(timestamp);
     const speedFactor = this.animationManager.getSpeedFactor(deltaTime);
@@ -621,7 +698,9 @@ export class CoreEngine {
   }
 
   clearScreen(): void {
-    if (!this.canvas) return;
+    if (!this.canvas) {
+      return;
+    }
     this.words.forEach((word) => {
       switch (this.direction) {
         case 'south':
@@ -654,7 +733,9 @@ export class CoreEngine {
   }
 
   controlFontSize(increase: boolean): void {
-    if (this.squareAnimationOn) return;
+    if (this.squareAnimationOn) {
+      return;
+    }
     const diff = increase ? 1 : -1;
     this.defaultFontSize += diff;
     this.alternativeFontSize += diff;
@@ -669,8 +750,11 @@ export class CoreEngine {
     this.stringSizeMin += diff;
     this.stringSizeMax += diff;
     this.words.forEach((word) => {
-      if (increase) word.increaseStringSize();
-      else word.decreaseStringSize();
+      if (increase) {
+        word.increaseStringSize();
+      } else {
+        word.decreaseStringSize();
+      }
     });
   }
 

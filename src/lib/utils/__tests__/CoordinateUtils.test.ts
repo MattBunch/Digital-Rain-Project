@@ -96,11 +96,15 @@ describe('CoordinateUtils', () => {
     ];
 
     it('should calculate average Y for vertical direction', () => {
-      expect(CoordinateUtils.calculateAverageStartingPosition(coords, DIRECTIONS.VERTICAL)).toBe(30);
+      expect(CoordinateUtils.calculateAverageStartingPosition(coords, DIRECTIONS.VERTICAL)).toBe(
+        30,
+      );
     });
 
     it('should calculate average X for horizontal direction', () => {
-      expect(CoordinateUtils.calculateAverageStartingPosition(coords, DIRECTIONS.HORIZONTAL)).toBe(20);
+      expect(CoordinateUtils.calculateAverageStartingPosition(coords, DIRECTIONS.HORIZONTAL)).toBe(
+        20,
+      );
     });
 
     it('should return 0/NaN for unknown direction or empty array', () => {

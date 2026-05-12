@@ -27,7 +27,9 @@
 
   // Sync state to engine
   $effect(() => {
-    if (!engine || !backgroundEngine) return;
+    if (!engine || !backgroundEngine) {
+      return;
+    }
 
     engine.discoOn = discoOn;
     engine.switchColor(chosenColor);
@@ -83,10 +85,8 @@
         onStartNormal={handleStartNormal}
         onStartSquare={handleStartSquare}
       />
-    {:else}
-      {#if engine}
-        <MatrixCanvas {engine} {mode} onReturn={handleReturnToMenu} bind:discoOn bind:chosenColor />
-      {/if}
+    {:else if engine}
+      <MatrixCanvas {engine} {mode} onReturn={handleReturnToMenu} bind:discoOn bind:chosenColor />
     {/if}
   </main>
 </CRTOverlay>

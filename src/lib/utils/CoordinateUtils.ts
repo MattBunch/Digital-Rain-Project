@@ -1,6 +1,6 @@
 // src/utils/CoordinateUtils.ts
 import { generateRandomNumber, doubleInt } from './MathUtils.ts';
-import { DIRECTIONS } from '../constants/matrix.ts';
+import { DIRECTIONS, ENGINE_CONSTANTS } from '../constants/matrix.ts';
 import { ICoordinate } from '../types/index.ts';
 
 export function canvasSetup(
@@ -31,15 +31,16 @@ export function generateStartingPointInput(
   inputMax: number,
   canvasHeight: number,
 ): number {
-  if (canvasHeight > 1000) {
-    inputMax = doubleInt(inputMax);
+  let adjustedMax = inputMax;
+  if (canvasHeight > ENGINE_CONSTANTS.CANVAS_LARGE_THRESHOLD) {
+    adjustedMax = doubleInt(inputMax);
   }
-  return generateRandomNumber(inputMin, inputMax);
+  return generateRandomNumber(inputMin, adjustedMax);
 }
 
 export function generateXEast(canvasWidth: number, canvasHeight: number): number {
   const minNum = canvasWidth;
-  const maxNum = canvasWidth + 1200;
+  const maxNum = canvasWidth + ENGINE_CONSTANTS.MAX_X_EAST_OFFSET;
   return generateStartingPointInput(minNum, maxNum, canvasHeight);
 }
 
@@ -49,14 +50,18 @@ export function generateXWest(
   canvasWidth: number,
   canvasHeight: number,
 ): number {
-  const minNum = 0 - (wordLength * inputFontSize + 20);
-  const maxNum = canvasWidth * -1 * 1.5;
+  const minNum = 0 - (wordLength * inputFontSize + ENGINE_CONSTANTS.X_WEST_OFFSET);
+  const maxNum = canvasWidth * -1 * ENGINE_CONSTANTS.X_WEST_MULTIPLIER;
   return generateStartingPointInput(minNum, maxNum, canvasHeight);
 }
 
 export function generateYNorth(canvasHeight: number): number {
-  const minNum = canvasHeight + 2;
-  const maxNum = Math.round(canvasHeight + canvasHeight * 2 + canvasHeight * 0.7021);
+  const minNum = canvasHeight + ENGINE_CONSTANTS.Y_NORTH_OFFSET;
+  const maxNum = Math.round(
+    canvasHeight +
+      canvasHeight * ENGINE_CONSTANTS.Y_NORTH_MULTIPLIER +
+      canvasHeight * ENGINE_CONSTANTS.Y_NORTH_MYSTERY_CONSTANT,
+  );
   return generateStartingPointInput(minNum, maxNum, canvasHeight);
 }
 
@@ -66,12 +71,12 @@ export function generateYSouth(
   canvasHeight: number,
 ): number {
   const minNum = 0 - wordLength * inputFontSize;
-  const maxNum = canvasHeight * -1 * 4;
+  const maxNum = canvasHeight * -1 * ENGINE_CONSTANTS.Y_SOUTH_MULTIPLIER;
   return generateStartingPointInput(minNum, maxNum, canvasHeight);
 }
 
 export function isCanvasLarge(canvasHeight: number): boolean {
-  return canvasHeight > 1000;
+  return canvasHeight > ENGINE_CONSTANTS.CANVAS_LARGE_THRESHOLD;
 }
 
 export function calculateAverageStartingPosition(
