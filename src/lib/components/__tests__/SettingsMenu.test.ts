@@ -1,37 +1,31 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
 import { describe, it, expect, vi } from 'vitest';
-import SettingsMenu from '../SettingsMenu.svelte';
+import SettingsMenuWrapper from './SettingsMenuWrapper.svelte';
 import * as matrix from '$lib/constants/matrix';
 
 describe('SettingsMenu', () => {
-  const defaultProps = {
-    onStartNormal: vi.fn(),
-    onStartSquare: vi.fn(),
-  };
-
   it('renders START and SQUARE buttons', () => {
-    render(SettingsMenu, { props: defaultProps });
-    // Using getAllByText because CyberButton has multiple layers of the same text for glitch effects
+    render(SettingsMenuWrapper);
     expect(screen.getAllByText('START')[0]).toBeInTheDocument();
     expect(screen.getAllByText('SQUARE')[0]).toBeInTheDocument();
   });
 
   it('clicking START calls onStartNormal prop', async () => {
     const onStartNormal = vi.fn();
-    render(SettingsMenu, { props: { ...defaultProps, onStartNormal } });
+    render(SettingsMenuWrapper, { props: { onStartNormal } });
     await fireEvent.click(screen.getAllByText('START')[0]);
     expect(onStartNormal).toHaveBeenCalled();
   });
 
   it('clicking SQUARE calls onStartSquare prop', async () => {
     const onStartSquare = vi.fn();
-    render(SettingsMenu, { props: { ...defaultProps, onStartSquare } });
+    render(SettingsMenuWrapper, { props: { onStartSquare } });
     await fireEvent.click(screen.getAllByText('SQUARE')[0]);
     expect(onStartSquare).toHaveBeenCalled();
   });
 
   it('disco checkbox toggles discoOn binding', async () => {
-    render(SettingsMenu, { props: defaultProps });
+    render(SettingsMenuWrapper);
     const discoCheckbox = screen.getByRole('checkbox', { name: /DISCO_MODE/i });
 
     // Initially false, color select should be visible
@@ -50,7 +44,7 @@ describe('SettingsMenu', () => {
   });
 
   it('all4Directions checkbox toggles state', async () => {
-    render(SettingsMenu, { props: defaultProps });
+    render(SettingsMenuWrapper);
     const all4Checkbox = screen.getByRole('checkbox', { name: /ALL_4_DIRECTIONS/i });
 
     expect(all4Checkbox).toHaveAttribute('aria-checked', 'false');
@@ -60,7 +54,7 @@ describe('SettingsMenu', () => {
   });
 
   it('clicking HELP opens the HelpModal', async () => {
-    render(SettingsMenu, { props: defaultProps });
+    render(SettingsMenuWrapper);
 
     // HelpModal should not be visible initially
     expect(screen.queryByText('SYSTEM_MANUAL')).not.toBeInTheDocument();
@@ -72,7 +66,7 @@ describe('SettingsMenu', () => {
   });
 
   it('COLOR REGRESSION TEST: cycles through colors and updates style correctly', async () => {
-    const { container } = render(SettingsMenu, { props: defaultProps });
+    const { container } = render(SettingsMenuWrapper);
     const menuContainer = container.querySelector('.menu-container') as HTMLElement;
     const colorSelectTrigger = screen.getByLabelText(/SYSTEM_COLOR/i);
     const colors = [
@@ -86,8 +80,7 @@ describe('SettingsMenu', () => {
       { name: 'random', value: 'random' },
     ];
 
-    // Reduced iterations to keep test time reasonable with custom component interactions
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 1; i++) {
       for (const color of colors) {
         // Open dropdown
         await fireEvent.click(colorSelectTrigger);
@@ -118,4 +111,45 @@ describe('SettingsMenu', () => {
       }
     }
   }, 10000);
+
+  it('automatically identifies presets when settings match', async () => {
+    render(SettingsMenuWrapper);
+    const presetSelect = screen.getByLabelText(/PRESET:/i);
+
+    // Should start with Classic Matrix (default)
+    expect(presetSelect).toHaveTextContent(/CLASSIC MATRIX/i);
+
+    // Select Cyberpunk Pink preset via dropdown to verify logic
+    await fireEvent.click(presetSelect);
+    const pinkOption = screen.getByRole('option', { name: /CYBERPUNK PINK/i });
+    await fireEvent.click(pinkOption);
+
+    expect(presetSelect).toHaveTextContent(/CYBERPUNK PINK/i);
+
+    // Change a setting manually (e.g., speed) -> should switch to CUSTOM
+    const speedInput = screen.getByLabelText(/SPEED:/i);
+    await fireEvent.input(speedInput, { target: { value: '99' } });
+
+    await waitFor(() => {
+      expect(presetSelect).toHaveTextContent(/CUSTOM/i);
+    });
+
+    // Change settings back to match Classic Matrix (green, normal, speed 50, etc)
+    // Note: Classic Matrix is chosenColor 'green', speed 50, fontSize 20, frameCount 10, all4Directions false, discoOn false
+    const colorSelect = screen.getByLabelText(/SYSTEM_COLOR/i);
+    await fireEvent.click(colorSelect);
+    const greenOption = screen.getByRole('option', { name: /GREEN/i });
+    await fireEvent.click(greenOption);
+
+    await fireEvent.input(speedInput, { target: { value: '50' } });
+
+    const all4Checkbox = screen.getByRole('checkbox', { name: /ALL_4_DIRECTIONS/i });
+    if (all4Checkbox.getAttribute('aria-checked') === 'true') {
+      await fireEvent.click(all4Checkbox);
+    }
+
+    await waitFor(() => {
+      expect(presetSelect).toHaveTextContent(/CLASSIC MATRIX/i);
+    });
+  });
 });

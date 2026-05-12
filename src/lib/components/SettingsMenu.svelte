@@ -9,33 +9,34 @@
   import { fallingLetters } from '$lib/utils/FallingLettersAction';
   import { signalMorph } from '$lib/utils/Transitions';
   import { COLORS } from '$lib/constants/matrix';
+  import { PRESETS } from '$lib/constants/presets';
+  import { saveCustomPreset, loadCustomPresets } from '$lib/utils/StorageUtils';
+  import { compareSettings } from '$lib/utils/SettingsUtils';
+  import type { IEngineSettings, IPreset } from '$lib/types';
 
   interface Props {
-    discoOn?: boolean;
-    chosenColor?: string;
-    all4Directions?: boolean;
-    frameCount?: number;
+    settings: IEngineSettings;
     onStartNormal: () => void;
     onStartSquare: () => void;
   }
 
   /* eslint-disable prefer-const */
-  let {
-    discoOn = $bindable(false),
-    chosenColor = $bindable('green'),
-    all4Directions = $bindable(false),
-    frameCount = $bindable(10),
-    onStartNormal,
-    onStartSquare,
-  }: Props = $props();
+  let { settings = $bindable(), onStartNormal, onStartSquare }: Props = $props();
   /* eslint-enable prefer-const */
 
   let menuInterval: ReturnType<typeof setInterval> | null = null;
   let discoColors = $state(getRandomColors());
   let cachedRandomColor = $state(getRandomColor());
-  let lastChosenColor = $state(chosenColor);
+  let lastChosenColor = $state(settings.chosenColor);
   let isHelpOpen = $state(false);
   let isAboutOpen = $state(false);
+
+  // Preset state
+  const CUSTOM_PRESET_NAME = 'CUSTOM';
+  let selectedPresetName = $state(PRESETS[0].name);
+  let customPresets = $state(loadCustomPresets());
+  const allPresets = $derived([...PRESETS, ...customPresets]);
+  const presetOptions = $derived([...allPresets.map((p) => p.name), CUSTOM_PRESET_NAME]);
 
   const colorMap: Record<string, string> = {
     green: COLORS.MATRIX_GREEN,
@@ -48,51 +49,43 @@
   };
 
   const currentColor = $derived.by(() => {
-    if (discoOn) {
+    if (settings.discoOn) {
       return discoColors[0] || COLORS.MATRIX_GREEN;
     }
-    if (chosenColor === 'random') {
+    if (settings.chosenColor === 'random') {
       return cachedRandomColor || COLORS.MATRIX_GREEN;
     }
-    return colorMap[chosenColor] ?? COLORS.MATRIX_GREEN;
+    return colorMap[settings.chosenColor] ?? COLORS.MATRIX_GREEN;
   });
 
   const currentColorRgb = $derived(hexToRgb(currentColor));
 
   // Safe button colors with fallbacks
-  const startBtnColor = $derived(discoOn ? discoColors[1] || currentColor : currentColor);
-  const squareBtnColor = $derived(discoOn ? discoColors[2] || currentColor : currentColor);
-  const helpBtnColor = $derived(discoOn ? discoColors[3] || currentColor : currentColor);
-  const aboutBtnColor = $derived(discoOn ? discoColors[4] || currentColor : currentColor);
+  const startBtnColor = $derived(settings.discoOn ? discoColors[1] || currentColor : currentColor);
+  const squareBtnColor = $derived(settings.discoOn ? discoColors[2] || currentColor : currentColor);
+  const helpBtnColor = $derived(settings.discoOn ? discoColors[3] || currentColor : currentColor);
+  const aboutBtnColor = $derived(settings.discoOn ? discoColors[4] || currentColor : currentColor);
+
+  // Auto-detect preset based on current settings
+  $effect(() => {
+    const match = allPresets.find((p) => compareSettings(p.settings, settings));
+    if (match) {
+      selectedPresetName = match.name;
+    } else {
+      selectedPresetName = CUSTOM_PRESET_NAME;
+    }
+  });
 
   $effect(() => {
-    if (chosenColor === 'random' && lastChosenColor !== 'random') {
+    if (settings.chosenColor === 'random' && lastChosenColor !== 'random') {
       cachedRandomColor = getRandomColor();
     }
-    lastChosenColor = chosenColor;
+    lastChosenColor = settings.chosenColor;
   });
 
   $effect(() => {
-    if (discoOn) {
-      // console.log('[SettingsMenu] Disco Mode ON. Current colors:', $state.snapshot(discoColors));
-
-      const invalidColors = discoColors.filter(
-        (c) => !c || typeof c !== 'string' || !c.startsWith('#'),
-      );
-      if (invalidColors.length > 0) {
-        console.error('[SettingsMenu] CRITICAL: Invalid disco colors detected!', {
-          allColors: $state.snapshot(discoColors),
-          invalidCount: invalidColors.length,
-          invalidValues: invalidColors,
-        });
-      }
-    }
-  });
-
-  $effect(() => {
-    if (discoOn) {
+    if (settings.discoOn) {
       menuInterval = setInterval(() => {
-        // Reassign the array for cleaner Svelte 5 reactivity
         discoColors = getRandomColors();
       }, 1000);
     } else {
@@ -111,6 +104,25 @@
 
   function getRandomColors(count = 5) {
     return Array.from({ length: count }, () => getRandomColor());
+  }
+
+  function handlePresetChange(name: string) {
+    if (name === CUSTOM_PRESET_NAME) {
+      return;
+    }
+    const preset = allPresets.find((p) => p.name === name);
+    if (preset) {
+      settings = { ...preset.settings };
+    }
+  }
+
+  function handleSavePreset() {
+    const name = prompt('Enter preset name:');
+    if (name) {
+      const newPreset: IPreset = { name, settings: $state.snapshot(settings) };
+      saveCustomPreset(newPreset);
+      customPresets = loadCustomPresets();
+    }
   }
 </script>
 
@@ -144,7 +156,21 @@
 
       <div class="settings-grid">
         <div class="setting-item">
-          {#if discoOn}
+          <CyberSelect
+            id="preset-select"
+            bind:value={selectedPresetName}
+            color={currentColor}
+            label="PRESET:"
+            options={presetOptions}
+            onchange={handlePresetChange}
+          />
+          <CyberButton color={currentColor} onclick={handleSavePreset} variant="secondary">
+            SAVE
+          </CyberButton>
+        </div>
+
+        <div class="setting-item">
+          {#if settings.discoOn}
             <div
               class="glitch-wrapper"
               in:signalMorph={{ duration: 400 }}
@@ -153,7 +179,7 @@
               <div class="component-wrapper">
                 <CyberNumericInput
                   id="frame-count"
-                  bind:value={frameCount}
+                  bind:value={settings.frameCount}
                   min={1}
                   max={100}
                   color={currentColor}
@@ -170,7 +196,7 @@
               <div class="component-wrapper">
                 <CyberSelect
                   id="color-select"
-                  bind:value={chosenColor}
+                  bind:value={settings.chosenColor}
                   color={currentColor}
                   label="SYSTEM_COLOR:"
                   options={['green', 'red', 'yellow', 'blue', 'orange', 'pink', 'cyan', 'random']}
@@ -180,22 +206,47 @@
           {/if}
         </div>
 
+        <div class="setting-item">
+          <CyberNumericInput
+            id="font-size"
+            bind:value={settings.fontSize}
+            min={8}
+            max={100}
+            color={currentColor}
+            label="FONT_SIZE:"
+          />
+        </div>
+
+        <div class="setting-item">
+          <CyberNumericInput
+            id="speed"
+            bind:value={settings.speed}
+            min={1}
+            max={200}
+            color={currentColor}
+            label="SPEED:"
+          />
+        </div>
+
         <div
           class="setting-item"
-          use:fallingLetters={{ value: all4Directions, color: currentColor }}
+          use:fallingLetters={{ value: settings.all4Directions, color: currentColor }}
         >
           <CyberCheckbox
             id="all4-toggle"
-            bind:checked={all4Directions}
+            bind:checked={settings.all4Directions}
             color={currentColor}
             label="ALL_4_DIRECTIONS:"
           />
         </div>
 
-        <div class="setting-item" use:fallingLetters={{ value: discoOn, color: currentColor }}>
+        <div
+          class="setting-item"
+          use:fallingLetters={{ value: settings.discoOn, color: currentColor }}
+        >
           <CyberCheckbox
             id="disco-toggle"
-            bind:checked={discoOn}
+            bind:checked={settings.discoOn}
             color={currentColor}
             label="DISCO_MODE:"
           />
@@ -284,23 +335,15 @@
   }
 
   .setting-item {
-    display: grid;
-    grid-template-areas: 'stack';
-    align-items: center;
-    min-height: 80px;
-    justify-content: flex-end;
-  }
-
-  .setting-item:nth-child(n + 2) {
     display: flex;
     align-items: center;
     gap: 1rem;
     min-height: 70px;
     justify-content: flex-end;
+    width: 100%;
   }
 
   .glitch-wrapper {
-    grid-area: stack;
     display: flex;
     justify-content: flex-end;
     align-items: center;

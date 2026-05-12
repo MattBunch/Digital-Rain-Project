@@ -11,10 +11,11 @@
     color?: string;
     label?: string;
     id?: string;
+    onchange?: (value: string) => void;
   }
 
   /* eslint-disable prefer-const */
-  let { value = $bindable(), options, color = '#00ff41', label, id }: Props = $props();
+  let { value = $bindable(), options, color = '#00ff41', label, id, onchange }: Props = $props();
   /* eslint-enable prefer-const */
 
   let isOpen = $state(false);
@@ -37,6 +38,9 @@
     value = opt;
     isOpen = false;
     focusedIndex = -1;
+    if (onchange) {
+      onchange(opt);
+    }
   }
 
   function handleKeydown(event: KeyboardEvent) {

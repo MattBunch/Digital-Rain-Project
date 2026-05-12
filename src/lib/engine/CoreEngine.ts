@@ -96,6 +96,10 @@ export class CoreEngine {
     this.animationManager.intervalSpeed = value;
   }
 
+  get fps() {
+    return this.animationManager.fps;
+  }
+
   get requestId() {
     return this.animationManager.requestId;
   }

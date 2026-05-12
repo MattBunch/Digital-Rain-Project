@@ -20,6 +20,7 @@ export const helpGroups: HelpGroup[] = [
       { key: 'Q/A', description: 'String length' },
       { key: 'R', description: 'Toggle rapid word change' },
       { key: 'M', description: 'Switch mode' },
+      { key: 'F', description: 'Toggle FPS counter' },
       { key: 'PgUp/Dn', description: 'Change speed' },
       { key: '1-8', description: 'Change color' },
       { key: 'Esc', description: 'Quit to menu' },

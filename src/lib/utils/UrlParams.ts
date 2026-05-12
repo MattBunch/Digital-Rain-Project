@@ -1,0 +1,62 @@
+import type { IEngineSettings } from '../types';
+
+const KEY_MAP: Record<string, keyof IEngineSettings> = {
+  d: 'discoOn',
+  c: 'chosenColor',
+  a: 'all4Directions',
+  f: 'frameCount',
+  m: 'mode',
+  s: 'fontSize',
+  v: 'speed',
+};
+
+const REVERSE_KEY_MAP = Object.fromEntries(
+  Object.entries(KEY_MAP).map(([k, v]) => [v, k]),
+) as Record<keyof IEngineSettings, string>;
+
+export function serializeSettings(settings: IEngineSettings): string {
+  const parts: string[] = [];
+  for (const [key, value] of Object.entries(settings)) {
+    const shortKey = REVERSE_KEY_MAP[key as keyof IEngineSettings];
+    if (shortKey) {
+      let val: string;
+      if (typeof value === 'boolean') {
+        val = value ? '1' : '0';
+      } else {
+        val = String(value);
+      }
+      parts.push(`${shortKey}=${encodeURIComponent(val)}`);
+    }
+  }
+  return parts.join('&');
+}
+
+export function deserializeSettings(hash: string): Partial<IEngineSettings> {
+  const settings: Partial<IEngineSettings> = {};
+  const cleanHash = hash.startsWith('#') ? hash.slice(1) : hash;
+  if (!cleanHash) {
+    return settings;
+  }
+
+  const params = new URLSearchParams(cleanHash);
+  for (const [shortKey, value] of params.entries()) {
+    const fullKey = KEY_MAP[shortKey];
+    if (fullKey) {
+      if (fullKey === 'discoOn' || fullKey === 'all4Directions') {
+        settings[fullKey] = value === '1';
+      } else if (fullKey === 'frameCount' || fullKey === 'fontSize' || fullKey === 'speed') {
+        const num = parseInt(value, 10);
+        if (!isNaN(num)) {
+          settings[fullKey] = num;
+        }
+      } else if (fullKey === 'mode') {
+        if (value === 'normal' || value === 'square') {
+          settings[fullKey] = value;
+        }
+      } else if (fullKey === 'chosenColor') {
+        settings[fullKey] = value;
+      }
+    }
+  }
+  return settings;
+}

@@ -17,10 +17,16 @@ export interface IMatrixStringOptions {
 export type Direction = 'north' | 'south' | 'east' | 'west';
 
 export interface IEngineSettings {
-  defaultFontSize: number;
+  discoOn: boolean;
+  chosenColor: string;
   all4Directions: boolean;
-  direction: Direction;
-  isDisco: boolean;
   frameCount: number;
-  color: string;
+  mode: 'normal' | 'square';
+  fontSize: number;
+  speed: number;
+}
+
+export interface IPreset {
+  name: string;
+  settings: IEngineSettings;
 }

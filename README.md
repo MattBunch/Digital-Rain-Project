@@ -58,6 +58,9 @@ npm run test:e2e
 ### features
 
 - see docs/project_feature_ideas_and_improvements.md
+- reorganize menu ui - look nicer
+  - collapsable menu for the preset settings and complicated settings, nicer layout.
+- alert for the preset - replace with custom component.
 - Colour wheel selector.
 
 ### deployment

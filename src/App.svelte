@@ -4,25 +4,57 @@
   import SettingsMenu from '$lib/components/SettingsMenu.svelte';
   import MatrixCanvas from '$lib/components/MatrixCanvas.svelte';
   import CRTOverlay from '$lib/components/CRTOverlay.svelte';
+  import FpsCounter from '$lib/components/FpsCounter.svelte';
+  import { DEFAULT_SETTINGS } from '$lib/constants/presets';
+  import { serializeSettings, deserializeSettings } from '$lib/utils/UrlParams';
+  import type { IEngineSettings } from '$lib/types';
 
   let menuVisible = $state(true);
-  let discoOn = $state(false);
-  let chosenColor = $state('green');
-  let all4Directions = $state(false);
-  let frameCount = $state(10);
-  let mode = $state<'normal' | 'square'>('normal');
+  let settings = $state<IEngineSettings>({ ...DEFAULT_SETTINGS });
+  let showFps = $state(false);
+  let currentFps = $state(0);
 
   let engine = $state<CoreEngine>();
   let backgroundEngine = $state<CoreEngine>();
 
   onMount(() => {
+    // Load settings from URL hash
+    const hashSettings = deserializeSettings(window.location.hash);
+    settings = { ...DEFAULT_SETTINGS, ...hashSettings };
+
     engine = new CoreEngine();
     backgroundEngine = new CoreEngine();
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key.toLowerCase() === 'f') {
+        showFps = !showFps;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    const fpsInterval = setInterval(() => {
+      if (engine && !menuVisible) {
+        currentFps = engine.fps;
+      } else if (backgroundEngine && menuVisible) {
+        currentFps = backgroundEngine.fps;
+      }
+    }, 500);
 
     return () => {
       engine?.stop();
       backgroundEngine?.stop();
+      window.removeEventListener('keydown', handleKeyDown);
+      clearInterval(fpsInterval);
     };
+  });
+
+  // Sync state to URL hash
+  $effect(() => {
+    const hash = serializeSettings(settings);
+    if (window.location.hash !== '#' + hash) {
+      window.history.replaceState(null, '', '#' + hash);
+    }
   });
 
   // Sync state to engine
@@ -31,22 +63,29 @@
       return;
     }
 
-    engine.discoOn = discoOn;
-    engine.switchColor(chosenColor);
-    engine.all4Directions = all4Directions;
-    engine.discoFrameCounterTurnoverPoint = frameCount;
+    // Main Engine
+    engine.discoOn = settings.discoOn;
+    engine.switchColor(settings.chosenColor);
+    engine.all4Directions = settings.all4Directions;
+    engine.discoFrameCounterTurnoverPoint = settings.frameCount;
+    engine.fontSize = settings.fontSize;
+    engine.intervalSpeed = settings.speed;
 
-    backgroundEngine.switchColor(chosenColor);
+    // Background Engine
+    backgroundEngine.switchColor(settings.chosenColor);
     backgroundEngine.discoOn = false; // Background should be subtle
+    backgroundEngine.all4Directions = settings.all4Directions;
+    backgroundEngine.fontSize = settings.fontSize;
+    backgroundEngine.intervalSpeed = settings.speed;
   });
 
   function handleStartNormal() {
-    mode = 'normal';
+    settings.mode = 'normal';
     menuVisible = false;
   }
 
   function handleStartSquare() {
-    mode = 'square';
+    settings.mode = 'square';
     menuVisible = false;
   }
 
@@ -64,6 +103,7 @@
 </script>
 
 <CRTOverlay>
+  <FpsCounter fps={currentFps} visible={showFps} />
   <main>
     {#if menuVisible}
       <div class="background-rain">
@@ -72,21 +112,24 @@
             engine={backgroundEngine}
             mode="normal"
             onReturn={handleReturnToMenu}
-            bind:discoOn
-            bind:chosenColor
+            bind:discoOn={settings.discoOn}
+            bind:chosenColor={settings.chosenColor}
           />
         {/if}
       </div>
       <SettingsMenu
-        bind:discoOn
-        bind:chosenColor
-        bind:all4Directions
-        bind:frameCount
+        bind:settings
         onStartNormal={handleStartNormal}
         onStartSquare={handleStartSquare}
       />
     {:else if engine}
-      <MatrixCanvas {engine} {mode} onReturn={handleReturnToMenu} bind:discoOn bind:chosenColor />
+      <MatrixCanvas
+        {engine}
+        mode={settings.mode}
+        onReturn={handleReturnToMenu}
+        bind:discoOn={settings.discoOn}
+        bind:chosenColor={settings.chosenColor}
+      />
     {/if}
   </main>
 </CRTOverlay>
