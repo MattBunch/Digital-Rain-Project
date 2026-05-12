@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import { CoreEngine } from '$lib/engine/CoreEngine';
   import SettingsMenu from '$lib/components/SettingsMenu.svelte';
   import MatrixCanvas from '$lib/components/MatrixCanvas.svelte';
@@ -11,11 +12,25 @@
   let frameCount = $state(10);
   let mode = $state<'normal' | 'square'>('normal');
 
-  const engine = new CoreEngine();
-  const backgroundEngine = new CoreEngine();
+  let engine = $state<CoreEngine>();
+  let backgroundEngine = $state<CoreEngine>();
+
+  onMount(() => {
+    engine = new CoreEngine();
+    backgroundEngine = new CoreEngine();
+
+    return () => {
+      engine?.stop();
+      backgroundEngine?.stop();
+    };
+  });
 
   // Sync state to engine
   $effect(() => {
+    if (!engine || !backgroundEngine) {
+      return;
+    }
+
     engine.discoOn = discoOn;
     engine.switchColor(chosenColor);
     engine.all4Directions = all4Directions;
@@ -36,19 +51,14 @@
   }
 
   function handleReturnToMenu() {
-    if (engine.intervalValid) {
-      clearInterval(engine.intervalValid);
-    }
-    if (engine.menuInterval) {
-      clearInterval(engine.menuInterval);
-    }
+    engine?.stop();
 
-    if (engine.ctx && engine.canvas) {
+    if (engine?.ctx && engine?.canvas) {
       engine.ctx.fillStyle = '#000000';
       engine.ctx.fillRect(0, 0, engine.canvas.width, engine.canvas.height);
     }
 
-    engine.reset();
+    engine?.reset();
     menuVisible = true;
   }
 </script>
@@ -57,13 +67,15 @@
   <main>
     {#if menuVisible}
       <div class="background-rain">
-        <MatrixCanvas
-          engine={backgroundEngine}
-          mode="normal"
-          onReturn={handleReturnToMenu}
-          bind:discoOn
-          bind:chosenColor
-        />
+        {#if backgroundEngine}
+          <MatrixCanvas
+            engine={backgroundEngine}
+            mode="normal"
+            onReturn={handleReturnToMenu}
+            bind:discoOn
+            bind:chosenColor
+          />
+        {/if}
       </div>
       <SettingsMenu
         bind:discoOn
@@ -73,7 +85,7 @@
         onStartNormal={handleStartNormal}
         onStartSquare={handleStartSquare}
       />
-    {:else}
+    {:else if engine}
       <MatrixCanvas {engine} {mode} onReturn={handleReturnToMenu} bind:discoOn bind:chosenColor />
     {/if}
   </main>

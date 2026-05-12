@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import * as MathUtils from '../MathUtils';
-import { alphabet } from '../../constants/Assets';
+import { ALPHABET } from '../../constants/matrix';
 
 describe('MathUtils', () => {
   describe('getRandomColor', () => {
@@ -106,17 +106,17 @@ describe('MathUtils', () => {
   });
 
   describe('getRandomChar', () => {
-    it('should return a character from the alphabet', () => {
+    it('should return a character from the ALPHABET', () => {
       const char = MathUtils.getRandomChar();
-      expect(alphabet).toContain(char);
+      expect(ALPHABET).toContain(char);
     });
 
     it('should return the correct character based on Math.random', () => {
       vi.spyOn(Math, 'random').mockReturnValue(0);
-      expect(MathUtils.getRandomChar()).toBe(alphabet.charAt(0));
+      expect(MathUtils.getRandomChar()).toBe(ALPHABET.charAt(0));
 
       vi.spyOn(Math, 'random').mockReturnValue(0.9999);
-      expect(MathUtils.getRandomChar()).toBe(alphabet.charAt(alphabet.length - 1));
+      expect(MathUtils.getRandomChar()).toBe(ALPHABET.charAt(ALPHABET.length - 1));
 
       vi.restoreAllMocks();
     });
@@ -130,7 +130,7 @@ describe('MathUtils', () => {
 
     it('should build word from getRandomChar', () => {
       vi.spyOn(Math, 'random').mockReturnValue(0);
-      const firstChar = alphabet.charAt(0);
+      const firstChar = ALPHABET.charAt(0);
       expect(MathUtils.generateWord(3)).toBe(firstChar + firstChar + firstChar);
       vi.restoreAllMocks();
     });

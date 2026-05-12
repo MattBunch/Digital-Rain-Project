@@ -5,7 +5,7 @@ import {
   onePercentChance,
   generateWordChangeTurnoverNumber,
 } from '../utils/MathUtils.ts';
-import { colorWhite } from '../constants/Assets.ts';
+import { COLORS } from '../constants/matrix.ts';
 
 export class CoordinateObject {
   xCoordinate: number;
@@ -100,8 +100,6 @@ export class MatrixString {
       }
 
       ctx.fillText(letter, xCoordinate, yCoordinate);
-
-      this.XYCoordinates = this.generateXYCoordinates();
     }
   }
 
@@ -134,8 +132,6 @@ export class MatrixString {
       this.drawSquare(ctx, xCoordinate, yCoordinate, inputColorArray, config, squareConfig);
 
       ctx.fillText(letter, xCoordinate, yCoordinate);
-
-      this.XYCoordinates = this.generateXYCoordinates();
     }
   }
 
@@ -185,7 +181,7 @@ export class MatrixString {
       if (discoOn) {
         ctx.fillStyle = getRandomColor();
       } else {
-        ctx.fillStyle = colorWhite;
+        ctx.fillStyle = COLORS.WHITE;
       }
     }
   }
@@ -198,7 +194,7 @@ export class MatrixString {
   ): void {
     if (direction == 'south' || direction == 'west') {
       if (i == this.word.length - 2) {
-        ctx.fillStyle = colorWhite;
+        ctx.fillStyle = COLORS.WHITE;
       } else if (i == this.word.length - 3) {
         ctx.fillStyle = inputColorArray[0];
       } else if (i == this.word.length - 4) {
@@ -208,7 +204,7 @@ export class MatrixString {
       }
     } else if (direction == 'north' || direction == 'east') {
       if (i == 0) {
-        ctx.fillStyle = colorWhite;
+        ctx.fillStyle = COLORS.WHITE;
       } else if (i == 1) {
         ctx.fillStyle = inputColorArray[0];
       } else if (i == 2) {

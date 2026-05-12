@@ -14,7 +14,7 @@ export interface IMatrixStringOptions {
   isAll4Directions?: boolean;
 }
 
-export type Direction = 'up' | 'down' | 'left' | 'right';
+export type Direction = 'north' | 'south' | 'east' | 'west';
 
 export interface IEngineSettings {
   defaultFontSize: number;

@@ -11,8 +11,7 @@ describe('HelpModal', () => {
   it('renders when isOpen is true', () => {
     render(HelpModal, { props: { isOpen: true, onClose: vi.fn() } });
     expect(screen.getByText('SYSTEM_MANUAL')).toBeInTheDocument();
-    expect(screen.getByText('NORMAL_MODE')).toBeInTheDocument();
-    expect(screen.getByText('SQUARE_MODE')).toBeInTheDocument();
+    expect(screen.getByText('CONTROLS')).toBeInTheDocument();
   });
 
   it('calls onClose when DISMISS button is clicked', async () => {

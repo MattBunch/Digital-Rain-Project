@@ -1,6 +1,6 @@
 // src/utils/CoordinateUtils.ts
 import { generateRandomNumber, doubleInt } from './MathUtils.ts';
-import { vertical, horizontal } from '../constants/Assets.ts';
+import { DIRECTIONS, ENGINE_CONSTANTS } from '../constants/matrix.ts';
 import { ICoordinate } from '../types/index.ts';
 
 export function canvasSetup(
@@ -31,15 +31,16 @@ export function generateStartingPointInput(
   inputMax: number,
   canvasHeight: number,
 ): number {
-  if (canvasHeight > 1000) {
-    inputMax = doubleInt(inputMax);
+  let adjustedMax = inputMax;
+  if (canvasHeight > ENGINE_CONSTANTS.CANVAS_LARGE_THRESHOLD) {
+    adjustedMax = doubleInt(inputMax);
   }
-  return generateRandomNumber(inputMin, inputMax);
+  return generateRandomNumber(inputMin, adjustedMax);
 }
 
 export function generateXEast(canvasWidth: number, canvasHeight: number): number {
   const minNum = canvasWidth;
-  const maxNum = canvasWidth + 1200;
+  const maxNum = canvasWidth + ENGINE_CONSTANTS.MAX_X_EAST_OFFSET;
   return generateStartingPointInput(minNum, maxNum, canvasHeight);
 }
 
@@ -49,14 +50,18 @@ export function generateXWest(
   canvasWidth: number,
   canvasHeight: number,
 ): number {
-  const minNum = 0 - (wordLength * inputFontSize + 20);
-  const maxNum = canvasWidth * -1 * 1.5;
+  const minNum = 0 - (wordLength * inputFontSize + ENGINE_CONSTANTS.X_WEST_OFFSET);
+  const maxNum = canvasWidth * -1 * ENGINE_CONSTANTS.X_WEST_MULTIPLIER;
   return generateStartingPointInput(minNum, maxNum, canvasHeight);
 }
 
 export function generateYNorth(canvasHeight: number): number {
-  const minNum = canvasHeight + 2;
-  const maxNum = Math.round(canvasHeight + canvasHeight * 2 + canvasHeight * 0.7021);
+  const minNum = canvasHeight + ENGINE_CONSTANTS.Y_NORTH_OFFSET;
+  const maxNum = Math.round(
+    canvasHeight +
+      canvasHeight * ENGINE_CONSTANTS.Y_NORTH_MULTIPLIER +
+      canvasHeight * ENGINE_CONSTANTS.Y_NORTH_MYSTERY_CONSTANT,
+  );
   return generateStartingPointInput(minNum, maxNum, canvasHeight);
 }
 
@@ -66,12 +71,12 @@ export function generateYSouth(
   canvasHeight: number,
 ): number {
   const minNum = 0 - wordLength * inputFontSize;
-  const maxNum = canvasHeight * -1 * 4;
+  const maxNum = canvasHeight * -1 * ENGINE_CONSTANTS.Y_SOUTH_MULTIPLIER;
   return generateStartingPointInput(minNum, maxNum, canvasHeight);
 }
 
 export function isCanvasLarge(canvasHeight: number): boolean {
-  return canvasHeight > 1000;
+  return canvasHeight > ENGINE_CONSTANTS.CANVAS_LARGE_THRESHOLD;
 }
 
 export function calculateAverageStartingPosition(
@@ -81,28 +86,12 @@ export function calculateAverageStartingPosition(
   let total = 0;
   let counter = 0;
   for (let i = 0; i < inputArray.length; i++) {
-    if (inputDirection === vertical) {
+    if (inputDirection === DIRECTIONS.VERTICAL) {
       total += inputArray[i].y;
-    } else if (inputDirection === horizontal) {
+    } else if (inputDirection === DIRECTIONS.HORIZONTAL) {
       total += inputArray[i].x;
     }
     counter++;
   }
   return total / counter;
-}
-
-export function getMiddleElementOfArray<T>(inputArray: T[]): T {
-  return inputArray[Math.round((inputArray.length - 1) / 2)];
-}
-
-export function getMiddleLevel<T>(inputArray: T[]): T {
-  // Original JS was: return inputArray[getMiddleElementOfArray(inputArray)];
-  // This looks like a bug in original code if inputArray is an array and getMiddleElementOfArray returns an element.
-  // However, I'll stick to the logic for now but typed.
-  // If getMiddleElementOfArray returns an index (number), it works. Let's check getMiddleElementOfArray implementation above.
-  // It returns an element. So inputArray[element] only works if element is a valid key.
-  // Actually, getMiddleElementOfArray returns T. If T is number, it might work as index.
-  // Let's look at the usage if possible. For now, I'll keep it as is to maintain behavior.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return (inputArray as any)[getMiddleElementOfArray(inputArray) as any];
 }

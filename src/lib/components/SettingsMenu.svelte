@@ -8,15 +8,7 @@
   import AboutModal from '$lib/components/AboutModal.svelte';
   import { fallingLetters } from '$lib/utils/FallingLettersAction';
   import { signalMorph } from '$lib/utils/Transitions';
-  import {
-    colorMatrixGreen,
-    colorRed,
-    colorYellow,
-    colorBlue,
-    colorOrange,
-    colorPink,
-    colorCyan,
-  } from '$lib/constants/Assets';
+  import { COLORS } from '$lib/constants/matrix';
 
   interface Props {
     discoOn?: boolean;
@@ -39,30 +31,30 @@
   /* eslint-enable prefer-const */
 
   let menuInterval: ReturnType<typeof setInterval> | null = null;
-  const discoColors = $state(getRandomColors());
+  let discoColors = $state(getRandomColors());
   let cachedRandomColor = $state(getRandomColor());
   let lastChosenColor = $state(chosenColor);
   let isHelpOpen = $state(false);
   let isAboutOpen = $state(false);
 
   const colorMap: Record<string, string> = {
-    green: colorMatrixGreen,
-    red: colorRed,
-    yellow: colorYellow,
-    blue: colorBlue,
-    orange: colorOrange,
-    pink: colorPink,
-    cyan: colorCyan,
+    green: COLORS.MATRIX_GREEN,
+    red: COLORS.RED_VARIANTS[2],
+    yellow: COLORS.YELLOW_VARIANTS[2],
+    blue: COLORS.BLUE_VARIANTS[2],
+    orange: COLORS.ORANGE_VARIANTS[2],
+    pink: COLORS.PINK_VARIANTS[2],
+    cyan: COLORS.CYAN_VARIANTS[2],
   };
 
   const currentColor = $derived.by(() => {
     if (discoOn) {
-      return discoColors[0] || colorMatrixGreen;
+      return discoColors[0] || COLORS.MATRIX_GREEN;
     }
     if (chosenColor === 'random') {
-      return cachedRandomColor || colorMatrixGreen;
+      return cachedRandomColor || COLORS.MATRIX_GREEN;
     }
-    return colorMap[chosenColor] ?? colorMatrixGreen;
+    return colorMap[chosenColor] ?? COLORS.MATRIX_GREEN;
   });
 
   const currentColorRgb = $derived(hexToRgb(currentColor));
@@ -100,15 +92,8 @@
   $effect(() => {
     if (discoOn) {
       menuInterval = setInterval(() => {
-        // console.log('[SettingsMenu] Interval Tick - updating colors');
-        // Mutate existing array to avoid transient undefined states during reassignment
-        for (let i = 0; i < discoColors.length; i++) {
-          const newColor = getRandomColor();
-          if (!newColor || !newColor.startsWith('#')) {
-            console.error(`[SettingsMenu] getRandomColor() returned invalid color: "${newColor}"`);
-          }
-          discoColors[i] = newColor;
-        }
+        // Reassign the array for cleaner Svelte 5 reactivity
+        discoColors = getRandomColors();
       }, 1000);
     } else {
       if (menuInterval) {
