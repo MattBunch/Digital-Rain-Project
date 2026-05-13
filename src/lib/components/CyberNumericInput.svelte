@@ -85,7 +85,7 @@
     gap: 0.5rem;
     font-family: var(--font-mono);
     width: 200px;
-    align-items: flex-end;
+    align-items: flex-start;
   }
 
   .cyber-label {

@@ -9,7 +9,7 @@
   import HelpModal from '$lib/components/HelpModal.svelte';
   import AboutModal from '$lib/components/AboutModal.svelte';
   import { fallingLetters } from '$lib/utils/FallingLettersAction';
-  import { signalMorph } from '$lib/utils/Transitions';
+  import { fade } from 'svelte/transition';
   import { COLORS } from '$lib/constants/matrix';
   import { PRESETS } from '$lib/constants/presets';
   import { saveCustomPreset, loadCustomPresets } from '$lib/utils/StorageUtils';
@@ -127,6 +127,9 @@
       customPresets = loadCustomPresets();
     }
   }
+
+  const transitionDuration =
+    typeof process !== 'undefined' && process.env.NODE_ENV === 'test' ? 0 : 200;
 </script>
 
 <div
@@ -175,46 +178,25 @@
           <div class="setting-item">
             <div class="transition-stack">
               {#if settings.discoOn}
-                <div
-                  class="glitch-wrapper"
-                  in:signalMorph={{ duration: 400 }}
-                  out:signalMorph={{ duration: 200 }}
-                >
-                  <div class="component-wrapper">
-                    <CyberNumericInput
-                      id="frame-count"
-                      bind:value={settings.frameCount}
-                      min={1}
-                      max={100}
-                      color={currentColor}
-                      label="REFRESH_RATE:"
-                    />
-                  </div>
+                <div class="stack-item" transition:fade={{ duration: transitionDuration }}>
+                  <CyberNumericInput
+                    id="frame-count"
+                    bind:value={settings.frameCount}
+                    min={1}
+                    max={100}
+                    color={currentColor}
+                    label="REFRESH_RATE:"
+                  />
                 </div>
               {:else}
-                <div
-                  class="glitch-wrapper"
-                  in:signalMorph={{ duration: 400 }}
-                  out:signalMorph={{ duration: 200 }}
-                >
-                  <div class="component-wrapper">
-                    <CyberSelect
-                      id="color-select"
-                      bind:value={settings.chosenColor}
-                      color={currentColor}
-                      label="SYSTEM_COLOR:"
-                      options={[
-                        'green',
-                        'red',
-                        'yellow',
-                        'blue',
-                        'orange',
-                        'pink',
-                        'cyan',
-                        'random',
-                      ]}
-                    />
-                  </div>
+                <div class="stack-item" transition:fade={{ duration: transitionDuration }}>
+                  <CyberSelect
+                    id="color-select"
+                    bind:value={settings.chosenColor}
+                    color={currentColor}
+                    label="SYSTEM_COLOR:"
+                    options={['green', 'red', 'yellow', 'blue', 'orange', 'pink', 'cyan', 'random']}
+                  />
                 </div>
               {/if}
             </div>
@@ -374,29 +356,21 @@
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
-    width: 100%;
+    width: 200px;
+    height: auto;
+    position: relative;
   }
 
-  .transition-stack > :global(*) {
+  .stack-item {
     grid-area: 1 / 1;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
   }
 
   .preset-group {
     align-items: flex-end;
-  }
-
-  .glitch-wrapper {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    width: 100%;
-    position: relative;
-  }
-
-  .component-wrapper {
-    width: 100%;
-    display: flex;
-    justify-content: flex-start;
   }
 
   .fade-in {
