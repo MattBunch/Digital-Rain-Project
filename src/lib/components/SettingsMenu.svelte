@@ -9,7 +9,7 @@
   import HelpModal from '$lib/components/HelpModal.svelte';
   import AboutModal from '$lib/components/AboutModal.svelte';
   import { fallingLetters } from '$lib/utils/FallingLettersAction';
-  import { fade } from 'svelte/transition';
+  import { signalMorph } from '$lib/utils/Transitions';
   import { COLORS } from '$lib/constants/matrix';
   import { PRESETS } from '$lib/constants/presets';
   import { saveCustomPreset, loadCustomPresets } from '$lib/utils/StorageUtils';
@@ -129,7 +129,10 @@
   }
 
   const transitionDuration =
-    typeof process !== 'undefined' && process.env.NODE_ENV === 'test' ? 0 : 200;
+    (typeof process !== 'undefined' && process.env.NODE_ENV === 'test') ||
+    (typeof window !== 'undefined' && (window as any).IS_E2E)
+      ? 0
+      : 400;
 </script>
 
 <div
@@ -162,90 +165,141 @@
       <CyberAccordion title="SYSTEM_CONFIGURATION" bind:isOpen={isConfigOpen} color={currentColor}>
         <div class="settings-grid">
           <div class="setting-item preset-group">
-            <CyberSelect
-              id="preset-select"
-              bind:value={selectedPresetName}
-              color={currentColor}
-              label="PRESET:"
-              options={presetOptions}
-              onchange={handlePresetChange}
-            />
-            <CyberSquareButton color={currentColor} onclick={handleSavePreset} title="SAVE_PRESET">
-              S
-            </CyberSquareButton>
+            <div class="preset-wrapper">
+              <div class="transition-stack">
+                {#key selectedPresetName}
+                  <div class="stack-item" transition:signalMorph={{ duration: transitionDuration }}>
+                    <CyberSelect
+                      id="preset-select"
+                      bind:value={selectedPresetName}
+                      color={currentColor}
+                      label="PRESET:"
+                      options={presetOptions}
+                      onchange={handlePresetChange}
+                    />
+                  </div>
+                {/key}
+              </div>
+              <div class="save-btn-container">
+                <CyberSquareButton
+                  color={currentColor}
+                  onclick={handleSavePreset}
+                  title="SAVE_PRESET"
+                >
+                  S
+                </CyberSquareButton>
+              </div>
+            </div>
           </div>
 
           <div class="setting-item">
             <div class="transition-stack">
               {#if settings.discoOn}
-                <div class="stack-item" transition:fade={{ duration: transitionDuration }}>
-                  <CyberNumericInput
-                    id="frame-count"
-                    bind:value={settings.frameCount}
-                    min={1}
-                    max={100}
-                    color={currentColor}
-                    label="REFRESH_RATE:"
-                  />
-                </div>
+                {#key settings.frameCount}
+                  <div class="stack-item" transition:signalMorph={{ duration: transitionDuration }}>
+                    <CyberNumericInput
+                      id="frame-count"
+                      bind:value={settings.frameCount}
+                      min={1}
+                      max={100}
+                      color={currentColor}
+                      label="REFRESH_RATE:"
+                    />
+                  </div>
+                {/key}
               {:else}
-                <div class="stack-item" transition:fade={{ duration: transitionDuration }}>
-                  <CyberSelect
-                    id="color-select"
-                    bind:value={settings.chosenColor}
-                    color={currentColor}
-                    label="SYSTEM_COLOR:"
-                    options={['green', 'red', 'yellow', 'blue', 'orange', 'pink', 'cyan', 'random']}
-                  />
-                </div>
+                {#key settings.chosenColor}
+                  <div class="stack-item" transition:signalMorph={{ duration: transitionDuration }}>
+                    <CyberSelect
+                      id="color-select"
+                      bind:value={settings.chosenColor}
+                      color={currentColor}
+                      label="SYSTEM_COLOR:"
+                      options={[
+                        'green',
+                        'red',
+                        'yellow',
+                        'blue',
+                        'orange',
+                        'pink',
+                        'cyan',
+                        'random',
+                      ]}
+                    />
+                  </div>
+                {/key}
               {/if}
             </div>
           </div>
 
           <div class="setting-item">
-            <CyberNumericInput
-              id="font-size"
-              bind:value={settings.fontSize}
-              min={8}
-              max={100}
-              color={currentColor}
-              label="FONT_SIZE:"
-            />
+            <div class="transition-stack">
+              {#key settings.fontSize}
+                <div class="stack-item" transition:signalMorph={{ duration: transitionDuration }}>
+                  <CyberNumericInput
+                    id="font-size"
+                    bind:value={settings.fontSize}
+                    min={8}
+                    max={100}
+                    color={currentColor}
+                    label="FONT_SIZE:"
+                  />
+                </div>
+              {/key}
+            </div>
           </div>
 
           <div class="setting-item">
-            <CyberNumericInput
-              id="speed"
-              bind:value={settings.speed}
-              min={1}
-              max={200}
-              color={currentColor}
-              label="SPEED:"
-            />
+            <div class="transition-stack">
+              {#key settings.speed}
+                <div class="stack-item" transition:signalMorph={{ duration: transitionDuration }}>
+                  <CyberNumericInput
+                    id="speed"
+                    bind:value={settings.speed}
+                    min={1}
+                    max={200}
+                    color={currentColor}
+                    label="SPEED:"
+                  />
+                </div>
+              {/key}
+            </div>
           </div>
 
           <div
             class="setting-item"
             use:fallingLetters={{ value: settings.all4Directions, color: currentColor }}
           >
-            <CyberCheckbox
-              id="all4-toggle"
-              bind:checked={settings.all4Directions}
-              color={currentColor}
-              label="ALL_4_DIRECTIONS:"
-            />
+            <div class="transition-stack">
+              {#key settings.all4Directions}
+                <div class="stack-item" transition:signalMorph={{ duration: transitionDuration }}>
+                  <CyberCheckbox
+                    id="all4-toggle"
+                    bind:checked={settings.all4Directions}
+                    color={currentColor}
+                    label="ALL_4_DIRECTIONS:"
+                  />
+                </div>
+              {/key}
+            </div>
           </div>
 
           <div
             class="setting-item"
             use:fallingLetters={{ value: settings.discoOn, color: currentColor }}
           >
-            <CyberCheckbox
-              id="disco-toggle"
-              bind:checked={settings.discoOn}
-              color={currentColor}
-              label="DISCO_MODE:"
-            />
+            <div class="transition-stack">
+              {#key settings.discoOn}
+                <div class="stack-item" transition:signalMorph={{ duration: transitionDuration }}>
+                  <CyberCheckbox
+                    id="disco-toggle"
+                    bind:checked={settings.discoOn}
+                    color={currentColor}
+                    label="DISCO_MODE:"
+                  />
+                </div>
+              {/key}
+            </div>
           </div>
         </div>
       </CyberAccordion>
@@ -346,10 +400,11 @@
 
   .setting-item {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 1rem;
     justify-content: flex-start;
     width: 100%;
+    min-height: 70px;
   }
 
   .transition-stack {
@@ -357,7 +412,7 @@
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
     width: 200px;
-    height: auto;
+    height: 70px;
     position: relative;
   }
 
@@ -366,11 +421,21 @@
     width: 100%;
     display: flex;
     justify-content: flex-start;
-    align-items: center;
+    align-items: flex-start;
   }
 
-  .preset-group {
-    align-items: flex-end;
+  .preset-wrapper {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .save-btn-container {
+    margin-top: 24px;
+    display: flex;
+    height: 42px;
+    align-items: center;
   }
 
   .fade-in {

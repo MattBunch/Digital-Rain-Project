@@ -53,12 +53,15 @@ describe('SettingsMenu', () => {
     // Open accordion first
     await fireEvent.click(screen.getByText('SYSTEM_CONFIGURATION'));
 
-    const all4Checkbox = screen.getByRole('checkbox', { name: /ALL_4_DIRECTIONS/i });
+    const getAll4Checkbox = () => screen.getByRole('checkbox', { name: /ALL_4_DIRECTIONS/i });
+    expect(getAll4Checkbox()).toHaveAttribute('aria-checked', 'false');
 
-    expect(all4Checkbox).toHaveAttribute('aria-checked', 'false');
+    await fireEvent.click(getAll4Checkbox());
 
-    await fireEvent.click(all4Checkbox);
-    expect(all4Checkbox).toHaveAttribute('aria-checked', 'true');
+    // Wait for transition and key re-render
+    await waitFor(() => {
+      expect(getAll4Checkbox()).toHaveAttribute('aria-checked', 'true');
+    });
   });
 
   it('clicking HELP opens the HelpModal', async () => {
@@ -80,7 +83,6 @@ describe('SettingsMenu', () => {
     await fireEvent.click(screen.getByText('SYSTEM_CONFIGURATION'));
 
     const menuContainer = container.querySelector('.menu-container') as HTMLElement;
-    const colorSelectTrigger = screen.getByLabelText(/SYSTEM_COLOR/i);
     const colors = [
       { name: 'green', value: matrix.COLORS.MATRIX_GREEN },
       { name: 'red', value: matrix.COLORS.RED_VARIANTS[2] },
@@ -92,35 +94,36 @@ describe('SettingsMenu', () => {
       { name: 'random', value: 'random' },
     ];
 
-    for (let i = 0; i < 1; i++) {
-      for (const color of colors) {
-        // Open dropdown
-        await fireEvent.click(colorSelectTrigger);
+    for (const color of colors) {
+      // Re-query color select trigger because it re-renders on color change
+      const colorSelectTrigger = screen.getByLabelText(/SYSTEM_COLOR/i);
 
-        // Click option
-        const option = screen.getByRole('option', { name: new RegExp(color.name, 'i') });
-        await fireEvent.click(option);
+      // Open dropdown
+      await fireEvent.click(colorSelectTrigger);
 
-        await waitFor(
-          () => {
-            const style = menuContainer.getAttribute('style') || '';
-            if (color.name === 'random') {
-              const match = style.match(
-                /--theme-color:\s*(rgb\(\d+,\s*\d+,\s*\d+\)|#[0-9A-Fa-f]{6})/,
-              );
-              expect(match).toBeTruthy();
+      // Click option
+      const option = await screen.findByRole('option', { name: new RegExp(color.name, 'i') });
+      await fireEvent.click(option);
+
+      await waitFor(
+        () => {
+          const style = menuContainer.getAttribute('style') || '';
+          if (color.name === 'random') {
+            const match = style.match(
+              /--theme-color:\s*(rgb\(\d+,\s*\d+,\s*\d+\)|#[0-9A-Fa-f]{6})/,
+            );
+            expect(match).toBeTruthy();
+          } else {
+            const themeColor = menuContainer.style.getPropertyValue('--theme-color').trim();
+            if (themeColor.startsWith('rgb')) {
+              expect(themeColor).not.toBe('');
             } else {
-              const themeColor = menuContainer.style.getPropertyValue('--theme-color').trim();
-              if (themeColor.startsWith('rgb')) {
-                expect(themeColor).not.toBe('');
-              } else {
-                expect(themeColor.toLowerCase()).toBe(color.value.toLowerCase());
-              }
+              expect(themeColor.toLowerCase()).toBe(color.value.toLowerCase());
             }
-          },
-          { timeout: 1000 },
-        );
-      }
+          }
+        },
+        { timeout: 1000 },
+      );
     }
   }, 10000);
 
@@ -130,42 +133,61 @@ describe('SettingsMenu', () => {
     // Open accordion first
     await fireEvent.click(screen.getByText('SYSTEM_CONFIGURATION'));
 
-    const presetSelect = screen.getByLabelText(/PRESET:/i);
+    const getPresetSelect = () => screen.getByLabelText(/PRESET:/i);
 
     // Should start with Classic Matrix (default)
-    expect(presetSelect).toHaveTextContent(/CLASSIC MATRIX/i);
+    expect(getPresetSelect()).toHaveTextContent(/CLASSIC MATRIX/i);
 
     // Select Cyberpunk Pink preset via dropdown to verify logic
-    await fireEvent.click(presetSelect);
-    const pinkOption = screen.getByRole('option', { name: /CYBERPUNK PINK/i });
+    await fireEvent.click(getPresetSelect());
+    const pinkOption = await screen.findByRole('option', { name: /CYBERPUNK PINK/i });
     await fireEvent.click(pinkOption);
 
-    expect(presetSelect).toHaveTextContent(/CYBERPUNK PINK/i);
+    await waitFor(() => {
+      expect(getPresetSelect()).toHaveTextContent(/CYBERPUNK PINK/i);
+    });
 
     // Change a setting manually (e.g., speed) -> should switch to CUSTOM
     const speedInput = screen.getByLabelText(/SPEED:/i);
     await fireEvent.input(speedInput, { target: { value: '99' } });
 
     await waitFor(() => {
-      expect(presetSelect).toHaveTextContent(/CUSTOM/i);
+      expect(getPresetSelect()).toHaveTextContent(/CUSTOM/i);
     });
 
     // Change settings back to match Classic Matrix (green, normal, speed 50, etc)
-    // Note: Classic Matrix is chosenColor 'green', speed 50, fontSize 20, frameCount 10, all4Directions false, discoOn false
-    const colorSelect = screen.getByLabelText(/SYSTEM_COLOR/i);
-    await fireEvent.click(colorSelect);
-    const greenOption = screen.getByRole('option', { name: /GREEN/i });
+    await waitFor(() => {
+      const colorSelect = screen.getByLabelText(/SYSTEM_COLOR/i);
+      return colorSelect;
+    });
+
+    await fireEvent.click(screen.getByLabelText(/SYSTEM_COLOR/i));
+    const greenOption = await screen.findByRole('option', { name: /GREEN/i });
     await fireEvent.click(greenOption);
 
-    await fireEvent.input(speedInput, { target: { value: '50' } });
-
-    const all4Checkbox = screen.getByRole('checkbox', { name: /ALL_4_DIRECTIONS/i });
-    if (all4Checkbox.getAttribute('aria-checked') === 'true') {
-      await fireEvent.click(all4Checkbox);
-    }
-
     await waitFor(() => {
-      expect(presetSelect).toHaveTextContent(/CLASSIC MATRIX/i);
+      const speedInput = screen.getByLabelText(/SPEED:/i);
+      return speedInput;
     });
+    await fireEvent.input(screen.getByLabelText(/SPEED:/i), { target: { value: '50' } });
+
+    await waitFor(async () => {
+      const all4Checkbox = screen.getByRole('checkbox', { name: /ALL_4_DIRECTIONS/i });
+      if (all4Checkbox.getAttribute('aria-checked') === 'true') {
+        await fireEvent.click(all4Checkbox);
+      }
+      // Wait for it to become false if it was true
+      expect(screen.getByRole('checkbox', { name: /ALL_4_DIRECTIONS/i })).toHaveAttribute(
+        'aria-checked',
+        'false',
+      );
+    });
+
+    await waitFor(
+      () => {
+        expect(getPresetSelect()).toHaveTextContent(/CLASSIC MATRIX/i);
+      },
+      { timeout: 2000 },
+    );
   });
 });

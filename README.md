@@ -61,9 +61,9 @@ npm run test:e2e
 - reorganize menu ui - look nicer
   - collapsable menu for the preset settings and complicated settings, nicer layout. - in progress
   - cyber button design - should be more square now that they are all side by side (add option)
-  - bug - system color to refresh rate animation - it doesn't stay in place, it shows on the right and moves all the elements in the column of the grid. fix this layout problem.
+  - bug - system color to refresh rate animation - it still doesn't load like the other effects
+  - turn off all 4 directions - background matrix canvas disappears effect does not change, have to resize to trigger the matrix canvas animation
 - alert for the saving preset - replace with custom component.
-- turn off all 4 directions - background matrix canvas disappears effect does not change, have to resize to trigger the matrix canvas animation
 - Colour wheel selector.
 
 ### deployment
