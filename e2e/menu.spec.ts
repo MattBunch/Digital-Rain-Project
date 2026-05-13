@@ -16,10 +16,13 @@ test.describe('Menu', () => {
   });
 
   test('clicking the disco checkbox toggles UI elements', async ({ page }) => {
-    const colorSelect = page.getByLabel(/SYSTEM_COLOR/i);
-    const discoCheckbox = page.getByRole('checkbox', { name: /DISCO_MODE/i });
+    // Open accordion first
+    await page.getByRole('button', { name: /SYSTEM_CONFIGURATION/i }).click();
 
+    const colorSelect = page.getByLabel(/SYSTEM_COLOR/i);
     await expect(colorSelect).toBeVisible();
+
+    const discoCheckbox = page.getByRole('checkbox', { name: /DISCO_MODE/i });
 
     await discoCheckbox.click();
     await expect(colorSelect).not.toBeVisible();
@@ -42,6 +45,9 @@ test.describe('Menu', () => {
   });
 
   test('All 4 Directions checkbox toggles state', async ({ page }) => {
+    // Open accordion first
+    await page.getByRole('button', { name: /SYSTEM_CONFIGURATION/i }).click();
+
     const all4Checkbox = page.getByRole('checkbox', { name: /ALL_4_DIRECTIONS/i });
     await expect(all4Checkbox).toHaveAttribute('aria-checked', 'false');
 

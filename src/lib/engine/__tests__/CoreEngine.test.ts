@@ -188,4 +188,45 @@ describe('CoreEngine', () => {
       expect(engine.bottomEdgeDisco).toBe(1080 - 20);
     });
   });
+
+  describe('Crash Prevention', () => {
+    it('should not crash when draw is called with undefined inputWords', () => {
+      expect(() => engine.draw(undefined as any, false)).not.toThrow();
+    });
+
+    it('should not crash when drawAll4Directions is called and array is empty', () => {
+      engine.all4Directions = true;
+      (engine as any).all4DirectionsArray = [];
+      expect(() => engine.drawAll4Directions()).not.toThrow();
+    });
+
+    it('should skip undefined entries in inputWords during draw', () => {
+      const mockWord = {
+        word: 'test',
+        length: 4,
+        wordChangeCounter: 0,
+        wordChangeCounterTurnoverPoint: 10,
+        fontSize: 20,
+        show: vi.fn(),
+      };
+      const inputWords = [mockWord, undefined, mockWord] as any;
+      expect(() => engine.draw(inputWords, false)).not.toThrow();
+    });
+  });
+
+  describe('Initialization Logic', () => {
+    it('should initialize all4DirectionsArray when all4Directions is set to true', () => {
+      const spy = vi.spyOn(engine, 'initializeAll4Directions');
+      engine.all4Directions = true;
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('should call initializeAll4Directions in resetWordsArray if all4Directions is true', () => {
+      const spy = vi.spyOn(engine, 'initializeAll4Directions');
+      engine.all4Directions = true;
+      spy.mockClear();
+      engine.resetWordsArray();
+      expect(spy).toHaveBeenCalled();
+    });
+  });
 });

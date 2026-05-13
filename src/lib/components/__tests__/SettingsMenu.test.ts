@@ -26,6 +26,10 @@ describe('SettingsMenu', () => {
 
   it('disco checkbox toggles discoOn binding', async () => {
     render(SettingsMenuWrapper);
+
+    // Open accordion first
+    await fireEvent.click(screen.getByText('SYSTEM_CONFIGURATION'));
+
     const discoCheckbox = screen.getByRole('checkbox', { name: /DISCO_MODE/i });
 
     // Initially false, color select should be visible
@@ -45,6 +49,10 @@ describe('SettingsMenu', () => {
 
   it('all4Directions checkbox toggles state', async () => {
     render(SettingsMenuWrapper);
+
+    // Open accordion first
+    await fireEvent.click(screen.getByText('SYSTEM_CONFIGURATION'));
+
     const all4Checkbox = screen.getByRole('checkbox', { name: /ALL_4_DIRECTIONS/i });
 
     expect(all4Checkbox).toHaveAttribute('aria-checked', 'false');
@@ -67,6 +75,10 @@ describe('SettingsMenu', () => {
 
   it('COLOR REGRESSION TEST: cycles through colors and updates style correctly', async () => {
     const { container } = render(SettingsMenuWrapper);
+
+    // Open accordion first
+    await fireEvent.click(screen.getByText('SYSTEM_CONFIGURATION'));
+
     const menuContainer = container.querySelector('.menu-container') as HTMLElement;
     const colorSelectTrigger = screen.getByLabelText(/SYSTEM_COLOR/i);
     const colors = [
@@ -114,6 +126,10 @@ describe('SettingsMenu', () => {
 
   it('automatically identifies presets when settings match', async () => {
     render(SettingsMenuWrapper);
+
+    // Open accordion first
+    await fireEvent.click(screen.getByText('SYSTEM_CONFIGURATION'));
+
     const presetSelect = screen.getByLabelText(/PRESET:/i);
 
     // Should start with Classic Matrix (default)

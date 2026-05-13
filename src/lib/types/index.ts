@@ -16,6 +16,29 @@ export interface IMatrixStringOptions {
 
 export type Direction = 'north' | 'south' | 'east' | 'west';
 
+export interface IMatrixStringConfig {
+  rapidWordChange: boolean;
+  discoOn: boolean;
+  direction: string;
+}
+
+export interface ISquareConfig {
+  x1: number;
+  x2: number;
+  y1: number;
+  y2: number;
+  alternativeFontSize: number;
+  returnAlternativeFadeCondition: (
+    index: number,
+    x: number,
+    y: number,
+    config: ISquareConfig,
+    direction: string,
+  ) => boolean;
+  discoColorCounterCheck: (ctx: CanvasRenderingContext2D) => void;
+  getRandomColor: () => string;
+}
+
 export interface IEngineSettings {
   discoOn: boolean;
   chosenColor: string;

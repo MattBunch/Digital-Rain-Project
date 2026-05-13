@@ -30,13 +30,17 @@ test.describe('E2E Color Regression', () => {
     test.setTimeout(30000);
 
     await page.goto('/');
+    // Open accordion first
+    await page.getByRole('button', { name: /SYSTEM_CONFIGURATION/i }).click();
+
     const menuContainer = page.locator('.menu-container');
-    const colorSelect = page.getByLabel('SYSTEM_COLOR:');
+    const colorSelect = page.getByRole('button', { name: 'SYSTEM_COLOR:' });
 
     // Iterate through colors once for stability in E2E
     for (const color of colors) {
       // Open the custom select
       await colorSelect.click();
+      await expect(page.getByRole('listbox')).toBeVisible();
 
       // Click the option
       await page.getByRole('option', { name: color.name.toUpperCase() }).click();

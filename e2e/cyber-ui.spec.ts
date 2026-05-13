@@ -61,7 +61,11 @@ test.describe('Cyber UI Effects', () => {
   });
 
   test('CyberCheckbox has correct styling and state', async ({ page }) => {
+    // Open accordion first
+    await page.getByRole('button', { name: /SYSTEM_CONFIGURATION/i }).click();
+
     const checkbox = page.locator('.cyber-checkbox').first();
+    await expect(checkbox).toBeVisible();
 
     // Check for clip-path styling
     const clipPath = await checkbox.evaluate((el) => window.getComputedStyle(el).clipPath);
@@ -77,11 +81,16 @@ test.describe('Cyber UI Effects', () => {
   });
 
   test('falling letters appear on interaction', async ({ page }) => {
+    // Open accordion first
+    await page.getByRole('button', { name: /SYSTEM_CONFIGURATION/i }).click();
+
     // Initial check: no falling letters (spans in body)
     const initialSpans = await page.locator('body > span').count();
 
     // Interact with a checkbox
-    await page.locator('.cyber-checkbox').first().click();
+    const checkbox = page.locator('.cyber-checkbox').first();
+    await expect(checkbox).toBeVisible();
+    await checkbox.click();
 
     // Spans should be spawned
     const activeSpans = await page.locator('body > span').count();

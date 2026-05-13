@@ -4,6 +4,8 @@
   import CyberCheckbox from '$lib/components/CyberCheckbox.svelte';
   import CyberSelect from '$lib/components/CyberSelect.svelte';
   import CyberNumericInput from '$lib/components/CyberNumericInput.svelte';
+  import CyberSquareButton from '$lib/components/CyberSquareButton.svelte';
+  import CyberAccordion from '$lib/components/CyberAccordion.svelte';
   import HelpModal from '$lib/components/HelpModal.svelte';
   import AboutModal from '$lib/components/AboutModal.svelte';
   import { fallingLetters } from '$lib/utils/FallingLettersAction';
@@ -30,6 +32,7 @@
   let lastChosenColor = $state(settings.chosenColor);
   let isHelpOpen = $state(false);
   let isAboutOpen = $state(false);
+  let isConfigOpen = $state(false);
 
   // Preset state
   const CUSTOM_PRESET_NAME = 'CUSTOM';
@@ -135,7 +138,7 @@
     <h1 class="fade-in">DIGITAL RAIN</h1>
 
     <div class="menu-controls fade-in">
-      <div class="control-group">
+      <div class="main-actions">
         <CyberButton color={startBtnColor} onclick={onStartNormal} variant="primary">
           START
         </CyberButton>
@@ -143,115 +146,127 @@
         <CyberButton color={squareBtnColor} onclick={onStartSquare} variant="secondary">
           SQUARE
         </CyberButton>
-      </div>
 
-      <div class="control-group">
         <CyberButton color={helpBtnColor} onclick={() => (isHelpOpen = true)} variant="primary">
           HELP
         </CyberButton>
+
         <CyberButton color={aboutBtnColor} onclick={() => (isAboutOpen = true)} variant="secondary">
           ABOUT
         </CyberButton>
       </div>
 
-      <div class="settings-grid">
-        <div class="setting-item">
-          <CyberSelect
-            id="preset-select"
-            bind:value={selectedPresetName}
-            color={currentColor}
-            label="PRESET:"
-            options={presetOptions}
-            onchange={handlePresetChange}
-          />
-          <CyberButton color={currentColor} onclick={handleSavePreset} variant="secondary">
-            SAVE
-          </CyberButton>
-        </div>
+      <CyberAccordion title="SYSTEM_CONFIGURATION" bind:isOpen={isConfigOpen} color={currentColor}>
+        <div class="settings-grid">
+          <div class="setting-item preset-group">
+            <CyberSelect
+              id="preset-select"
+              bind:value={selectedPresetName}
+              color={currentColor}
+              label="PRESET:"
+              options={presetOptions}
+              onchange={handlePresetChange}
+            />
+            <CyberSquareButton color={currentColor} onclick={handleSavePreset} title="SAVE_PRESET">
+              S
+            </CyberSquareButton>
+          </div>
 
-        <div class="setting-item">
-          {#if settings.discoOn}
-            <div
-              class="glitch-wrapper"
-              in:signalMorph={{ duration: 400 }}
-              out:signalMorph={{ duration: 200 }}
-            >
-              <div class="component-wrapper">
-                <CyberNumericInput
-                  id="frame-count"
-                  bind:value={settings.frameCount}
-                  min={1}
-                  max={100}
-                  color={currentColor}
-                  label="REFRESH_RATE:"
-                />
-              </div>
+          <div class="setting-item">
+            <div class="transition-stack">
+              {#if settings.discoOn}
+                <div
+                  class="glitch-wrapper"
+                  in:signalMorph={{ duration: 400 }}
+                  out:signalMorph={{ duration: 200 }}
+                >
+                  <div class="component-wrapper">
+                    <CyberNumericInput
+                      id="frame-count"
+                      bind:value={settings.frameCount}
+                      min={1}
+                      max={100}
+                      color={currentColor}
+                      label="REFRESH_RATE:"
+                    />
+                  </div>
+                </div>
+              {:else}
+                <div
+                  class="glitch-wrapper"
+                  in:signalMorph={{ duration: 400 }}
+                  out:signalMorph={{ duration: 200 }}
+                >
+                  <div class="component-wrapper">
+                    <CyberSelect
+                      id="color-select"
+                      bind:value={settings.chosenColor}
+                      color={currentColor}
+                      label="SYSTEM_COLOR:"
+                      options={[
+                        'green',
+                        'red',
+                        'yellow',
+                        'blue',
+                        'orange',
+                        'pink',
+                        'cyan',
+                        'random',
+                      ]}
+                    />
+                  </div>
+                </div>
+              {/if}
             </div>
-          {:else}
-            <div
-              class="glitch-wrapper"
-              in:signalMorph={{ duration: 400 }}
-              out:signalMorph={{ duration: 200 }}
-            >
-              <div class="component-wrapper">
-                <CyberSelect
-                  id="color-select"
-                  bind:value={settings.chosenColor}
-                  color={currentColor}
-                  label="SYSTEM_COLOR:"
-                  options={['green', 'red', 'yellow', 'blue', 'orange', 'pink', 'cyan', 'random']}
-                />
-              </div>
-            </div>
-          {/if}
-        </div>
+          </div>
 
-        <div class="setting-item">
-          <CyberNumericInput
-            id="font-size"
-            bind:value={settings.fontSize}
-            min={8}
-            max={100}
-            color={currentColor}
-            label="FONT_SIZE:"
-          />
-        </div>
+          <div class="setting-item">
+            <CyberNumericInput
+              id="font-size"
+              bind:value={settings.fontSize}
+              min={8}
+              max={100}
+              color={currentColor}
+              label="FONT_SIZE:"
+            />
+          </div>
 
-        <div class="setting-item">
-          <CyberNumericInput
-            id="speed"
-            bind:value={settings.speed}
-            min={1}
-            max={200}
-            color={currentColor}
-            label="SPEED:"
-          />
-        </div>
+          <div class="setting-item">
+            <CyberNumericInput
+              id="speed"
+              bind:value={settings.speed}
+              min={1}
+              max={200}
+              color={currentColor}
+              label="SPEED:"
+            />
+          </div>
 
-        <div
-          class="setting-item"
-          use:fallingLetters={{ value: settings.all4Directions, color: currentColor }}
-        >
-          <CyberCheckbox
-            id="all4-toggle"
-            bind:checked={settings.all4Directions}
-            color={currentColor}
-            label="ALL_4_DIRECTIONS:"
-          />
-        </div>
+          <div
+            class="setting-item"
+            use:fallingLetters={{ value: settings.all4Directions, color: currentColor }}
+          >
+            <CyberCheckbox
+              id="all4-toggle"
+              bind:checked={settings.all4Directions}
+              color={currentColor}
+              label="ALL_4_DIRECTIONS:"
+            />
+          </div>
 
-        <div
-          class="setting-item"
-          use:fallingLetters={{ value: settings.discoOn, color: currentColor }}
-        >
-          <CyberCheckbox
-            id="disco-toggle"
-            bind:checked={settings.discoOn}
-            color={currentColor}
-            label="DISCO_MODE:"
-          />
+          <div
+            class="setting-item"
+            use:fallingLetters={{ value: settings.discoOn, color: currentColor }}
+          >
+            <CyberCheckbox
+              id="disco-toggle"
+              bind:checked={settings.discoOn}
+              color={currentColor}
+              label="DISCO_MODE:"
+            />
+          </div>
         </div>
-      </div>
+      </CyberAccordion>
     </div>
   </div>
 </div>
@@ -277,6 +292,8 @@
     background: rgba(0, 0, 0, 0.8);
     position: relative;
     backdrop-filter: blur(5px);
+    width: 90%;
+    max-width: 800px;
   }
 
   .hud-frame::before {
@@ -318,34 +335,59 @@
     gap: 1.5rem;
   }
 
-  .control-group {
-    display: flex;
+  .main-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
     justify-content: center;
   }
 
+  @media (min-width: 600px) {
+    .main-actions {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
   .settings-grid {
-    margin-top: 2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    align-items: flex-end;
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 2rem;
     font-family: var(--font-mono);
     font-size: 0.9rem;
+  }
+
+  @media (min-width: 700px) {
+    .settings-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
   .setting-item {
     display: flex;
     align-items: center;
     gap: 1rem;
-    min-height: 70px;
-    justify-content: flex-end;
+    justify-content: flex-start;
     width: 100%;
+  }
+
+  .transition-stack {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    width: 100%;
+  }
+
+  .transition-stack > :global(*) {
+    grid-area: 1 / 1;
+  }
+
+  .preset-group {
+    align-items: flex-end;
   }
 
   .glitch-wrapper {
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
     align-items: center;
     width: 100%;
     position: relative;
@@ -354,7 +396,7 @@
   .component-wrapper {
     width: 100%;
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
   }
 
   .fade-in {
