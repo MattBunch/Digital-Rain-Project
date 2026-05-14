@@ -7,6 +7,7 @@
     variant?: 'primary' | 'secondary';
     children?: import('svelte').Snippet;
     class?: string;
+    disabled?: boolean;
   }
 
   const {
@@ -15,6 +16,7 @@
     variant = 'primary',
     children,
     class: className = '',
+    disabled = false,
   }: Props = $props();
 
   $effect(() => {
@@ -42,6 +44,7 @@
   style:--glow-color={color || '#00ff41'}
   style:--border-color={color || '#00ff41'}
   {onclick}
+  {disabled}
 >
   <span class="accent-bar"></span>
   <span class="glitch-layer" aria-hidden="true">{@render children?.()}</span>
@@ -133,6 +136,26 @@
   .cyber-button:hover::before,
   .cyber-button:focus-visible::before {
     opacity: 1;
+  }
+
+  .cyber-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    filter: grayscale(1);
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  .cyber-button:disabled .accent-bar {
+    opacity: 0.5;
+  }
+
+  .cyber-button:disabled::before {
+    display: none;
+  }
+
+  .cyber-button:disabled .glitch-layer {
+    display: none !important;
   }
 
   .content {

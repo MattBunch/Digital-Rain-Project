@@ -8,6 +8,7 @@
   import CyberAccordion from '$lib/components/CyberAccordion.svelte';
   import HelpModal from '$lib/components/HelpModal.svelte';
   import AboutModal from '$lib/components/AboutModal.svelte';
+  import SavePresetModal from '$lib/components/SavePresetModal.svelte';
   import { fallingLetters } from '$lib/utils/FallingLettersAction';
   import { signalMorph } from '$lib/utils/Transitions';
   import { COLORS } from '$lib/constants/matrix';
@@ -33,6 +34,7 @@
   let isHelpOpen = $state(false);
   let isAboutOpen = $state(false);
   let isConfigOpen = $state(false);
+  let isSaveModalOpen = $state(false);
 
   // Preset state
   const CUSTOM_PRESET_NAME = 'CUSTOM';
@@ -120,12 +122,13 @@
   }
 
   function handleSavePreset() {
-    const name = prompt('Enter preset name:');
-    if (name) {
-      const newPreset: IPreset = { name, settings: $state.snapshot(settings) };
-      saveCustomPreset(newPreset);
-      customPresets = loadCustomPresets();
-    }
+    isSaveModalOpen = true;
+  }
+
+  function confirmSavePreset(name: string) {
+    const newPreset: IPreset = { name, settings: $state.snapshot(settings) };
+    saveCustomPreset(newPreset);
+    customPresets = loadCustomPresets();
   }
 
   const transitionDuration =
@@ -309,6 +312,12 @@
 
 <HelpModal isOpen={isHelpOpen} onClose={() => (isHelpOpen = false)} color={currentColor} />
 <AboutModal isOpen={isAboutOpen} onClose={() => (isAboutOpen = false)} color={currentColor} />
+<SavePresetModal
+  isOpen={isSaveModalOpen}
+  onClose={() => (isSaveModalOpen = false)}
+  onSave={confirmSavePreset}
+  color={currentColor}
+/>
 
 <style>
   .menu-container {

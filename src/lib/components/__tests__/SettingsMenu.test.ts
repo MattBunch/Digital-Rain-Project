@@ -76,6 +76,22 @@ describe('SettingsMenu', () => {
     expect(screen.getByText('SYSTEM_MANUAL')).toBeInTheDocument();
   });
 
+  it('clicking save preset opens the SavePresetModal', async () => {
+    render(SettingsMenuWrapper);
+
+    // Open accordion first
+    await fireEvent.click(screen.getByText('SYSTEM_CONFIGURATION'));
+
+    // SavePresetModal should not be visible initially
+    expect(screen.queryByText('SAVE_PRESET')).not.toBeInTheDocument();
+
+    const saveButton = screen.getByTitle('SAVE_PRESET');
+    await fireEvent.click(saveButton);
+
+    // SavePresetModal should now be visible
+    expect(screen.getByText('SAVE_PRESET')).toBeInTheDocument();
+  });
+
   it('COLOR REGRESSION TEST: cycles through colors and updates style correctly', async () => {
     const { container } = render(SettingsMenuWrapper);
 
