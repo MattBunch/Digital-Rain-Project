@@ -283,7 +283,8 @@ export class CoreEngine {
       this.createMatrixArray(dir);
       return this.words;
     });
-    this.words = [];
+    // Set this.words to one of the directions (e.g., south) so it's not empty
+    this.words = this.all4DirectionsArray[1];
   }
 
   draw(inputWords: MatrixString[], passThroughToDraw: boolean, speedFactor: number = 1): void {
@@ -451,7 +452,7 @@ export class CoreEngine {
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
-  drawAlternative(): void {
+  drawAlternative(speedFactor: number = 1): void {
     if (!this.ctx || !this.canvas) {
       return;
     }
@@ -479,18 +480,44 @@ export class CoreEngine {
       getRandomColor: () => getRandomColor(),
     };
 
-    this.words.forEach((word) => {
-      word.showAlternative(
-        this.ctx!,
-        this.colorManager.getCurrentColorArray(),
-        {
-          rapidWordChange: this.rapidWordChange,
-          discoOn: this.colorManager.discoOn,
-          direction: this.direction,
-        },
-        squareConfig,
-      );
-    });
+    if (this.all4Directions) {
+      const directions: Direction[] = ['north', 'south', 'east', 'west'];
+      const originalDirection = this.direction;
+      directions.forEach((dir, i) => {
+        this.direction = dir;
+        const words = this.all4DirectionsArray[i];
+        if (words) {
+          words.forEach((word) => {
+            this.moveWord(word, speedFactor);
+            word.showAlternative(
+              this.ctx!,
+              this.colorManager.getCurrentColorArray(),
+              {
+                rapidWordChange: this.rapidWordChange,
+                discoOn: this.colorManager.discoOn,
+                direction: this.direction,
+              },
+              squareConfig,
+            );
+          });
+        }
+      });
+      this.direction = originalDirection;
+    } else {
+      this.words.forEach((word) => {
+        this.moveWord(word, speedFactor);
+        word.showAlternative(
+          this.ctx!,
+          this.colorManager.getCurrentColorArray(),
+          {
+            rapidWordChange: this.rapidWordChange,
+            discoOn: this.colorManager.discoOn,
+            direction: this.direction,
+          },
+          squareConfig,
+        );
+      });
+    }
   }
 
   returnAlternativeFadeCondition(
@@ -587,7 +614,7 @@ export class CoreEngine {
     const speedFactor = this.animationManager.getSpeedFactor(deltaTime);
 
     if (this.squareAnimationOn) {
-      this.drawAlternative();
+      this.drawAlternative(speedFactor);
     } else {
       this.draw(this.words, !this.all4Directions, speedFactor);
     }
@@ -670,10 +697,22 @@ export class CoreEngine {
     } else {
       this.createMatrixArray(this.direction);
     }
+
     if (this.squareAnimationOn) {
-      this.words.shift();
-      this.giveEachWordNewWord();
-      this.resetAllWordsYPositions();
+      if (this.all4Directions) {
+        this.all4DirectionsArray.forEach((words) => {
+          words.shift();
+          words.forEach((word) => {
+            word.word = generateWord(word.word.length);
+          });
+        });
+        // We don't call resetAllWordsYPositions here because it's direction-specific (south-only)
+        // and createMatrixArray already provides variety.
+      } else {
+        this.words.shift();
+        this.giveEachWordNewWord();
+        this.resetAllWordsYPositions();
+      }
     }
   }
 

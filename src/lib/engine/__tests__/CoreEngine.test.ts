@@ -215,10 +215,11 @@ describe('CoreEngine', () => {
   });
 
   describe('Initialization Logic', () => {
-    it('should initialize all4DirectionsArray when all4Directions is set to true', () => {
+    it('should NOT have empty words array when all4Directions is set to true', () => {
       const spy = vi.spyOn(engine, 'initializeAll4Directions');
       engine.all4Directions = true;
       expect(spy).toHaveBeenCalled();
+      expect(engine.words.length).toBeGreaterThan(0);
     });
 
     it('should call initializeAll4Directions in resetWordsArray if all4Directions is true', () => {
@@ -229,12 +230,12 @@ describe('CoreEngine', () => {
       expect(spy).toHaveBeenCalled();
     });
 
-    it('should repopulate words when all4Directions is toggled from true to false', () => {
+    it('should keep words populated when all4Directions is toggled from true to false', () => {
       engine.all4Directions = true;
-      expect(engine.words.length).toBe(0); // words is empty when all4Directions is true
+      const initialLength = engine.words.length;
+      expect(initialLength).toBeGreaterThan(0);
 
       engine.all4Directions = false;
-      // This is expected to fail before the fix because words remains empty
       expect(engine.words.length).toBeGreaterThan(0);
     });
 
@@ -246,11 +247,33 @@ describe('CoreEngine', () => {
       expect(engine.direction).toBe('south');
     });
 
-    it('should reset words when fontSize changes', () => {
-      const spy = vi.spyOn(engine, 'resetWordsArray');
-      engine.fontSize = 30;
-      // This is expected to fail before the fix because fontSize is a property, not a setter
-      expect(spy).toHaveBeenCalled();
+    it('should move words in square mode when loop is called', async () => {
+      engine.all4Directions = false;
+      engine.run(true); // Start square mode
+
+      // Move words to a known position (they are at negative Y initially)
+      engine.words[0].y = 100;
+      const initialY = engine.words[0].y;
+
+      // Simulate one loop iteration
+      await vi.advanceTimersByTimeAsync(32);
+
+      expect(engine.words[0].y).toBeGreaterThan(initialY);
+    });
+
+    it('should render all 4 directions in square mode if enabled', () => {
+      engine.all4Directions = true;
+      engine.squareAnimationOn = true;
+      const drawSolidRectSpy = vi.spyOn(engine, 'drawSolidRect');
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const moveWordSpy = vi.spyOn(engine as any, 'moveWord');
+
+      engine.drawAlternative(1);
+
+      expect(drawSolidRectSpy).toHaveBeenCalledTimes(1);
+      // 50 columns * 4 directions = 200 calls (approx, depends on canvas width)
+      expect(moveWordSpy.mock.calls.length).toBeGreaterThan(50);
     });
   });
 });

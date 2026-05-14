@@ -59,10 +59,10 @@ npm run test:e2e
 
 - see docs/project_feature_ideas_and_improvements.md
 - reorganize menu ui - look nicer
-  - collapsable menu for the preset settings and complicated settings, nicer layout. - in progress
   - cyber button design - should be more square now that they are all side by side (add option)
   - bug - system color to refresh rate animation - it still doesn't load like the other effects
-  - move square mode - disappeared, not working.
+  - move square mode - matrix strings don't "hang" in place.
+  - w/s keys, q/r keys - resets screen
 - alert for the saving preset - replace with custom component.
 - Colour wheel selector.
 
