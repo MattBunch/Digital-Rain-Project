@@ -52,7 +52,7 @@ Here's a suggested implementation order, working from foundational to complex:
 **Phase 2 — Easy Wins (low risk, high impact)** 
 4. Rain intensity slider — small engine change, big visual payoff 
 5. Keyboard shortcut for All 4 Directions — trivial gap to close 
-6. Character set switcher — isolated change to `Assets.ts` and the alphabet constant 
+6. Character set switcher — isolated change to `matrix.ts` and the alphabet constant 
 7. Per-string color — small `MatrixString` constructor change; touches nothing else
 
 **Phase 3 — Visual Effects (self-contained canvas work)**
