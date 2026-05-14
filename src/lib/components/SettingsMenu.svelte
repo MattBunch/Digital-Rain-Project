@@ -130,7 +130,7 @@
 
   const transitionDuration =
     (typeof process !== 'undefined' && process.env.NODE_ENV === 'test') ||
-    (typeof window !== 'undefined' && (window as any).IS_E2E)
+    (typeof window !== 'undefined' && (window as unknown as { IS_E2E: boolean }).IS_E2E)
       ? 0
       : 400;
 </script>

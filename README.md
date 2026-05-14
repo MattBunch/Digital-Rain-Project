@@ -62,7 +62,7 @@ npm run test:e2e
   - collapsable menu for the preset settings and complicated settings, nicer layout. - in progress
   - cyber button design - should be more square now that they are all side by side (add option)
   - bug - system color to refresh rate animation - it still doesn't load like the other effects
-  - turn off all 4 directions - background matrix canvas disappears effect does not change, have to resize to trigger the matrix canvas animation
+  - move square mode - disappeared, not working.
 - alert for the saving preset - replace with custom component.
 - Colour wheel selector.
 

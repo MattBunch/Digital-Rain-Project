@@ -191,25 +191,25 @@ describe('CoreEngine', () => {
 
   describe('Crash Prevention', () => {
     it('should not crash when draw is called with undefined inputWords', () => {
-      expect(() => engine.draw(undefined as any, false)).not.toThrow();
+      expect(() => engine.draw(undefined as unknown as MatrixString[], false)).not.toThrow();
     });
 
     it('should not crash when drawAll4Directions is called and array is empty', () => {
       engine.all4Directions = true;
-      (engine as any).all4DirectionsArray = [];
+      // Access private property for testing purposes
+      (engine as unknown as { all4DirectionsArray: MatrixString[][] }).all4DirectionsArray = [];
       expect(() => engine.drawAll4Directions()).not.toThrow();
     });
 
     it('should skip undefined entries in inputWords during draw', () => {
       const mockWord = {
         word: 'test',
-        length: 4,
         wordChangeCounter: 0,
         wordChangeCounterTurnoverPoint: 10,
         fontSize: 20,
         show: vi.fn(),
-      };
-      const inputWords = [mockWord, undefined, mockWord] as any;
+      } as unknown as MatrixString;
+      const inputWords = [mockWord, undefined as unknown as MatrixString, mockWord];
       expect(() => engine.draw(inputWords, false)).not.toThrow();
     });
   });
@@ -226,6 +226,30 @@ describe('CoreEngine', () => {
       engine.all4Directions = true;
       spy.mockClear();
       engine.resetWordsArray();
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('should repopulate words when all4Directions is toggled from true to false', () => {
+      engine.all4Directions = true;
+      expect(engine.words.length).toBe(0); // words is empty when all4Directions is true
+
+      engine.all4Directions = false;
+      // This is expected to fail before the fix because words remains empty
+      expect(engine.words.length).toBeGreaterThan(0);
+    });
+
+    it('should restore original direction after drawAll4Directions', () => {
+      engine.direction = 'south';
+      engine.all4Directions = true;
+      engine.drawAll4Directions();
+      // This is expected to fail before the fix because it becomes 'west'
+      expect(engine.direction).toBe('south');
+    });
+
+    it('should reset words when fontSize changes', () => {
+      const spy = vi.spyOn(engine, 'resetWordsArray');
+      engine.fontSize = 30;
+      // This is expected to fail before the fix because fontSize is a property, not a setter
       expect(spy).toHaveBeenCalled();
     });
   });

@@ -37,7 +37,7 @@ export class CoreEngine {
   discoFrameCounterTurnoverPoint: number = 10;
 
   defaultFontSize: number = 20;
-  fontSize: number = 20;
+  private _fontSize: number = 20;
   stringSizeMin: number = 20;
   stringSizeMax: number = 48;
   alternativeFontSize: number = 20;
@@ -79,14 +79,25 @@ export class CoreEngine {
     this.colorManager.chosenColor = value;
   }
 
+  get fontSize() {
+    return this._fontSize;
+  }
+  set fontSize(value: number) {
+    const changed = this._fontSize !== value;
+    this._fontSize = value;
+    if (changed && (this.canvas || this.words.length > 0)) {
+      this.resetWordsArray();
+    }
+  }
+
   get all4Directions() {
     return this._all4Directions;
   }
   set all4Directions(value: boolean) {
     const changed = this._all4Directions !== value;
     this._all4Directions = value;
-    if (changed && value && (this.canvas || this.words.length > 0)) {
-      this.initializeAll4Directions();
+    if (changed && (this.canvas || this.words.length > 0)) {
+      this.resetWordsArray();
     }
   }
 
@@ -405,12 +416,14 @@ export class CoreEngine {
 
   drawAll4Directions(speedFactor: number = 1): void {
     const directions: Direction[] = ['north', 'south', 'east', 'west'];
+    const originalDirection = this.direction;
     directions.forEach((dir, i) => {
       this.direction = dir;
       if (this.all4DirectionsArray[i]) {
         this.draw(this.all4DirectionsArray[i], true, speedFactor);
       }
     });
+    this.direction = originalDirection;
   }
 
   changeWordCheck(inputWordObject: MatrixString, inputSize: number): void {
@@ -555,7 +568,7 @@ export class CoreEngine {
     this.direction = 'south';
     this.discoFrameCounter = 0;
     this.animationManager.intervalSpeed = DEFAULT_CONFIG.SPEED;
-    this.fontSize = DEFAULT_CONFIG.FONT_SIZE;
+    this._fontSize = DEFAULT_CONFIG.FONT_SIZE;
     this.stringSizeMin = DEFAULT_CONFIG.STRING_SIZE_MIN;
     this.stringSizeMax = DEFAULT_CONFIG.STRING_SIZE_MAX;
     this.alternativeFontSize = DEFAULT_CONFIG.FONT_SIZE;
@@ -625,7 +638,6 @@ export class CoreEngine {
         this.fontSize -= 2;
       }
     }
-    this.resetWordsArray();
   }
 
   controlStringSize(increase: boolean): void {

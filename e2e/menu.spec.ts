@@ -4,7 +4,7 @@ test.describe('Menu', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     await page.addInitScript(() => {
-      (window as any).IS_E2E = true;
+      (window as unknown as { IS_E2E: boolean }).IS_E2E = true;
     });
   });
 
