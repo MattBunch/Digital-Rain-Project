@@ -60,8 +60,6 @@ npm run test:e2e
 - see docs/project_feature_ideas_and_improvements.md
 - reorganize menu ui - look nicer
   - bug - system color to refresh rate animation - it still doesn't load like the other effects
-  - move square mode - matrix strings don't "hang" in place.
-  - w/s keys, q/r keys - resets screen
 - Colour wheel selector.
 
 ### deployment
@@ -73,6 +71,8 @@ npm run test:e2e
 ### UI bugfixes, effects
 
 - disco effect on menu -> needs to show in the background matrix canvas
+- move square mode - matrix strings don't "hang" in place.
+- w/s keys, q/r keys - resets screen
 - remove commented out console logging from button & settings menu
 - slight component/screen shake on pressing button or input.
 - cool cyberpunk television transition effect when switching from "menu" to "digital rain canvas" view - very quick, 200ms - 400 ms max
