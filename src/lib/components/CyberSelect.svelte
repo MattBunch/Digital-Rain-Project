@@ -11,10 +11,11 @@
     color?: string;
     label?: string;
     id?: string;
+    onchange?: (value: string) => void;
   }
 
   /* eslint-disable prefer-const */
-  let { value = $bindable(), options, color = '#00ff41', label, id }: Props = $props();
+  let { value = $bindable(), options, color = '#00ff41', label, id, onchange }: Props = $props();
   /* eslint-enable prefer-const */
 
   let isOpen = $state(false);
@@ -37,6 +38,9 @@
     value = opt;
     isOpen = false;
     focusedIndex = -1;
+    if (onchange) {
+      onchange(opt);
+    }
   }
 
   function handleKeydown(event: KeyboardEvent) {
@@ -179,6 +183,9 @@
     text-transform: uppercase;
     letter-spacing: 1px;
     margin-bottom: 2px;
+    height: 16px;
+    display: flex;
+    align-items: center;
   }
 
   .select-wrapper {
@@ -187,10 +194,11 @@
 
   .select-trigger {
     width: 100%;
+    height: 42px;
     background: rgba(0, 0, 0, 0.85);
     border: 1px solid var(--theme-color);
     color: var(--theme-color);
-    padding: 10px 15px;
+    padding: 0 15px;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
@@ -222,6 +230,9 @@
     text-align: left;
     position: relative;
     z-index: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .glitch-layer {

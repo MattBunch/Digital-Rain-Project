@@ -1,37 +1,35 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
 import { describe, it, expect, vi } from 'vitest';
-import SettingsMenu from '../SettingsMenu.svelte';
+import SettingsMenuWrapper from './SettingsMenuWrapper.svelte';
 import * as matrix from '$lib/constants/matrix';
 
 describe('SettingsMenu', () => {
-  const defaultProps = {
-    onStartNormal: vi.fn(),
-    onStartSquare: vi.fn(),
-  };
-
   it('renders START and SQUARE buttons', () => {
-    render(SettingsMenu, { props: defaultProps });
-    // Using getAllByText because CyberButton has multiple layers of the same text for glitch effects
+    render(SettingsMenuWrapper);
     expect(screen.getAllByText('START')[0]).toBeInTheDocument();
     expect(screen.getAllByText('SQUARE')[0]).toBeInTheDocument();
   });
 
   it('clicking START calls onStartNormal prop', async () => {
     const onStartNormal = vi.fn();
-    render(SettingsMenu, { props: { ...defaultProps, onStartNormal } });
+    render(SettingsMenuWrapper, { props: { onStartNormal } });
     await fireEvent.click(screen.getAllByText('START')[0]);
     expect(onStartNormal).toHaveBeenCalled();
   });
 
   it('clicking SQUARE calls onStartSquare prop', async () => {
     const onStartSquare = vi.fn();
-    render(SettingsMenu, { props: { ...defaultProps, onStartSquare } });
+    render(SettingsMenuWrapper, { props: { onStartSquare } });
     await fireEvent.click(screen.getAllByText('SQUARE')[0]);
     expect(onStartSquare).toHaveBeenCalled();
   });
 
   it('disco checkbox toggles discoOn binding', async () => {
-    render(SettingsMenu, { props: defaultProps });
+    render(SettingsMenuWrapper);
+
+    // Open accordion first
+    await fireEvent.click(screen.getByText('SYSTEM_CONFIGURATION'));
+
     const discoCheckbox = screen.getByRole('checkbox', { name: /DISCO_MODE/i });
 
     // Initially false, color select should be visible
@@ -50,17 +48,24 @@ describe('SettingsMenu', () => {
   });
 
   it('all4Directions checkbox toggles state', async () => {
-    render(SettingsMenu, { props: defaultProps });
-    const all4Checkbox = screen.getByRole('checkbox', { name: /ALL_4_DIRECTIONS/i });
+    render(SettingsMenuWrapper);
 
-    expect(all4Checkbox).toHaveAttribute('aria-checked', 'false');
+    // Open accordion first
+    await fireEvent.click(screen.getByText('SYSTEM_CONFIGURATION'));
 
-    await fireEvent.click(all4Checkbox);
-    expect(all4Checkbox).toHaveAttribute('aria-checked', 'true');
+    const getAll4Checkbox = () => screen.getByRole('checkbox', { name: /ALL_4_DIRECTIONS/i });
+    expect(getAll4Checkbox()).toHaveAttribute('aria-checked', 'false');
+
+    await fireEvent.click(getAll4Checkbox());
+
+    // Wait for transition and key re-render
+    await waitFor(() => {
+      expect(getAll4Checkbox()).toHaveAttribute('aria-checked', 'true');
+    });
   });
 
   it('clicking HELP opens the HelpModal', async () => {
-    render(SettingsMenu, { props: defaultProps });
+    render(SettingsMenuWrapper);
 
     // HelpModal should not be visible initially
     expect(screen.queryByText('SYSTEM_MANUAL')).not.toBeInTheDocument();
@@ -71,10 +76,29 @@ describe('SettingsMenu', () => {
     expect(screen.getByText('SYSTEM_MANUAL')).toBeInTheDocument();
   });
 
+  it('clicking save preset opens the SavePresetModal', async () => {
+    render(SettingsMenuWrapper);
+
+    // Open accordion first
+    await fireEvent.click(screen.getByText('SYSTEM_CONFIGURATION'));
+
+    // SavePresetModal should not be visible initially
+    expect(screen.queryByText('SAVE_PRESET')).not.toBeInTheDocument();
+
+    const saveButton = screen.getByTitle('SAVE_PRESET');
+    await fireEvent.click(saveButton);
+
+    // SavePresetModal should now be visible
+    expect(screen.getByText('SAVE_PRESET')).toBeInTheDocument();
+  });
+
   it('COLOR REGRESSION TEST: cycles through colors and updates style correctly', async () => {
-    const { container } = render(SettingsMenu, { props: defaultProps });
+    const { container } = render(SettingsMenuWrapper);
+
+    // Open accordion first
+    await fireEvent.click(screen.getByText('SYSTEM_CONFIGURATION'));
+
     const menuContainer = container.querySelector('.menu-container') as HTMLElement;
-    const colorSelectTrigger = screen.getByLabelText(/SYSTEM_COLOR/i);
     const colors = [
       { name: 'green', value: matrix.COLORS.MATRIX_GREEN },
       { name: 'red', value: matrix.COLORS.RED_VARIANTS[2] },
@@ -86,36 +110,100 @@ describe('SettingsMenu', () => {
       { name: 'random', value: 'random' },
     ];
 
-    // Reduced iterations to keep test time reasonable with custom component interactions
-    for (let i = 0; i < 2; i++) {
-      for (const color of colors) {
-        // Open dropdown
-        await fireEvent.click(colorSelectTrigger);
+    for (const color of colors) {
+      // Re-query color select trigger because it re-renders on color change
+      const colorSelectTrigger = screen.getByLabelText(/SYSTEM_COLOR/i);
 
-        // Click option
-        const option = screen.getByRole('option', { name: new RegExp(color.name, 'i') });
-        await fireEvent.click(option);
+      // Open dropdown
+      await fireEvent.click(colorSelectTrigger);
 
-        await waitFor(
-          () => {
-            const style = menuContainer.getAttribute('style') || '';
-            if (color.name === 'random') {
-              const match = style.match(
-                /--theme-color:\s*(rgb\(\d+,\s*\d+,\s*\d+\)|#[0-9A-Fa-f]{6})/,
-              );
-              expect(match).toBeTruthy();
+      // Click option
+      const option = await screen.findByRole('option', { name: new RegExp(color.name, 'i') });
+      await fireEvent.click(option);
+
+      await waitFor(
+        () => {
+          const style = menuContainer.getAttribute('style') || '';
+          if (color.name === 'random') {
+            const match = style.match(
+              /--theme-color:\s*(rgb\(\d+,\s*\d+,\s*\d+\)|#[0-9A-Fa-f]{6})/,
+            );
+            expect(match).toBeTruthy();
+          } else {
+            const themeColor = menuContainer.style.getPropertyValue('--theme-color').trim();
+            if (themeColor.startsWith('rgb')) {
+              expect(themeColor).not.toBe('');
             } else {
-              const themeColor = menuContainer.style.getPropertyValue('--theme-color').trim();
-              if (themeColor.startsWith('rgb')) {
-                expect(themeColor).not.toBe('');
-              } else {
-                expect(themeColor.toLowerCase()).toBe(color.value.toLowerCase());
-              }
+              expect(themeColor.toLowerCase()).toBe(color.value.toLowerCase());
             }
-          },
-          { timeout: 1000 },
-        );
-      }
+          }
+        },
+        { timeout: 1000 },
+      );
     }
   }, 10000);
+
+  it('automatically identifies presets when settings match', async () => {
+    render(SettingsMenuWrapper);
+
+    // Open accordion first
+    await fireEvent.click(screen.getByText('SYSTEM_CONFIGURATION'));
+
+    const getPresetSelect = () => screen.getByLabelText(/PRESET:/i);
+
+    // Should start with Classic Matrix (default)
+    expect(getPresetSelect()).toHaveTextContent(/CLASSIC MATRIX/i);
+
+    // Select Cyberpunk Pink preset via dropdown to verify logic
+    await fireEvent.click(getPresetSelect());
+    const pinkOption = await screen.findByRole('option', { name: /CYBERPUNK PINK/i });
+    await fireEvent.click(pinkOption);
+
+    await waitFor(() => {
+      expect(getPresetSelect()).toHaveTextContent(/CYBERPUNK PINK/i);
+    });
+
+    // Change a setting manually (e.g., speed) -> should switch to CUSTOM
+    const speedInput = screen.getByLabelText(/SPEED:/i);
+    await fireEvent.input(speedInput, { target: { value: '99' } });
+
+    await waitFor(() => {
+      expect(getPresetSelect()).toHaveTextContent(/CUSTOM/i);
+    });
+
+    // Change settings back to match Classic Matrix (green, normal, speed 50, etc)
+    await waitFor(() => {
+      const colorSelect = screen.getByLabelText(/SYSTEM_COLOR/i);
+      return colorSelect;
+    });
+
+    await fireEvent.click(screen.getByLabelText(/SYSTEM_COLOR/i));
+    const greenOption = await screen.findByRole('option', { name: /GREEN/i });
+    await fireEvent.click(greenOption);
+
+    await waitFor(() => {
+      const speedInput = screen.getByLabelText(/SPEED:/i);
+      return speedInput;
+    });
+    await fireEvent.input(screen.getByLabelText(/SPEED:/i), { target: { value: '50' } });
+
+    await waitFor(async () => {
+      const all4Checkbox = screen.getByRole('checkbox', { name: /ALL_4_DIRECTIONS/i });
+      if (all4Checkbox.getAttribute('aria-checked') === 'true') {
+        await fireEvent.click(all4Checkbox);
+      }
+      // Wait for it to become false if it was true
+      expect(screen.getByRole('checkbox', { name: /ALL_4_DIRECTIONS/i })).toHaveAttribute(
+        'aria-checked',
+        'false',
+      );
+    });
+
+    await waitFor(
+      () => {
+        expect(getPresetSelect()).toHaveTextContent(/CLASSIC MATRIX/i);
+      },
+      { timeout: 2000 },
+    );
+  });
 });

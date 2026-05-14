@@ -58,6 +58,10 @@ npm run test:e2e
 ### features
 
 - see docs/project_feature_ideas_and_improvements.md
+- reorganize menu ui - look nicer
+  - bug - system color to refresh rate animation - it still doesn't load like the other effects
+  - move square mode - matrix strings don't "hang" in place.
+  - w/s keys, q/r keys - resets screen
 - Colour wheel selector.
 
 ### deployment

@@ -188,4 +188,92 @@ describe('CoreEngine', () => {
       expect(engine.bottomEdgeDisco).toBe(1080 - 20);
     });
   });
+
+  describe('Crash Prevention', () => {
+    it('should not crash when draw is called with undefined inputWords', () => {
+      expect(() => engine.draw(undefined as unknown as MatrixString[], false)).not.toThrow();
+    });
+
+    it('should not crash when drawAll4Directions is called and array is empty', () => {
+      engine.all4Directions = true;
+      // Access private property for testing purposes
+      (engine as unknown as { all4DirectionsArray: MatrixString[][] }).all4DirectionsArray = [];
+      expect(() => engine.drawAll4Directions()).not.toThrow();
+    });
+
+    it('should skip undefined entries in inputWords during draw', () => {
+      const mockWord = {
+        word: 'test',
+        wordChangeCounter: 0,
+        wordChangeCounterTurnoverPoint: 10,
+        fontSize: 20,
+        show: vi.fn(),
+      } as unknown as MatrixString;
+      const inputWords = [mockWord, undefined as unknown as MatrixString, mockWord];
+      expect(() => engine.draw(inputWords, false)).not.toThrow();
+    });
+  });
+
+  describe('Initialization Logic', () => {
+    it('should NOT have empty words array when all4Directions is set to true', () => {
+      const spy = vi.spyOn(engine, 'initializeAll4Directions');
+      engine.all4Directions = true;
+      expect(spy).toHaveBeenCalled();
+      expect(engine.words.length).toBeGreaterThan(0);
+    });
+
+    it('should call initializeAll4Directions in resetWordsArray if all4Directions is true', () => {
+      const spy = vi.spyOn(engine, 'initializeAll4Directions');
+      engine.all4Directions = true;
+      spy.mockClear();
+      engine.resetWordsArray();
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('should keep words populated when all4Directions is toggled from true to false', () => {
+      engine.all4Directions = true;
+      const initialLength = engine.words.length;
+      expect(initialLength).toBeGreaterThan(0);
+
+      engine.all4Directions = false;
+      expect(engine.words.length).toBeGreaterThan(0);
+    });
+
+    it('should restore original direction after drawAll4Directions', () => {
+      engine.direction = 'south';
+      engine.all4Directions = true;
+      engine.drawAll4Directions();
+      // This is expected to fail before the fix because it becomes 'west'
+      expect(engine.direction).toBe('south');
+    });
+
+    it('should move words in square mode when loop is called', async () => {
+      engine.all4Directions = false;
+      engine.run(true); // Start square mode
+
+      // Move words to a known position (they are at negative Y initially)
+      engine.words[0].y = 100;
+      const initialY = engine.words[0].y;
+
+      // Simulate one loop iteration
+      await vi.advanceTimersByTimeAsync(32);
+
+      expect(engine.words[0].y).toBeGreaterThan(initialY);
+    });
+
+    it('should render all 4 directions in square mode if enabled', () => {
+      engine.all4Directions = true;
+      engine.squareAnimationOn = true;
+      const drawSolidRectSpy = vi.spyOn(engine, 'drawSolidRect');
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const moveWordSpy = vi.spyOn(engine as any, 'moveWord');
+
+      engine.drawAlternative(1);
+
+      expect(drawSolidRectSpy).toHaveBeenCalledTimes(1);
+      // 50 columns * 4 directions = 200 calls (approx, depends on canvas width)
+      expect(moveWordSpy.mock.calls.length).toBeGreaterThan(50);
+    });
+  });
 });

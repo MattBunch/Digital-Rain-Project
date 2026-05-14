@@ -85,7 +85,8 @@
     gap: 0.5rem;
     font-family: var(--font-mono);
     width: 200px;
-    align-items: flex-end;
+    align-items: flex-start;
+    min-height: 65px;
   }
 
   .cyber-label {
@@ -94,6 +95,9 @@
     text-transform: uppercase;
     letter-spacing: 1px;
     margin-bottom: 2px;
+    height: 16px;
+    display: flex;
+    align-items: center;
   }
 
   .stepper-wrapper {
@@ -101,12 +105,14 @@
     align-items: center;
     gap: 8px;
     width: 100%;
+    height: 42px;
   }
 
   .input-glow-wrapper {
     position: relative;
     flex-grow: 1;
     overflow: hidden;
+    height: 100%;
     /* Maintain the clip-path on the wrapper to clip the scanline */
     clip-path: polygon(0% 0%, 90% 0%, 100% 30%, 100% 100%, 10% 100%, 0% 70%);
   }
@@ -114,7 +120,8 @@
   .cyber-input {
     background: rgba(0, 0, 0, 0.85);
     border: 1px solid var(--theme-color);
-    padding: 10px 5px;
+    padding: 0 5px;
+    height: 100%;
     color: var(--theme-color);
     font-family: var(--font-mono);
     font-size: 1.1rem;
@@ -125,6 +132,7 @@
     transition: all 0.2s ease;
     appearance: textfield;
     -moz-appearance: textfield;
+    white-space: nowrap;
   }
 
   /* Hide native arrows */

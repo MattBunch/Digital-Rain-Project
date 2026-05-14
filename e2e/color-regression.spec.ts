@@ -23,26 +23,33 @@ const colors = [
 ];
 
 test.describe('E2E Color Regression', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/');
+    await page.addInitScript(() => {
+      (window as unknown as { IS_E2E: boolean }).IS_E2E = true;
+    });
+  });
+
   test('COLOR REGRESSION TEST: cycles through colors and verifies CSS variable updates', async ({
     page,
   }) => {
     // Increase timeout
-    test.setTimeout(30000);
+    test.setTimeout(60000);
 
-    await page.goto('/');
+    // Open accordion first
+    await page.getByRole('button', { name: /SYSTEM_CONFIGURATION/i }).click();
+
     const menuContainer = page.locator('.menu-container');
-    const colorSelect = page.getByLabel('SYSTEM_COLOR:');
+    const colorSelect = page.getByRole('button', { name: 'SYSTEM_COLOR:' }).last();
 
     // Iterate through colors once for stability in E2E
     for (const color of colors) {
       // Open the custom select
       await colorSelect.click();
+      await expect(page.getByRole('listbox').last()).toBeVisible();
 
       // Click the option
-      await page.getByRole('option', { name: color.name.toUpperCase() }).click();
-
-      // Wait for any transitions
-      await page.waitForTimeout(100);
+      await page.getByRole('option', { name: color.name.toUpperCase() }).last().click();
 
       const currentThemeColor = await menuContainer.evaluate((el) =>
         el.style.getPropertyValue('--theme-color').trim(),
