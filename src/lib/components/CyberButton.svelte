@@ -43,6 +43,7 @@
   style:--border-color={color || '#00ff41'}
   {onclick}
 >
+  <span class="accent-bar"></span>
   <span class="glitch-layer" aria-hidden="true">{@render children?.()}</span>
   <span class="content" use:scramble>{@render children?.()}</span>
   <span class="glitch-layer" aria-hidden="true">{@render children?.()}</span>
@@ -51,23 +52,55 @@
 <style>
   .cyber-button {
     position: relative;
-    background: transparent;
-    border: 2px solid var(--border-color);
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid var(--border-color);
     color: var(--border-color);
-    padding: 12px 24px;
+    padding: 10px 20px;
     font-family: var(--font-ui);
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: bold;
     text-transform: uppercase;
     cursor: pointer;
     overflow: hidden;
     transition: all 0.2s ease;
-    clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
-    min-width: 160px;
+    clip-path: polygon(
+      0 0,
+      calc(100% - 12px) 0,
+      100% 12px,
+      100% 100%,
+      12px 100%,
+      0 calc(100% - 12px)
+    );
+    min-width: 140px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .cyber-button.secondary {
-    clip-path: polygon(0 0, 90% 0, 100% 100%, 10% 100%);
+    clip-path: polygon(
+      12px 0,
+      100% 0,
+      100% calc(100% - 12px),
+      calc(100% - 12px) 100%,
+      0 100%,
+      0 12px
+    );
+  }
+
+  .accent-bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--border-color);
+    transition: all 0.2s ease;
+  }
+
+  .cyber-button.secondary .accent-bar {
+    left: auto;
+    right: 0;
   }
 
   .cyber-button::before {
@@ -87,9 +120,14 @@
   .cyber-button:focus-visible {
     color: black;
     text-shadow: none;
-    box-shadow: 0 0 20px var(--glow-color);
+    box-shadow: 0 0 15px var(--glow-color);
     outline: none;
-    transform: scale(1.05);
+    transform: translateY(-2px);
+  }
+
+  .cyber-button:hover .accent-bar,
+  .cyber-button:focus-visible .accent-bar {
+    background: black;
   }
 
   .cyber-button:hover::before,
@@ -101,6 +139,7 @@
     position: relative;
     z-index: 1;
     display: inline-block;
+    letter-spacing: 1px;
   }
 
   /* Glitch Effect */
@@ -123,13 +162,13 @@
     animation: glitch 0.3s infinite;
   }
 
-  .glitch-layer:nth-child(1) {
+  .glitch-layer:nth-child(2) {
     color: #ff003c; /* Cyber Red */
     left: -2px;
     clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
   }
 
-  .glitch-layer:nth-child(3) {
+  .glitch-layer:nth-child(4) {
     color: #00e5ff; /* Cyber Cyan */
     left: 2px;
     clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
