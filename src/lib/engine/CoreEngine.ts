@@ -48,6 +48,7 @@ export class CoreEngine {
   private _all4Directions: boolean = false;
   private _charSet: 'katakana' | 'latin' | 'binary' | 'hex' | 'braille' | 'custom' = 'katakana';
   private _customCharSet: string = '';
+  private _perStringColor: boolean = false;
   drawBackgroundOn: boolean = true;
   drawBackgroundAll4DirectionsCounter: number = 0;
   drawBackgroundAll4DirectionsCounterMax: number = 3;
@@ -133,6 +134,17 @@ export class CoreEngine {
     const changed = this._customCharSet !== value;
     this._customCharSet = value;
     if (changed && this.charSet === 'custom' && (this.canvas || this.words.length > 0)) {
+      this.resetWordsArray();
+    }
+  }
+
+  get perStringColor() {
+    return this._perStringColor;
+  }
+  set perStringColor(value: boolean) {
+    const changed = this._perStringColor !== value;
+    this._perStringColor = value;
+    if (changed && (this.canvas || this.words.length > 0)) {
       this.resetWordsArray();
     }
   }
@@ -275,16 +287,20 @@ export class CoreEngine {
           ySpeedInput = -Math.abs(generateSpeed());
         }
 
-        this.words.push(
-          new MatrixString(
-            newWord,
-            xInput,
-            yInput,
-            xSpeedInput || 0,
-            ySpeedInput || 0,
-            newFontSize,
-          ),
+        const word = new MatrixString(
+          newWord,
+          xInput,
+          yInput,
+          xSpeedInput || 0,
+          ySpeedInput || 0,
+          newFontSize,
         );
+
+        if (this.perStringColor) {
+          word.colorOffset = Math.floor(Math.random() * 3);
+        }
+
+        this.words.push(word);
       }
     } else if (inputDirectionMatrix === 'east' || inputDirectionMatrix === 'west') {
       for (let i = 0; i < rows; i++) {
@@ -311,16 +327,20 @@ export class CoreEngine {
           xSpeedInput = -Math.abs(generateSpeed());
         }
 
-        this.words.push(
-          new MatrixString(
-            newWord,
-            xInput,
-            yInput,
-            xSpeedInput || 0,
-            ySpeedInput || 0,
-            newFontSize,
-          ),
+        const word = new MatrixString(
+          newWord,
+          xInput,
+          yInput,
+          xSpeedInput || 0,
+          ySpeedInput || 0,
+          newFontSize,
         );
+
+        if (this.perStringColor) {
+          word.colorOffset = Math.floor(Math.random() * 3);
+        }
+
+        this.words.push(word);
       }
     }
   }
@@ -442,6 +462,9 @@ export class CoreEngine {
             this.resolvedAlphabet,
           );
           word.fontSize = generateFontSize(this.fontSize);
+          if (this.perStringColor) {
+            word.colorOffset = Math.floor(Math.random() * 3);
+          }
         } else {
           word.y -= movement;
         }
@@ -455,6 +478,9 @@ export class CoreEngine {
             this.resolvedAlphabet,
           );
           word.fontSize = generateFontSize(this.fontSize);
+          if (this.perStringColor) {
+            word.colorOffset = Math.floor(Math.random() * 3);
+          }
         } else {
           word.x -= movement;
         }
@@ -473,6 +499,9 @@ export class CoreEngine {
             this.canvas.width,
             this.canvas.height,
           );
+          if (this.perStringColor) {
+            word.colorOffset = Math.floor(Math.random() * 3);
+          }
         } else {
           word.x += movement;
         }
@@ -669,6 +698,7 @@ export class CoreEngine {
     this.alternativeFontSize = DEFAULT_CONFIG.FONT_SIZE;
     this._charSet = 'katakana';
     this._customCharSet = '';
+    this._perStringColor = false;
   }
 
   pause(): void {
