@@ -11,6 +11,7 @@ export const DEFAULT_SETTINGS: IEngineSettings = {
   intensity: 100,
   charSet: 'katakana',
   customCharSet: '',
+  perStringColor: false,
 };
 
 export const PRESETS: IPreset[] = [

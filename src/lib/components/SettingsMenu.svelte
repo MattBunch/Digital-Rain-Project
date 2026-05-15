@@ -356,6 +356,24 @@
               {/key}
             </div>
           </div>
+
+          <div
+            class="setting-item"
+            use:fallingLetters={{ value: settings.perStringColor, color: currentColor }}
+          >
+            <div class="transition-stack">
+              {#key settings.perStringColor}
+                <div class="stack-item" transition:signalMorph={{ duration: transitionDuration }}>
+                  <CyberCheckbox
+                    id="multi-color-toggle"
+                    bind:checked={settings.perStringColor}
+                    color={currentColor}
+                    label="MULTI_COLOR:"
+                  />
+                </div>
+              {/key}
+            </div>
+          </div>
         </div>
       </CyberAccordion>
     </div>

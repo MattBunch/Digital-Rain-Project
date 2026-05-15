@@ -73,6 +73,7 @@
     engine.intensity = settings.intensity / 100;
     engine.charSet = settings.charSet;
     engine.customCharSet = settings.customCharSet;
+    engine.perStringColor = settings.perStringColor;
 
     // Background Engine
     backgroundEngine.switchColor(settings.chosenColor);
@@ -83,6 +84,7 @@
     backgroundEngine.intensity = settings.intensity / 100;
     backgroundEngine.charSet = settings.charSet;
     backgroundEngine.customCharSet = settings.customCharSet;
+    backgroundEngine.perStringColor = settings.perStringColor;
   });
 
   function handleStartNormal() {

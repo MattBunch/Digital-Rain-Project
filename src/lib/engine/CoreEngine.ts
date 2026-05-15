@@ -426,6 +426,9 @@ export class CoreEngine {
           );
           word.fontSize = generateFontSize(this.fontSize);
           word.y = generateYSouth(word.word.length, word.fontSize, this.canvas.height);
+          if (this.perStringColor) {
+            word.colorOffset = Math.floor(Math.random() * 3);
+          }
         } else {
           word.y += movement;
         }

@@ -51,6 +51,7 @@ export interface IEngineSettings {
   intensity: number;
   charSet: 'katakana' | 'latin' | 'binary' | 'hex' | 'braille' | 'custom';
   customCharSet: string;
+  perStringColor: boolean;
 }
 
 export interface IPreset {

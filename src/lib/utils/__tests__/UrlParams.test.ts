@@ -18,10 +18,11 @@ describe('UrlParams', () => {
     expect(hash).toContain('i=100');
     expect(hash).toContain('cs=katakana');
     expect(hash).toContain('ccs=');
+    expect(hash).toContain('p=0');
   });
 
   it('should deserialize settings correctly', () => {
-    const hash = '#c=blue&d=0&s=25&v=60&m=square&a=1&f=15&i=150&cs=binary&ccs=101010';
+    const hash = '#c=blue&d=0&s=25&v=60&m=square&a=1&f=15&i=150&cs=binary&ccs=101010&p=1';
     const settings = deserializeSettings(hash);
     expect(settings.chosenColor).toBe('blue');
     expect(settings.discoOn).toBe(false);
@@ -33,6 +34,7 @@ describe('UrlParams', () => {
     expect(settings.intensity).toBe(150);
     expect(settings.charSet).toBe('binary');
     expect(settings.customCharSet).toBe('101010');
+    expect(settings.perStringColor).toBe(true);
   });
 
   it('should handle malformed hashes gracefully', () => {

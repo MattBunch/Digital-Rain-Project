@@ -28,6 +28,7 @@ export class MatrixString {
   wordChangeCounter: number;
   wordChangeCounterTurnoverPoint: number;
   XYCoordinates: CoordinateObject[];
+  colorOffset: number = 0;
   private currentAlphabet: string | undefined;
 
   constructor(
@@ -152,11 +153,11 @@ export class MatrixString {
       if (discoOn) {
         discoColorCounterCheck(ctx);
       } else if (alternativeFade1Condition) {
-        ctx.fillStyle = inputColorArray[0];
+        ctx.fillStyle = inputColorArray[(0 + this.colorOffset) % 3];
       } else if (alternativeFade2Condition) {
-        ctx.fillStyle = inputColorArray[1];
+        ctx.fillStyle = inputColorArray[(1 + this.colorOffset) % 3];
       } else {
-        ctx.fillStyle = inputColorArray[2];
+        ctx.fillStyle = inputColorArray[(2 + this.colorOffset) % 3];
       }
     } else {
       if (discoOn) {
@@ -177,21 +178,21 @@ export class MatrixString {
       if (i == this.word.length - 2) {
         ctx.fillStyle = COLORS.WHITE;
       } else if (i == this.word.length - 3) {
-        ctx.fillStyle = inputColorArray[0];
+        ctx.fillStyle = inputColorArray[(0 + this.colorOffset) % 3];
       } else if (i == this.word.length - 4) {
-        ctx.fillStyle = inputColorArray[1];
+        ctx.fillStyle = inputColorArray[(1 + this.colorOffset) % 3];
       } else {
-        ctx.fillStyle = inputColorArray[2];
+        ctx.fillStyle = inputColorArray[(2 + this.colorOffset) % 3];
       }
     } else if (direction == 'north' || direction == 'east') {
       if (i == 0) {
         ctx.fillStyle = COLORS.WHITE;
       } else if (i == 1) {
-        ctx.fillStyle = inputColorArray[0];
+        ctx.fillStyle = inputColorArray[(0 + this.colorOffset) % 3];
       } else if (i == 2) {
-        ctx.fillStyle = inputColorArray[1];
+        ctx.fillStyle = inputColorArray[(1 + this.colorOffset) % 3];
       } else {
-        ctx.fillStyle = inputColorArray[2];
+        ctx.fillStyle = inputColorArray[(2 + this.colorOffset) % 3];
       }
     }
   }
