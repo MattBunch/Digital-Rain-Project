@@ -38,6 +38,7 @@ export class CoreEngine {
 
   defaultFontSize: number = 20;
   private _fontSize: number = 20;
+  private _intensity: number = 1.0;
   stringSizeMin: number = 20;
   stringSizeMax: number = 48;
   alternativeFontSize: number = 20;
@@ -85,6 +86,17 @@ export class CoreEngine {
   set fontSize(value: number) {
     const changed = this._fontSize !== value;
     this._fontSize = value;
+    if (changed && (this.canvas || this.words.length > 0)) {
+      this.resetWordsArray();
+    }
+  }
+
+  get intensity() {
+    return this._intensity;
+  }
+  set intensity(value: number) {
+    const changed = this._intensity !== value;
+    this._intensity = value;
     if (changed && (this.canvas || this.words.length > 0)) {
       this.resetWordsArray();
     }
@@ -209,8 +221,8 @@ export class CoreEngine {
       return;
     }
 
-    const columns = Math.floor(this.canvas.width / this.fontSize);
-    const rows = Math.floor(this.canvas.height / this.fontSize);
+    const columns = Math.floor((this.canvas.width / this.fontSize) * this.intensity);
+    const rows = Math.floor((this.canvas.height / this.fontSize) * this.intensity);
 
     if (inputDirectionMatrix === 'south' || inputDirectionMatrix === 'north') {
       for (let i = 0; i < columns; i++) {
@@ -596,6 +608,7 @@ export class CoreEngine {
     this.discoFrameCounter = 0;
     this.animationManager.intervalSpeed = DEFAULT_CONFIG.SPEED;
     this._fontSize = DEFAULT_CONFIG.FONT_SIZE;
+    this._intensity = 1.0;
     this.stringSizeMin = DEFAULT_CONFIG.STRING_SIZE_MIN;
     this.stringSizeMax = DEFAULT_CONFIG.STRING_SIZE_MAX;
     this.alternativeFontSize = DEFAULT_CONFIG.FONT_SIZE;

@@ -269,6 +269,23 @@
             </div>
           </div>
 
+          <div class="setting-item">
+            <div class="transition-stack">
+              {#key settings.intensity}
+                <div class="stack-item" transition:signalMorph={{ duration: transitionDuration }}>
+                  <CyberNumericInput
+                    id="intensity"
+                    bind:value={settings.intensity}
+                    min={10}
+                    max={300}
+                    color={currentColor}
+                    label="RAIN_DENSITY:"
+                  />
+                </div>
+              {/key}
+            </div>
+          </div>
+
           <div
             class="setting-item"
             use:fallingLetters={{ value: settings.all4Directions, color: currentColor }}

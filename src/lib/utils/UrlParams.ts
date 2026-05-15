@@ -8,6 +8,7 @@ const KEY_MAP: Record<string, keyof IEngineSettings> = {
   m: 'mode',
   s: 'fontSize',
   v: 'speed',
+  i: 'intensity',
 };
 
 const REVERSE_KEY_MAP = Object.fromEntries(
@@ -44,7 +45,12 @@ export function deserializeSettings(hash: string): Partial<IEngineSettings> {
     if (fullKey) {
       if (fullKey === 'discoOn' || fullKey === 'all4Directions') {
         settings[fullKey] = value === '1';
-      } else if (fullKey === 'frameCount' || fullKey === 'fontSize' || fullKey === 'speed') {
+      } else if (
+        fullKey === 'frameCount' ||
+        fullKey === 'fontSize' ||
+        fullKey === 'speed' ||
+        fullKey === 'intensity'
+      ) {
         const num = parseInt(value, 10);
         if (!isNaN(num)) {
           settings[fullKey] = num;

@@ -276,4 +276,37 @@ describe('CoreEngine', () => {
       expect(moveWordSpy.mock.calls.length).toBeGreaterThan(50);
     });
   });
+
+  describe('Intensity Logic', () => {
+    it('should scale the number of columns based on intensity', () => {
+      engine.fontSize = 20;
+      if (engine.canvas) {
+        engine.canvas.width = 1000; // 1000 / 20 = 50 columns
+      }
+
+      engine.intensity = 1.0;
+      engine.resetWordsArray();
+      expect(engine.words.length).toBe(50);
+
+      engine.intensity = 0.5;
+      engine.resetWordsArray();
+      expect(engine.words.length).toBe(25);
+
+      engine.intensity = 2.0;
+      engine.resetWordsArray();
+      expect(engine.words.length).toBe(100);
+    });
+
+    it('should trigger resetWordsArray when intensity changes', () => {
+      const spy = vi.spyOn(engine, 'resetWordsArray');
+      engine.intensity = 1.5;
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('should reset intensity to 1.0 when reset is called', () => {
+      engine.intensity = 2.0;
+      engine.reset();
+      expect(engine.intensity).toBe(1.0);
+    });
+  });
 });

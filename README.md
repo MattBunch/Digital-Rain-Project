@@ -58,7 +58,11 @@ npm run test:e2e
 ### features
 
 - see docs/project_feature_ideas_and_improvements.md
+  - finish point 4
+  - write tests for all 4 directions toggle (added with manual coding) - point 5
+  - point 6 - prompt for this lives in docs/character_set_switcher_prompt.md
 - reorganize menu ui - look nicer
+  - ui - number field gets de-focused on input because of effect - needs to stay focused
   - bug - system color to refresh rate animation - it still doesn't load like the other effects
 - Colour wheel selector.
 

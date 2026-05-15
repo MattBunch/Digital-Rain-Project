@@ -8,6 +8,7 @@ export const DEFAULT_SETTINGS: IEngineSettings = {
   mode: 'normal',
   fontSize: 20,
   speed: 50,
+  intensity: 100,
 };
 
 export const PRESETS: IPreset[] = [
@@ -16,6 +17,7 @@ export const PRESETS: IPreset[] = [
     settings: {
       ...DEFAULT_SETTINGS,
       chosenColor: 'green',
+      intensity: 100,
     },
   },
   {
@@ -24,6 +26,7 @@ export const PRESETS: IPreset[] = [
       ...DEFAULT_SETTINGS,
       chosenColor: 'pink',
       all4Directions: true,
+      intensity: 100,
     },
   },
   {
@@ -33,6 +36,7 @@ export const PRESETS: IPreset[] = [
       discoOn: true,
       speed: 20,
       frameCount: 5,
+      intensity: 100,
     },
   },
   {
@@ -41,6 +45,7 @@ export const PRESETS: IPreset[] = [
       ...DEFAULT_SETTINGS,
       chosenColor: 'blue',
       mode: 'square',
+      intensity: 100,
     },
   },
 ];

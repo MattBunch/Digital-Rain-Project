@@ -11,6 +11,7 @@ export function compareSettings(s1: IEngineSettings, s2: IEngineSettings): boole
     s1.frameCount === s2.frameCount &&
     s1.mode === s2.mode &&
     s1.fontSize === s2.fontSize &&
-    s1.speed === s2.speed
+    s1.speed === s2.speed &&
+    s1.intensity === s2.intensity
   );
 }

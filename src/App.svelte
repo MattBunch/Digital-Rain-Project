@@ -70,6 +70,7 @@
     engine.discoFrameCounterTurnoverPoint = settings.frameCount;
     engine.fontSize = settings.fontSize;
     engine.intervalSpeed = settings.speed;
+    engine.intensity = settings.intensity / 100;
 
     // Background Engine
     backgroundEngine.switchColor(settings.chosenColor);
@@ -77,6 +78,7 @@
     backgroundEngine.all4Directions = settings.all4Directions;
     backgroundEngine.fontSize = settings.fontSize;
     backgroundEngine.intervalSpeed = settings.speed;
+    backgroundEngine.intensity = settings.intensity / 100;
   });
 
   function handleStartNormal() {

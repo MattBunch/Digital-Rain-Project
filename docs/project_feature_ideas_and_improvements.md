@@ -45,9 +45,9 @@ Here's a suggested implementation order, working from foundational to complex:
 
 **Phase 1 — Foundation (do these first, others depend on them)**
 
-1. URL hash params — forces you to formalize what "configuration state" means; everything else benefits from having a clean state model
-2. Preset system — builds directly on the URL params work; localStorage persistence
-3. FPS counter — tiny, but gives you a debugging tool you'll want for every performance-sensitive feature after this
+1. URL hash params — forces you to formalize what "configuration state" means; everything else benefits from having a clean state model (/)
+2. Preset system — builds directly on the URL params work; localStorage persistence (/)
+3. FPS counter — tiny, but gives you a debugging tool you'll want for every performance-sensitive feature after this (/)
 
 **Phase 2 — Easy Wins (low risk, high impact)** 
 4. Rain intensity slider — small engine change, big visual payoff 

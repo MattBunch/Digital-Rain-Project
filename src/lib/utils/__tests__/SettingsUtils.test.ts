@@ -20,5 +20,6 @@ describe('SettingsUtils', () => {
     expect(compareSettings({ ...s1, mode: 'square' }, s1)).toBe(false);
     expect(compareSettings({ ...s1, fontSize: 30 }, s1)).toBe(false);
     expect(compareSettings({ ...s1, speed: 10 }, s1)).toBe(false);
+    expect(compareSettings({ ...s1, intensity: 200 }, s1)).toBe(false);
   });
 });

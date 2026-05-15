@@ -47,6 +47,7 @@ export interface IEngineSettings {
   mode: 'normal' | 'square';
   fontSize: number;
   speed: number;
+  intensity: number;
 }
 
 export interface IPreset {
