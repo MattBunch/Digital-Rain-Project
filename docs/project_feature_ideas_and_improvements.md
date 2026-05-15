@@ -51,7 +51,11 @@ Here's a suggested implementation order, working from foundational to complex:
 
 **Phase 2 — Easy Wins (low risk, high impact)** 4. Rain intensity slider — small engine change, big visual payoff 5. Keyboard shortcut for All 4 Directions — trivial gap to close 6. Character set switcher — isolated change to `matrix.ts` and the alphabet constant 7. Per-string color — small `MatrixString` constructor change; touches nothing else
 
-**Phase 3 — Visual Effects (self-contained canvas work)** 8. Phosphor glow — pure `ctx.shadowBlur` addition, no architecture changes 9. Diagonal directions — extends the existing direction system in `CoreEngine` and `MatrixString`; coordinate math is the main challenge 10. Glitch mode — can be implemented as a periodic `CoreEngine` draw-pass overlay 11. Wave distortion — modifies coordinate output in `MatrixString`; safe to isolate
+**Phase 3 — Visual Effects (self-contained canvas work)** 
+8. Phosphor glow — pure `ctx.shadowBlur` addition, no architecture changes 
+9. Diagonal directions — extends the existing direction system in `CoreEngine` and `MatrixString`; coordinate math is the main challenge 
+10. Glitch mode — can be implemented as a periodic `CoreEngine` draw-pass overlay 
+11. Wave distortion — modifies coordinate output in `MatrixString`; safe to isolate
 
 **Phase 4 — Interactivity (requires new event handling)** 12. Click to spawn burst — introduces the concept of "temporary" strings outside the main `words` array; design this carefully as it sets a pattern 13. Mouse repulsion/attraction — builds on the burst work; needs per-frame cursor tracking fed into the draw loop 14. Draw mode — builds on mouse tracking; most complex of the interaction features
 
