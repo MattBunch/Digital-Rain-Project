@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { CoreEngine } from '../CoreEngine';
+import { ALPHABET } from '../../constants/matrix';
 
 describe('CoreEngine', () => {
   let engine: CoreEngine;
@@ -307,6 +308,48 @@ describe('CoreEngine', () => {
       engine.intensity = 2.0;
       engine.reset();
       expect(engine.intensity).toBe(1.0);
+    });
+  });
+
+  describe('Charset Logic', () => {
+    it('should return correct resolvedAlphabet for predefined charsets', () => {
+      engine.charSet = 'binary';
+      expect(engine.resolvedAlphabet).toBe('01');
+
+      engine.charSet = 'hex';
+      expect(engine.resolvedAlphabet).toBe('0123456789ABCDEF');
+    });
+
+    it('should return custom charset when charSet is custom', () => {
+      engine.charSet = 'custom';
+      engine.customCharSet = 'XYZ';
+      expect(engine.resolvedAlphabet).toBe('XYZ');
+    });
+
+    it('should fall back to ALPHABET if custom charset is empty', () => {
+      engine.charSet = 'custom';
+      engine.customCharSet = '';
+      expect(engine.resolvedAlphabet).toBe(ALPHABET);
+    });
+
+    it('should trigger resetWordsArray when charSet changes', () => {
+      const spy = vi.spyOn(engine, 'resetWordsArray');
+      engine.charSet = 'latin';
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('should trigger resetWordsArray when customCharSet changes and charSet is custom', () => {
+      engine.charSet = 'custom';
+      const spy = vi.spyOn(engine, 'resetWordsArray');
+      engine.customCharSet = '123';
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('should NOT trigger resetWordsArray when customCharSet changes but charSet is NOT custom', () => {
+      engine.charSet = 'latin';
+      const spy = vi.spyOn(engine, 'resetWordsArray');
+      engine.customCharSet = '123';
+      expect(spy).not.toHaveBeenCalled();
     });
   });
 });

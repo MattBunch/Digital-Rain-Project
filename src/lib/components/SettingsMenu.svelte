@@ -4,6 +4,7 @@
   import CyberCheckbox from '$lib/components/CyberCheckbox.svelte';
   import CyberSelect from '$lib/components/CyberSelect.svelte';
   import CyberNumericInput from '$lib/components/CyberNumericInput.svelte';
+  import CyberTextInput from '$lib/components/CyberTextInput.svelte';
   import CyberSquareButton from '$lib/components/CyberSquareButton.svelte';
   import CyberAccordion from '$lib/components/CyberAccordion.svelte';
   import HelpModal from '$lib/components/HelpModal.svelte';
@@ -285,6 +286,40 @@
               {/key}
             </div>
           </div>
+
+          <div class="setting-item">
+            <div class="transition-stack">
+              {#key settings.charSet}
+                <div class="stack-item" transition:signalMorph={{ duration: transitionDuration }}>
+                  <CyberSelect
+                    id="charset-select"
+                    bind:value={settings.charSet}
+                    color={currentColor}
+                    label="CHARACTER_SET:"
+                    options={['katakana', 'latin', 'binary', 'hex', 'braille', 'custom']}
+                  />
+                </div>
+              {/key}
+            </div>
+          </div>
+
+          {#if settings.charSet === 'custom'}
+            <div class="setting-item">
+              <div class="transition-stack">
+                {#key settings.customCharSet}
+                  <div class="stack-item" transition:signalMorph={{ duration: transitionDuration }}>
+                    <CyberTextInput
+                      id="custom-charset-input"
+                      bind:value={settings.customCharSet}
+                      color={currentColor}
+                      label="CUSTOM_CHARSET:"
+                      placeholder="ENTER_CHARACTERS..."
+                    />
+                  </div>
+                {/key}
+              </div>
+            </div>
+          {/if}
 
           <div
             class="setting-item"

@@ -28,6 +28,7 @@ export class MatrixString {
   wordChangeCounter: number;
   wordChangeCounterTurnoverPoint: number;
   XYCoordinates: CoordinateObject[];
+  private currentAlphabet: string | undefined;
 
   constructor(
     word: string,
@@ -54,10 +55,11 @@ export class MatrixString {
     config: IMatrixStringConfig,
     discoColorCounterCheck: (ctx: CanvasRenderingContext2D) => void,
   ): void {
-    const { rapidWordChange, discoOn } = config;
+    const { rapidWordChange, discoOn, alphabet } = config;
+    this.currentAlphabet = alphabet;
 
     if (rapidWordChange) {
-      this.word = generateWord(this.word.length);
+      this.word = generateWord(this.word.length, alphabet);
     }
 
     if (discoOn) {
@@ -70,7 +72,7 @@ export class MatrixString {
       const yCoordinate = this.getYCoordinateFromDirection(i, config.direction, false);
 
       if (onePercentChance() && !rapidWordChange) {
-        letter = getRandomChar();
+        letter = getRandomChar(alphabet);
       }
 
       if (!discoOn) {
@@ -87,10 +89,11 @@ export class MatrixString {
     config: IMatrixStringConfig,
     squareConfig: ISquareConfig,
   ): void {
-    const { rapidWordChange } = config;
+    const { rapidWordChange, alphabet } = config;
+    this.currentAlphabet = alphabet;
 
     if (rapidWordChange) {
-      this.word = generateWord(this.word.length);
+      this.word = generateWord(this.word.length, alphabet);
     }
 
     for (let i = 0; i < this.word.length; i++) {
@@ -100,7 +103,7 @@ export class MatrixString {
       const yCoordinate = this.getYCoordinateFromDirection(i, config.direction, true);
 
       if (onePercentChance() && !rapidWordChange && i != 0) {
-        letter = getRandomChar();
+        letter = getRandomChar(alphabet);
       }
 
       if (i == 0) {
@@ -242,7 +245,7 @@ export class MatrixString {
   }
 
   increaseStringSize(): void {
-    this.word = this.word.concat(getRandomChar());
+    this.word = this.word.concat(getRandomChar(this.currentAlphabet));
   }
 
   decreaseStringSize(): void {

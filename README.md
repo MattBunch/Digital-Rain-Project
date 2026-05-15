@@ -58,7 +58,7 @@ npm run test:e2e
 ### features
 
 - see docs/project_feature_ideas_and_improvements.md
-  - point 6 - prompt for this lives in docs/character_set_switcher_prompt.md
+  - point 6 - chacter select dropdown - goes over bottom of div
 - reorganize menu ui - look nicer
   - ui - number field gets de-focused on input because of effect - needs to stay focused
   - bug - system color to refresh rate animation - it still doesn't load like the other effects

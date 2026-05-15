@@ -106,9 +106,15 @@ describe('MathUtils', () => {
   });
 
   describe('getRandomChar', () => {
-    it('should return a character from the ALPHABET', () => {
+    it('should return a character from the ALPHABET by default', () => {
       const char = MathUtils.getRandomChar();
       expect(ALPHABET).toContain(char);
+    });
+
+    it('should return a character from the provided alphabet', () => {
+      const alphabet = 'ABC';
+      const char = MathUtils.getRandomChar(alphabet);
+      expect(alphabet).toContain(char);
     });
 
     it('should return the correct character based on Math.random', () => {
@@ -126,6 +132,15 @@ describe('MathUtils', () => {
     it('should generate a word of the specified length', () => {
       expect(MathUtils.generateWord(0)).toBe('');
       expect(MathUtils.generateWord(5).length).toBe(5);
+    });
+
+    it('should use the provided alphabet', () => {
+      const alphabet = '01';
+      const word = MathUtils.generateWord(10, alphabet);
+      expect(word).toHaveLength(10);
+      for (const char of word) {
+        expect(alphabet).toContain(char);
+      }
     });
 
     it('should build word from getRandomChar', () => {

@@ -14,7 +14,7 @@ import {
   generateXEast,
   generateXWest,
 } from '../utils/CoordinateUtils.ts';
-import { ENGINE_CONSTANTS, DEFAULT_CONFIG } from '../constants/matrix.ts';
+import { ENGINE_CONSTANTS, DEFAULT_CONFIG, CHAR_SETS, ALPHABET } from '../constants/matrix.ts';
 import { ColorManager } from './ColorManager';
 import { SquareController } from './SquareController';
 import { AnimationManager } from './AnimationManager';
@@ -46,6 +46,8 @@ export class CoreEngine {
   rapidWordChange: boolean = false;
   hangingWords: boolean = true;
   private _all4Directions: boolean = false;
+  private _charSet: 'katakana' | 'latin' | 'binary' | 'hex' | 'braille' | 'custom' = 'katakana';
+  private _customCharSet: string = '';
   drawBackgroundOn: boolean = true;
   drawBackgroundAll4DirectionsCounter: number = 0;
   drawBackgroundAll4DirectionsCounterMax: number = 3;
@@ -111,6 +113,35 @@ export class CoreEngine {
     if (changed && (this.canvas || this.words.length > 0)) {
       this.resetWordsArray();
     }
+  }
+
+  get charSet() {
+    return this._charSet;
+  }
+  set charSet(value: 'katakana' | 'latin' | 'binary' | 'hex' | 'braille' | 'custom') {
+    const changed = this._charSet !== value;
+    this._charSet = value;
+    if (changed && (this.canvas || this.words.length > 0)) {
+      this.resetWordsArray();
+    }
+  }
+
+  get customCharSet() {
+    return this._customCharSet;
+  }
+  set customCharSet(value: string) {
+    const changed = this._customCharSet !== value;
+    this._customCharSet = value;
+    if (changed && this.charSet === 'custom' && (this.canvas || this.words.length > 0)) {
+      this.resetWordsArray();
+    }
+  }
+
+  get resolvedAlphabet(): string {
+    if (this._charSet === 'custom') {
+      return this._customCharSet.trim().length > 0 ? this._customCharSet : ALPHABET;
+    }
+    return CHAR_SETS[this._charSet] || ALPHABET;
   }
 
   get animationOn() {
@@ -227,7 +258,10 @@ export class CoreEngine {
     if (inputDirectionMatrix === 'south' || inputDirectionMatrix === 'north') {
       for (let i = 0; i < columns; i++) {
         const xInput = this.fontSize * i;
-        const newWord = generateWord(generateWordSizeRand(this.stringSizeMin, this.stringSizeMax));
+        const newWord = generateWord(
+          generateWordSizeRand(this.stringSizeMin, this.stringSizeMax),
+          this.resolvedAlphabet,
+        );
         const newFontSize = generateFontSize(this.fontSize);
         let yInput: number;
         let ySpeedInput: number;
@@ -255,7 +289,10 @@ export class CoreEngine {
     } else if (inputDirectionMatrix === 'east' || inputDirectionMatrix === 'west') {
       for (let i = 0; i < rows; i++) {
         const yInput = this.fontSize * i;
-        const newWord = generateWord(generateWordSizeRand(this.stringSizeMin, this.stringSizeMax));
+        const newWord = generateWord(
+          generateWordSizeRand(this.stringSizeMin, this.stringSizeMax),
+          this.resolvedAlphabet,
+        );
         const newFontSize = generateFontSize(this.fontSize);
         let xInput: number;
         let xSpeedInput: number;
@@ -343,6 +380,7 @@ export class CoreEngine {
         rapidWordChange: this.rapidWordChange,
         discoOn: this.colorManager.discoOn,
         direction: this.direction,
+        alphabet: this.resolvedAlphabet,
       };
 
       const discoCallback = (ctx: CanvasRenderingContext2D) => {
@@ -382,7 +420,10 @@ export class CoreEngine {
       case 'south':
         if (word.y > this.canvas.height) {
           word.ySpeed = generateSpeed();
-          word.word = generateWord(generateWordSizeRand(this.stringSizeMin, this.stringSizeMax));
+          word.word = generateWord(
+            generateWordSizeRand(this.stringSizeMin, this.stringSizeMax),
+            this.resolvedAlphabet,
+          );
           word.fontSize = generateFontSize(this.fontSize);
           word.y = generateYSouth(word.word.length, word.fontSize, this.canvas.height);
         } else {
@@ -393,7 +434,10 @@ export class CoreEngine {
         if (word.y < 0 - this.canvas.height * ENGINE_CONSTANTS.Y_NORTH_BOUNDARY_MULTIPLIER) {
           word.y = generateYNorth(this.canvas.height);
           word.ySpeed = -Math.abs(generateSpeed());
-          word.word = generateWord(generateWordSizeRand(this.stringSizeMin, this.stringSizeMax));
+          word.word = generateWord(
+            generateWordSizeRand(this.stringSizeMin, this.stringSizeMax),
+            this.resolvedAlphabet,
+          );
           word.fontSize = generateFontSize(this.fontSize);
         } else {
           word.y -= movement;
@@ -403,7 +447,10 @@ export class CoreEngine {
         if (word.x < 0 - this.canvas.width) {
           word.x = generateXEast(this.canvas.width, this.canvas.height);
           word.xSpeed = generateSpeed();
-          word.word = generateWord(generateWordSizeRand(this.stringSizeMin, this.stringSizeMax));
+          word.word = generateWord(
+            generateWordSizeRand(this.stringSizeMin, this.stringSizeMax),
+            this.resolvedAlphabet,
+          );
           word.fontSize = generateFontSize(this.fontSize);
         } else {
           word.x -= movement;
@@ -412,7 +459,10 @@ export class CoreEngine {
       case 'west':
         if (word.x > this.canvas.width) {
           word.xSpeed = -Math.abs(generateSpeed());
-          word.word = generateWord(generateWordSizeRand(this.stringSizeMin, this.stringSizeMax));
+          word.word = generateWord(
+            generateWordSizeRand(this.stringSizeMin, this.stringSizeMax),
+            this.resolvedAlphabet,
+          );
           word.fontSize = generateFontSize(this.fontSize);
           word.x = generateXWest(
             word.word.length,
@@ -442,7 +492,7 @@ export class CoreEngine {
   changeWordCheck(inputWordObject: MatrixString, inputSize: number): void {
     inputWordObject.wordChangeCounter++;
     if (inputWordObject.wordChangeCounter > inputWordObject.wordChangeCounterTurnoverPoint) {
-      inputWordObject.word = generateWord(inputSize);
+      inputWordObject.word = generateWord(inputSize, this.resolvedAlphabet);
       inputWordObject.wordChangeCounter = 0;
       inputWordObject.wordChangeCounterTurnoverPoint = generateWordChangeTurnoverNumber();
     }
@@ -508,6 +558,7 @@ export class CoreEngine {
                 rapidWordChange: this.rapidWordChange,
                 discoOn: this.colorManager.discoOn,
                 direction: this.direction,
+                alphabet: this.resolvedAlphabet,
               },
               squareConfig,
             );
@@ -525,6 +576,7 @@ export class CoreEngine {
             rapidWordChange: this.rapidWordChange,
             discoOn: this.colorManager.discoOn,
             direction: this.direction,
+            alphabet: this.resolvedAlphabet,
           },
           squareConfig,
         );
@@ -612,6 +664,8 @@ export class CoreEngine {
     this.stringSizeMin = DEFAULT_CONFIG.STRING_SIZE_MIN;
     this.stringSizeMax = DEFAULT_CONFIG.STRING_SIZE_MAX;
     this.alternativeFontSize = DEFAULT_CONFIG.FONT_SIZE;
+    this._charSet = 'katakana';
+    this._customCharSet = '';
   }
 
   pause(): void {
@@ -716,7 +770,7 @@ export class CoreEngine {
         this.all4DirectionsArray.forEach((words) => {
           words.shift();
           words.forEach((word) => {
-            word.word = generateWord(word.word.length);
+            word.word = generateWord(word.word.length, this.resolvedAlphabet);
           });
         });
         // We don't call resetAllWordsYPositions here because it's direction-specific (south-only)
@@ -731,7 +785,7 @@ export class CoreEngine {
 
   giveEachWordNewWord(): void {
     this.words.forEach((word) => {
-      word.word = generateWord(word.word.length);
+      word.word = generateWord(word.word.length, this.resolvedAlphabet);
     });
   }
 

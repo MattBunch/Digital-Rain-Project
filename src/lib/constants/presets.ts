@@ -9,6 +9,8 @@ export const DEFAULT_SETTINGS: IEngineSettings = {
   fontSize: 20,
   speed: 50,
   intensity: 100,
+  charSet: 'katakana',
+  customCharSet: '',
 };
 
 export const PRESETS: IPreset[] = [

@@ -71,16 +71,16 @@ export function generateSpeed(): number {
   return generateRandomNumber(0.001, 9.999);
 }
 
-export function generateWord(wordSize: number): string {
+export function generateWord(wordSize: number, alphabet?: string): string {
   let word = '';
   for (let i = 0; i < wordSize; i++) {
-    word += getRandomChar();
+    word += getRandomChar(alphabet);
   }
   return word;
 }
 
-export function getRandomChar(): string {
-  return ALPHABET.charAt(Math.floor(Math.random() * ALPHABET.length));
+export function getRandomChar(alphabet: string = ALPHABET): string {
+  return alphabet.charAt(Math.floor(Math.random() * alphabet.length));
 }
 
 export function generateWordChangeTurnoverNumber(): number {

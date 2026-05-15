@@ -9,6 +9,8 @@ const KEY_MAP: Record<string, keyof IEngineSettings> = {
   s: 'fontSize',
   v: 'speed',
   i: 'intensity',
+  cs: 'charSet',
+  ccs: 'customCharSet',
 };
 
 const REVERSE_KEY_MAP = Object.fromEntries(
@@ -59,7 +61,18 @@ export function deserializeSettings(hash: string): Partial<IEngineSettings> {
         if (value === 'normal' || value === 'square') {
           settings[fullKey] = value;
         }
-      } else if (fullKey === 'chosenColor') {
+      } else if (fullKey === 'charSet') {
+        if (
+          value === 'katakana' ||
+          value === 'latin' ||
+          value === 'binary' ||
+          value === 'hex' ||
+          value === 'braille' ||
+          value === 'custom'
+        ) {
+          settings[fullKey] = value;
+        }
+      } else if (fullKey === 'chosenColor' || fullKey === 'customCharSet') {
         settings[fullKey] = value;
       }
     }

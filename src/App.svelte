@@ -71,6 +71,8 @@
     engine.fontSize = settings.fontSize;
     engine.intervalSpeed = settings.speed;
     engine.intensity = settings.intensity / 100;
+    engine.charSet = settings.charSet;
+    engine.customCharSet = settings.customCharSet;
 
     // Background Engine
     backgroundEngine.switchColor(settings.chosenColor);
@@ -79,6 +81,8 @@
     backgroundEngine.fontSize = settings.fontSize;
     backgroundEngine.intervalSpeed = settings.speed;
     backgroundEngine.intensity = settings.intensity / 100;
+    backgroundEngine.charSet = settings.charSet;
+    backgroundEngine.customCharSet = settings.customCharSet;
   });
 
   function handleStartNormal() {

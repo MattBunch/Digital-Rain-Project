@@ -16,10 +16,12 @@ describe('UrlParams', () => {
     expect(hash).toContain('s=30');
     expect(hash).toContain('a=0'); // default
     expect(hash).toContain('i=100');
+    expect(hash).toContain('cs=katakana');
+    expect(hash).toContain('ccs=');
   });
 
   it('should deserialize settings correctly', () => {
-    const hash = '#c=blue&d=0&s=25&v=60&m=square&a=1&f=15&i=150';
+    const hash = '#c=blue&d=0&s=25&v=60&m=square&a=1&f=15&i=150&cs=binary&ccs=101010';
     const settings = deserializeSettings(hash);
     expect(settings.chosenColor).toBe('blue');
     expect(settings.discoOn).toBe(false);
@@ -29,6 +31,8 @@ describe('UrlParams', () => {
     expect(settings.all4Directions).toBe(true);
     expect(settings.frameCount).toBe(15);
     expect(settings.intensity).toBe(150);
+    expect(settings.charSet).toBe('binary');
+    expect(settings.customCharSet).toBe('101010');
   });
 
   it('should handle malformed hashes gracefully', () => {
