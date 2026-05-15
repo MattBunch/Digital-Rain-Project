@@ -70,6 +70,10 @@
     engine.discoFrameCounterTurnoverPoint = settings.frameCount;
     engine.fontSize = settings.fontSize;
     engine.intervalSpeed = settings.speed;
+    engine.intensity = settings.intensity / 100;
+    engine.charSet = settings.charSet;
+    engine.customCharSet = settings.customCharSet;
+    engine.perStringColor = settings.perStringColor;
 
     // Background Engine
     backgroundEngine.switchColor(settings.chosenColor);
@@ -77,6 +81,10 @@
     backgroundEngine.all4Directions = settings.all4Directions;
     backgroundEngine.fontSize = settings.fontSize;
     backgroundEngine.intervalSpeed = settings.speed;
+    backgroundEngine.intensity = settings.intensity / 100;
+    backgroundEngine.charSet = settings.charSet;
+    backgroundEngine.customCharSet = settings.customCharSet;
+    backgroundEngine.perStringColor = settings.perStringColor;
   });
 
   function handleStartNormal() {
@@ -114,6 +122,7 @@
             onReturn={handleReturnToMenu}
             bind:discoOn={settings.discoOn}
             bind:chosenColor={settings.chosenColor}
+            bind:all4Directions={settings.all4Directions}
           />
         {/if}
       </div>
@@ -129,6 +138,7 @@
         onReturn={handleReturnToMenu}
         bind:discoOn={settings.discoOn}
         bind:chosenColor={settings.chosenColor}
+        bind:all4Directions={settings.all4Directions}
       />
     {/if}
   </main>

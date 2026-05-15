@@ -20,6 +20,7 @@ export interface IMatrixStringConfig {
   rapidWordChange: boolean;
   discoOn: boolean;
   direction: string;
+  alphabet?: string;
 }
 
 export interface ISquareConfig {
@@ -47,6 +48,10 @@ export interface IEngineSettings {
   mode: 'normal' | 'square';
   fontSize: number;
   speed: number;
+  intensity: number;
+  charSet: 'katakana' | 'latin' | 'binary' | 'hex' | 'braille' | 'custom';
+  customCharSet: string;
+  perStringColor: boolean;
 }
 
 export interface IPreset {

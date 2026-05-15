@@ -28,6 +28,8 @@ export class MatrixString {
   wordChangeCounter: number;
   wordChangeCounterTurnoverPoint: number;
   XYCoordinates: CoordinateObject[];
+  colorOffset: number = 0;
+  private currentAlphabet: string | undefined;
 
   constructor(
     word: string,
@@ -54,10 +56,11 @@ export class MatrixString {
     config: IMatrixStringConfig,
     discoColorCounterCheck: (ctx: CanvasRenderingContext2D) => void,
   ): void {
-    const { rapidWordChange, discoOn } = config;
+    const { rapidWordChange, discoOn, alphabet } = config;
+    this.currentAlphabet = alphabet;
 
     if (rapidWordChange) {
-      this.word = generateWord(this.word.length);
+      this.word = generateWord(this.word.length, alphabet);
     }
 
     if (discoOn) {
@@ -70,7 +73,7 @@ export class MatrixString {
       const yCoordinate = this.getYCoordinateFromDirection(i, config.direction, false);
 
       if (onePercentChance() && !rapidWordChange) {
-        letter = getRandomChar();
+        letter = getRandomChar(alphabet);
       }
 
       if (!discoOn) {
@@ -87,10 +90,11 @@ export class MatrixString {
     config: IMatrixStringConfig,
     squareConfig: ISquareConfig,
   ): void {
-    const { rapidWordChange } = config;
+    const { rapidWordChange, alphabet } = config;
+    this.currentAlphabet = alphabet;
 
     if (rapidWordChange) {
-      this.word = generateWord(this.word.length);
+      this.word = generateWord(this.word.length, alphabet);
     }
 
     for (let i = 0; i < this.word.length; i++) {
@@ -100,7 +104,7 @@ export class MatrixString {
       const yCoordinate = this.getYCoordinateFromDirection(i, config.direction, true);
 
       if (onePercentChance() && !rapidWordChange && i != 0) {
-        letter = getRandomChar();
+        letter = getRandomChar(alphabet);
       }
 
       if (i == 0) {
@@ -149,11 +153,11 @@ export class MatrixString {
       if (discoOn) {
         discoColorCounterCheck(ctx);
       } else if (alternativeFade1Condition) {
-        ctx.fillStyle = inputColorArray[0];
+        ctx.fillStyle = inputColorArray[(0 + this.colorOffset) % 3];
       } else if (alternativeFade2Condition) {
-        ctx.fillStyle = inputColorArray[1];
+        ctx.fillStyle = inputColorArray[(1 + this.colorOffset) % 3];
       } else {
-        ctx.fillStyle = inputColorArray[2];
+        ctx.fillStyle = inputColorArray[(2 + this.colorOffset) % 3];
       }
     } else {
       if (discoOn) {
@@ -174,21 +178,21 @@ export class MatrixString {
       if (i == this.word.length - 2) {
         ctx.fillStyle = COLORS.WHITE;
       } else if (i == this.word.length - 3) {
-        ctx.fillStyle = inputColorArray[0];
+        ctx.fillStyle = inputColorArray[(0 + this.colorOffset) % 3];
       } else if (i == this.word.length - 4) {
-        ctx.fillStyle = inputColorArray[1];
+        ctx.fillStyle = inputColorArray[(1 + this.colorOffset) % 3];
       } else {
-        ctx.fillStyle = inputColorArray[2];
+        ctx.fillStyle = inputColorArray[(2 + this.colorOffset) % 3];
       }
     } else if (direction == 'north' || direction == 'east') {
       if (i == 0) {
         ctx.fillStyle = COLORS.WHITE;
       } else if (i == 1) {
-        ctx.fillStyle = inputColorArray[0];
+        ctx.fillStyle = inputColorArray[(0 + this.colorOffset) % 3];
       } else if (i == 2) {
-        ctx.fillStyle = inputColorArray[1];
+        ctx.fillStyle = inputColorArray[(1 + this.colorOffset) % 3];
       } else {
-        ctx.fillStyle = inputColorArray[2];
+        ctx.fillStyle = inputColorArray[(2 + this.colorOffset) % 3];
       }
     }
   }
@@ -242,7 +246,7 @@ export class MatrixString {
   }
 
   increaseStringSize(): void {
-    this.word = this.word.concat(getRandomChar());
+    this.word = this.word.concat(getRandomChar(this.currentAlphabet));
   }
 
   decreaseStringSize(): void {

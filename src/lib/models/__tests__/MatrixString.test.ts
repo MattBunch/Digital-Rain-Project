@@ -93,6 +93,20 @@ describe('MatrixString', () => {
 
       expect(mockCtx.fillStyle).toBe(COLORS.WHITE);
     });
+
+    it('should respect colorOffset in setColors', () => {
+      const ms = new MatrixString('ABCDE', 0, 0, 0, 0, 20);
+      ms.colorOffset = 1;
+      const inputColors = ['#111', '#222', '#333'];
+      // For south, index word.length - 3 (index 2) should be inputColors[(0+1)%3] = inputColors[1]
+      ms.show(mockCtx as CanvasRenderingContext2D, inputColors, config, discoCallback);
+
+      // We need to capture the fillStyle at a specific point, but MatrixString.show calls setColors multiple times.
+      // Let's test setColors directly for simplicity and precision.
+      ms.setColors(mockCtx as CanvasRenderingContext2D, 2, inputColors, 'south');
+      // In 'south', if i == word.length - 3 (5-3=2), it sets fillStyle to inputColors[(0+offset)%3]
+      expect(mockCtx.fillStyle).toBe(inputColors[1]);
+    });
   });
 
   describe('showAlternative', () => {

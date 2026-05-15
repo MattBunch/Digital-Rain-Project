@@ -8,6 +8,10 @@ const KEY_MAP: Record<string, keyof IEngineSettings> = {
   m: 'mode',
   s: 'fontSize',
   v: 'speed',
+  i: 'intensity',
+  cs: 'charSet',
+  ccs: 'customCharSet',
+  p: 'perStringColor',
 };
 
 const REVERSE_KEY_MAP = Object.fromEntries(
@@ -42,9 +46,14 @@ export function deserializeSettings(hash: string): Partial<IEngineSettings> {
   for (const [shortKey, value] of params.entries()) {
     const fullKey = KEY_MAP[shortKey];
     if (fullKey) {
-      if (fullKey === 'discoOn' || fullKey === 'all4Directions') {
+      if (fullKey === 'discoOn' || fullKey === 'all4Directions' || fullKey === 'perStringColor') {
         settings[fullKey] = value === '1';
-      } else if (fullKey === 'frameCount' || fullKey === 'fontSize' || fullKey === 'speed') {
+      } else if (
+        fullKey === 'frameCount' ||
+        fullKey === 'fontSize' ||
+        fullKey === 'speed' ||
+        fullKey === 'intensity'
+      ) {
         const num = parseInt(value, 10);
         if (!isNaN(num)) {
           settings[fullKey] = num;
@@ -53,7 +62,18 @@ export function deserializeSettings(hash: string): Partial<IEngineSettings> {
         if (value === 'normal' || value === 'square') {
           settings[fullKey] = value;
         }
-      } else if (fullKey === 'chosenColor') {
+      } else if (fullKey === 'charSet') {
+        if (
+          value === 'katakana' ||
+          value === 'latin' ||
+          value === 'binary' ||
+          value === 'hex' ||
+          value === 'braille' ||
+          value === 'custom'
+        ) {
+          settings[fullKey] = value;
+        }
+      } else if (fullKey === 'chosenColor' || fullKey === 'customCharSet') {
         settings[fullKey] = value;
       }
     }

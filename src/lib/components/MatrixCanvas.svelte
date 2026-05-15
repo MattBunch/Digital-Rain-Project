@@ -9,12 +9,14 @@
     onReturn,
     discoOn = $bindable(false),
     chosenColor = $bindable('green'),
+    all4Directions = $bindable(false),
   } = $props<{
     engine: CoreEngine;
     mode: 'normal' | 'square';
     onReturn: () => void;
     discoOn: boolean;
     chosenColor: string;
+    all4Directions: boolean;
   }>();
   /* eslint-enable prefer-const, no-useless-assignment */
 
@@ -119,15 +121,22 @@
           engine.switchMode();
         }
         break;
+      case 't':
+        all4Directions = !all4Directions;
+        break;
+      default:
+        break;
     }
   }
 
   function arrowDirectionControl(newDirection: string, oppositeDirection: string): void {
-    if (engine.direction != newDirection) {
-      if (engine.direction === oppositeDirection) {
-        engine.direction = newDirection;
-      } else {
-        engine.direction = newDirection;
+    if (engine.direction !== newDirection) {
+      // We always update the direction if it's new
+      const wasOpposite = engine.direction === oppositeDirection;
+      engine.direction = newDirection;
+
+      // We only reset if it WASN'T a 180-degree turn
+      if (!wasOpposite) {
         engine.resetWordsArray();
       }
     }

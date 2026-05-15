@@ -206,4 +206,10 @@ describe('SettingsMenu', () => {
       { timeout: 2000 },
     );
   });
+
+  it('renders RAIN_DENSITY input', async () => {
+    render(SettingsMenuWrapper);
+    await fireEvent.click(screen.getByText('SYSTEM_CONFIGURATION'));
+    expect(screen.getByLabelText(/RAIN_DENSITY:/i)).toBeInTheDocument();
+  });
 });

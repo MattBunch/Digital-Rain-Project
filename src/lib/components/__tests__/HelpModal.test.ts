@@ -49,6 +49,12 @@ describe('HelpModal', () => {
     expect(screen.getByText('Esc')).toBeInTheDocument();
   });
 
+  it('lists the All 4 Directions shortcut', () => {
+    render(HelpModal, { props: { isOpen: true, onClose: vi.fn() } });
+    expect(screen.getByText('T')).toBeInTheDocument();
+    expect(screen.getByText(/All 4 Directions/i)).toBeInTheDocument();
+  });
+
   it('traps focus when open', async () => {
     const onClose = vi.fn();
     render(HelpModal, { props: { isOpen: true, onClose } });
