@@ -21,7 +21,7 @@ export const helpGroups: HelpGroup[] = [
       { key: 'R', description: 'Toggle rapid word change' },
       { key: 'M', description: 'Switch mode' },
       { key: 'F', description: 'Toggle FPS counter' },
-      { key: 'T', description: 'Toggle \'All 4 Directions\' mode' },
+      { key: 'T', description: "Toggle 'All 4 Directions' mode" },
       { key: 'PgUp/Dn', description: 'Change speed' },
       { key: '1-8', description: 'Change color' },
       { key: 'Esc', description: 'Quit to menu' },

@@ -116,6 +116,7 @@
             onReturn={handleReturnToMenu}
             bind:discoOn={settings.discoOn}
             bind:chosenColor={settings.chosenColor}
+            bind:all4Directions={settings.all4Directions}
           />
         {/if}
       </div>
@@ -131,6 +132,7 @@
         onReturn={handleReturnToMenu}
         bind:discoOn={settings.discoOn}
         bind:chosenColor={settings.chosenColor}
+        bind:all4Directions={settings.all4Directions}
       />
     {/if}
   </main>

@@ -9,12 +9,14 @@
     onReturn,
     discoOn = $bindable(false),
     chosenColor = $bindable('green'),
+    all4Directions = $bindable(false),
   } = $props<{
     engine: CoreEngine;
     mode: 'normal' | 'square';
     onReturn: () => void;
     discoOn: boolean;
     chosenColor: string;
+    all4Directions: boolean;
   }>();
   /* eslint-enable prefer-const, no-useless-assignment */
 
@@ -120,7 +122,7 @@
         }
         break;
       case 't':
-        engine.all4Directions = !engine.all4Directions;
+        all4Directions = !all4Directions;
         break;
       default:
         break;
