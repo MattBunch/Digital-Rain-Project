@@ -56,7 +56,7 @@ Here's a suggested implementation order, working from foundational to complex:
 - 8. Phosphor glow — pure `ctx.shadowBlur` addition, no architecture changes
 - 9. Diagonal directions — extends the existing direction system in `CoreEngine` and `MatrixString`; coordinate math is the main challenge
 - 10. Glitch mode — can be implemented as a periodic `CoreEngine` draw-pass overlay
-- 11. Wave distortion — modifies coordinate output in `MatrixString`; safe to - isolate
+- 11. Wave distortion — modifies coordinate output in `MatrixString`; safe to - isolate (/)
 
 **Phase 4 — Interactivity (requires new event handling)**
 
