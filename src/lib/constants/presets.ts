@@ -13,6 +13,7 @@ export const DEFAULT_SETTINGS: IEngineSettings = {
   charSet: 'katakana',
   customCharSet: '',
   perStringColor: false,
+  waveDistortion: false,
 };
 
 export const PRESETS: IPreset[] = [

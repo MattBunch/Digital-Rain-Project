@@ -234,6 +234,7 @@ colorChoiceArray index:
 | C                 | Clear (reset string positions)                               |
 | D                 | Toggle disco mode                                            |
 | W / S             | Increase / decrease font size                                |
+| X                 | Toggle wave distortion                                       |
 | Q / A             | Increase / decrease string length                            |
 | R                 | Toggle rapid word change                                     |
 | M                 | Switch between Normal and Square mode                        |

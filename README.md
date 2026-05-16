@@ -43,6 +43,7 @@ npm run test:e2e
 - D: Toggle disco
 - W: Increase font size
 - S: Decrease font size
+- X: Toggle wave distortion
 - Q: Increase string length
 - A: Decrease string length
 - R: Toggle rapid word change

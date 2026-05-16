@@ -50,6 +50,7 @@ export class CoreEngine {
   private _charSet: 'katakana' | 'latin' | 'binary' | 'hex' | 'braille' | 'custom' = 'katakana';
   private _customCharSet: string = '';
   private _perStringColor: boolean = false;
+  waveDistortion: boolean = false;
   drawBackgroundOn: boolean = true;
   drawBackgroundAll4DirectionsCounter: number = 0;
   drawBackgroundAll4DirectionsCounterMax: number = 3;
@@ -484,6 +485,7 @@ export class CoreEngine {
         discoOn: this.colorManager.discoOn,
         direction: this.direction,
         alphabet: this.resolvedAlphabet,
+        waveDistortion: this.waveDistortion,
       };
 
       const discoCallback = (ctx: CanvasRenderingContext2D) => {
@@ -770,6 +772,7 @@ export class CoreEngine {
                 discoOn: this.colorManager.discoOn,
                 direction: this.direction,
                 alphabet: this.resolvedAlphabet,
+                waveDistortion: this.waveDistortion,
               },
               squareConfig,
             );
@@ -788,6 +791,7 @@ export class CoreEngine {
             discoOn: this.colorManager.discoOn,
             direction: this.direction,
             alphabet: this.resolvedAlphabet,
+            waveDistortion: this.waveDistortion,
           },
           squareConfig,
         );

@@ -75,6 +75,7 @@
     engine.charSet = settings.charSet;
     engine.customCharSet = settings.customCharSet;
     engine.perStringColor = settings.perStringColor;
+    engine.waveDistortion = settings.waveDistortion;
 
     // Background Engine
     backgroundEngine.switchColor(settings.chosenColor);
@@ -87,6 +88,7 @@
     backgroundEngine.charSet = settings.charSet;
     backgroundEngine.customCharSet = settings.customCharSet;
     backgroundEngine.perStringColor = settings.perStringColor;
+    backgroundEngine.waveDistortion = settings.waveDistortion;
   });
 
   function handleStartNormal() {
@@ -126,6 +128,7 @@
             bind:chosenColor={settings.chosenColor}
             bind:all4Directions={settings.all4Directions}
             bind:all8Directions={settings.all8Directions}
+            bind:waveDistortion={settings.waveDistortion}
           />
         {/if}
       </div>
@@ -143,6 +146,7 @@
         bind:chosenColor={settings.chosenColor}
         bind:all4Directions={settings.all4Directions}
         bind:all8Directions={settings.all8Directions}
+        bind:waveDistortion={settings.waveDistortion}
       />
     {/if}
   </main>

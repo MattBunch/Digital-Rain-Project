@@ -22,5 +22,6 @@ describe('SettingsUtils', () => {
     expect(compareSettings({ ...s1, speed: 10 }, s1)).toBe(false);
     expect(compareSettings({ ...s1, intensity: 200 }, s1)).toBe(false);
     expect(compareSettings({ ...s1, perStringColor: true }, s1)).toBe(false);
+    expect(compareSettings({ ...s1, waveDistortion: true }, s1)).toBe(false);
   });
 });

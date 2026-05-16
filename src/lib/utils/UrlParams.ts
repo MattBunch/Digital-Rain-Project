@@ -12,6 +12,7 @@ const KEY_MAP: Record<string, keyof IEngineSettings> = {
   cs: 'charSet',
   ccs: 'customCharSet',
   p: 'perStringColor',
+  wd: 'waveDistortion',
 };
 
 const REVERSE_KEY_MAP = Object.fromEntries(
@@ -46,7 +47,12 @@ export function deserializeSettings(hash: string): Partial<IEngineSettings> {
   for (const [shortKey, value] of params.entries()) {
     const fullKey = KEY_MAP[shortKey];
     if (fullKey) {
-      if (fullKey === 'discoOn' || fullKey === 'all4Directions' || fullKey === 'perStringColor') {
+      if (
+        fullKey === 'discoOn' ||
+        fullKey === 'all4Directions' ||
+        fullKey === 'perStringColor' ||
+        fullKey === 'waveDistortion'
+      ) {
         settings[fullKey] = value === '1';
       } else if (
         fullKey === 'frameCount' ||

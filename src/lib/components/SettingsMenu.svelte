@@ -374,6 +374,24 @@
               {/key}
             </div>
           </div>
+
+          <div
+            class="setting-item"
+            use:fallingLetters={{ value: settings.waveDistortion, color: currentColor }}
+          >
+            <div class="transition-stack">
+              {#key settings.waveDistortion}
+                <div class="stack-item" transition:signalMorph={{ duration: transitionDuration }}>
+                  <CyberCheckbox
+                    id="wave-distortion-toggle"
+                    bind:checked={settings.waveDistortion}
+                    color={currentColor}
+                    label="WAVE_DISTORTION:"
+                  />
+                </div>
+              {/key}
+            </div>
+          </div>
         </div>
       </CyberAccordion>
     </div>

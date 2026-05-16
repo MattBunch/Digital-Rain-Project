@@ -11,6 +11,7 @@
     chosenColor = $bindable('green'),
     all4Directions = $bindable(false),
     all8Directions = $bindable(false),
+    waveDistortion = $bindable(false),
   } = $props<{
     engine: CoreEngine;
     mode: 'normal' | 'square';
@@ -19,6 +20,7 @@
     chosenColor: string;
     all4Directions: boolean;
     all8Directions: boolean;
+    waveDistortion: boolean;
   }>();
   /* eslint-enable prefer-const, no-useless-assignment */
 
@@ -105,6 +107,9 @@
         break;
       case 'w':
         engine.controlFontSize(true);
+        break;
+      case 'x':
+        waveDistortion = !waveDistortion;
         break;
       case 's':
         engine.controlFontSize(false);

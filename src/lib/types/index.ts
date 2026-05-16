@@ -29,6 +29,7 @@ export interface IMatrixStringConfig {
   discoOn: boolean;
   direction: string;
   alphabet?: string;
+  waveDistortion?: boolean;
 }
 
 export interface ISquareConfig {
@@ -61,6 +62,7 @@ export interface IEngineSettings {
   charSet: 'katakana' | 'latin' | 'binary' | 'hex' | 'braille' | 'custom';
   customCharSet: string;
   perStringColor: boolean;
+  waveDistortion: boolean;
 }
 
 export interface IPreset {

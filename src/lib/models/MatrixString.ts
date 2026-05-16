@@ -8,6 +8,11 @@ import {
 import { COLORS } from '../constants/matrix.ts';
 import { IMatrixStringConfig, ISquareConfig } from '../types/index';
 
+const WAVE_AMPLITUDE_FONT_SIZE_MULTIPLIER = 0.35;
+const WAVE_POSITION_FREQUENCY = 0.08;
+const WAVE_CHARACTER_FREQUENCY = 0.7;
+const DIAGONAL_WAVE_MULTIPLIER = 0.5;
+
 export class CoordinateObject {
   xCoordinate: number;
   yCoordinate: number;
@@ -69,8 +74,9 @@ export class MatrixString {
 
     for (let i = 0; i < this.word.length - 1; i++) {
       let letter = this.word.substring(i, i + 1);
-      const xCoordinate = this.getXCoordinateFromDirection(i, config.direction, false);
-      const yCoordinate = this.getYCoordinateFromDirection(i, config.direction, false);
+      const { xCoordinate, yCoordinate } = this.getRenderCoordinates(i, config.direction, false, {
+        waveDistortion: config.waveDistortion,
+      });
 
       if (onePercentChance() && !rapidWordChange) {
         letter = getRandomChar(alphabet);
@@ -100,8 +106,9 @@ export class MatrixString {
     for (let i = 0; i < this.word.length; i++) {
       let letter = this.word.substring(i, i + 1);
 
-      const xCoordinate = this.getXCoordinateFromDirection(i, config.direction, true);
-      const yCoordinate = this.getYCoordinateFromDirection(i, config.direction, true);
+      const { xCoordinate, yCoordinate } = this.getRenderCoordinates(i, config.direction, true, {
+        waveDistortion: config.waveDistortion,
+      });
 
       if (onePercentChance() && !rapidWordChange && i != 0) {
         letter = getRandomChar(alphabet);
@@ -256,6 +263,49 @@ export class MatrixString {
       default:
         return defaultXCoordinate;
     }
+  }
+
+  getRenderCoordinates(
+    i: number,
+    direction: string,
+    alternative: boolean,
+    config: Pick<IMatrixStringConfig, 'waveDistortion'> = {},
+  ): CoordinateObject {
+    const xCoordinate = this.getXCoordinateFromDirection(i, direction, alternative);
+    const yCoordinate = this.getYCoordinateFromDirection(i, direction, alternative);
+
+    if (!config.waveDistortion) {
+      return new CoordinateObject(xCoordinate, yCoordinate);
+    }
+
+    const waveOffset = this.getWaveOffset(i, direction);
+
+    if (this.isVerticalDirection(direction)) {
+      return new CoordinateObject(xCoordinate + waveOffset, yCoordinate);
+    }
+
+    if (this.isHorizontalDirection(direction)) {
+      return new CoordinateObject(xCoordinate, yCoordinate + waveOffset);
+    }
+
+    return new CoordinateObject(
+      xCoordinate + waveOffset * DIAGONAL_WAVE_MULTIPLIER,
+      yCoordinate - waveOffset * DIAGONAL_WAVE_MULTIPLIER,
+    );
+  }
+
+  private getWaveOffset(i: number, direction: string): number {
+    const travelPosition = this.isHorizontalDirection(direction) ? this.x : this.y;
+    const phase = travelPosition * WAVE_POSITION_FREQUENCY + i * WAVE_CHARACTER_FREQUENCY;
+    return Math.sin(phase) * this.fontSize * WAVE_AMPLITUDE_FONT_SIZE_MULTIPLIER;
+  }
+
+  private isVerticalDirection(direction: string): boolean {
+    return direction === 'north' || direction === 'south';
+  }
+
+  private isHorizontalDirection(direction: string): boolean {
+    return direction === 'east' || direction === 'west';
   }
 
   generateXYCoordinates(): CoordinateObject[] {

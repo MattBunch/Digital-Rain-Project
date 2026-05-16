@@ -55,4 +55,23 @@ test.describe('Animation Flow', () => {
     await page.getByText('SYSTEM_CONFIGURATION').click();
     await expect(checkbox).not.toBeChecked();
   });
+
+  test('pressing X toggles Wave Distortion and persists to menu', async ({ page }) => {
+    await page.getByRole('button', { name: 'START' }).first().click();
+
+    await page.keyboard.press('x');
+    await page.keyboard.press('Escape');
+
+    await page.getByText('SYSTEM_CONFIGURATION').click();
+
+    const checkbox = page.getByRole('checkbox', { name: /WAVE_DISTORTION/i });
+    await expect(checkbox).toBeChecked();
+
+    await page.getByRole('button', { name: 'START' }).first().click();
+    await page.keyboard.press('x');
+    await page.keyboard.press('Escape');
+
+    await page.getByText('SYSTEM_CONFIGURATION').click();
+    await expect(checkbox).not.toBeChecked();
+  });
 });

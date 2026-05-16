@@ -64,6 +64,21 @@ describe('SettingsMenu', () => {
     });
   });
 
+  it('wave distortion checkbox toggles state', async () => {
+    render(SettingsMenuWrapper);
+
+    await fireEvent.click(screen.getByText('SYSTEM_CONFIGURATION'));
+
+    const getWaveCheckbox = () => screen.getByRole('checkbox', { name: /WAVE_DISTORTION/i });
+    expect(getWaveCheckbox()).toHaveAttribute('aria-checked', 'false');
+
+    await fireEvent.click(getWaveCheckbox());
+
+    await waitFor(() => {
+      expect(getWaveCheckbox()).toHaveAttribute('aria-checked', 'true');
+    });
+  });
+
   it('clicking HELP opens the HelpModal', async () => {
     render(SettingsMenuWrapper);
 
@@ -194,6 +209,17 @@ describe('SettingsMenu', () => {
       }
       // Wait for it to become false if it was true
       expect(screen.getByRole('checkbox', { name: /ALL_4_DIRECTIONS/i })).toHaveAttribute(
+        'aria-checked',
+        'false',
+      );
+    });
+
+    await waitFor(async () => {
+      const waveCheckbox = screen.getByRole('checkbox', { name: /WAVE_DISTORTION/i });
+      if (waveCheckbox.getAttribute('aria-checked') === 'true') {
+        await fireEvent.click(waveCheckbox);
+      }
+      expect(screen.getByRole('checkbox', { name: /WAVE_DISTORTION/i })).toHaveAttribute(
         'aria-checked',
         'false',
       );

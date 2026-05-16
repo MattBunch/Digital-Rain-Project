@@ -18,6 +18,7 @@ export const helpGroups: HelpGroup[] = [
       { key: 'C', description: 'Clear screen' },
       { key: 'D', description: 'Toggle disco' },
       { key: 'W/S', description: 'Font size' },
+      { key: 'X', description: 'Toggle wave distortion' },
       { key: 'Q/A', description: 'String length' },
       { key: 'R', description: 'Toggle rapid word change' },
       { key: 'M', description: 'Switch mode' },
