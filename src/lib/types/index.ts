@@ -14,13 +14,22 @@ export interface IMatrixStringOptions {
   isAll4Directions?: boolean;
 }
 
-export type Direction = 'north' | 'south' | 'east' | 'west';
+export type Direction =
+  | 'north'
+  | 'south'
+  | 'east'
+  | 'west'
+  | 'northeast'
+  | 'northwest'
+  | 'southeast'
+  | 'southwest';
 
 export interface IMatrixStringConfig {
   rapidWordChange: boolean;
   discoOn: boolean;
   direction: string;
   alphabet?: string;
+  waveDistortion?: boolean;
 }
 
 export interface ISquareConfig {
@@ -44,6 +53,7 @@ export interface IEngineSettings {
   discoOn: boolean;
   chosenColor: string;
   all4Directions: boolean;
+  all8Directions: boolean;
   frameCount: number;
   mode: 'normal' | 'square';
   fontSize: number;
@@ -52,6 +62,7 @@ export interface IEngineSettings {
   charSet: 'katakana' | 'latin' | 'binary' | 'hex' | 'braille' | 'custom';
   customCharSet: string;
   perStringColor: boolean;
+  waveDistortion: boolean;
 }
 
 export interface IPreset {

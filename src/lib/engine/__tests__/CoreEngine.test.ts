@@ -278,6 +278,64 @@ describe('CoreEngine', () => {
     });
   });
 
+  describe('Diagonal Directions', () => {
+    it('should create diagonal words in createMatrixArray', () => {
+      engine.words = [];
+      engine.createMatrixArray('southeast');
+      expect(engine.words.length).toBeGreaterThan(0);
+      expect(engine.words[0].xSpeed).toBeLessThan(0); // Southeast moves Right (-X in mirrored)
+      expect(engine.words[0].ySpeed).toBeGreaterThan(0); // Down (+Y)
+    });
+
+    it('should move words diagonally in moveWord', () => {
+      engine.direction = 'southeast';
+      engine.createMatrixArray('southeast');
+      const word = engine.words[0];
+      const initialX = word.x;
+      const initialY = word.y;
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (engine as any).moveWord(word, 1);
+
+      expect(word.x).toBeLessThan(initialX); // Moving Right
+      expect(word.y).toBeGreaterThan(initialY); // Moving Down
+    });
+
+    it('should reset diagonal words when they go off screen', () => {
+      engine.direction = 'southeast';
+      engine.createMatrixArray('southeast');
+      const word = engine.words[0];
+
+      // Move word off screen bottom
+      word.y = 2000;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (engine as any).moveWord(word, 1);
+
+      expect(word.y).toBeLessThan(0); // Reset to off-screen top
+    });
+  });
+
+  describe('All 8 Directions Logic', () => {
+    it('should initialize all 8 directions when all8Directions is true', () => {
+      engine.all8Directions = true;
+      expect(engine.all4DirectionsArray.length).toBe(8);
+    });
+
+    it('should toggle off all4Directions when all8Directions is set to true', () => {
+      engine.all4Directions = true;
+      engine.all8Directions = true;
+      expect(engine.all4Directions).toBe(false);
+      expect(engine.all8Directions).toBe(true);
+    });
+
+    it('should toggle off all8Directions when all4Directions is set to true', () => {
+      engine.all8Directions = true;
+      engine.all4Directions = true;
+      expect(engine.all8Directions).toBe(false);
+      expect(engine.all4Directions).toBe(true);
+    });
+  });
+
   describe('Intensity Logic', () => {
     it('should scale the number of columns based on intensity', () => {
       engine.fontSize = 20;

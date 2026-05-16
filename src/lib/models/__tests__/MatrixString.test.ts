@@ -64,6 +64,66 @@ describe('MatrixString', () => {
       const x = matrixString.getXCoordinateFromDirection(1, 'west', true);
       expect(x).toBe(initialX - initialFontSize);
     });
+
+    it('should calculate correct X for southeast direction', () => {
+      const x = matrixString.getXCoordinateFromDirection(1, 'southeast', false);
+      expect(x).toBe(initialX - initialFontSize);
+    });
+
+    it('should calculate correct X for southwest direction', () => {
+      const x = matrixString.getXCoordinateFromDirection(1, 'southwest', false);
+      expect(x).toBe(initialX + initialFontSize);
+    });
+
+    it('should calculate correct X for northeast direction', () => {
+      const x = matrixString.getXCoordinateFromDirection(1, 'northeast', false);
+      expect(x).toBe(initialX + initialFontSize);
+    });
+
+    it('should calculate correct X for northwest direction', () => {
+      const x = matrixString.getXCoordinateFromDirection(1, 'northwest', false);
+      expect(x).toBe(initialX - initialFontSize);
+    });
+
+    it('should calculate correct Y for diagonal directions', () => {
+      const directions = ['southeast', 'southwest', 'northeast', 'northwest'];
+      directions.forEach((dir) => {
+        const y = matrixString.getYCoordinateFromDirection(1, dir, false);
+        expect(y).toBe(initialY + initialFontSize);
+      });
+    });
+
+    it('should return base render coordinates when wave distortion is disabled', () => {
+      const coords = matrixString.getRenderCoordinates(1, 'south', false, {
+        waveDistortion: false,
+      });
+      expect(coords.xCoordinate).toBe(initialX);
+      expect(coords.yCoordinate).toBe(initialY + initialFontSize);
+    });
+
+    it('should offset X for vertical directions when wave distortion is enabled', () => {
+      const coords = matrixString.getRenderCoordinates(1, 'south', false, {
+        waveDistortion: true,
+      });
+      expect(coords.xCoordinate).not.toBe(initialX);
+      expect(coords.yCoordinate).toBe(initialY + initialFontSize);
+    });
+
+    it('should offset Y for horizontal directions when wave distortion is enabled', () => {
+      const coords = matrixString.getRenderCoordinates(1, 'east', false, {
+        waveDistortion: true,
+      });
+      expect(coords.xCoordinate).toBe(initialX + initialFontSize);
+      expect(coords.yCoordinate).not.toBe(initialY);
+    });
+
+    it('should offset both axes for diagonal directions when wave distortion is enabled', () => {
+      const coords = matrixString.getRenderCoordinates(1, 'southeast', false, {
+        waveDistortion: true,
+      });
+      expect(coords.xCoordinate).not.toBe(initialX - initialFontSize);
+      expect(coords.yCoordinate).not.toBe(initialY + initialFontSize);
+    });
   });
 
   describe('Rendering (show)', () => {
@@ -107,6 +167,34 @@ describe('MatrixString', () => {
       // In 'south', if i == word.length - 3 (5-3=2), it sets fillStyle to inputColors[(0+offset)%3]
       expect(mockCtx.fillStyle).toBe(inputColors[1]);
     });
+
+    it('should set head color for diagonals', () => {
+      const ms = new MatrixString('ABCDE', 0, 0, 0, 0, 20);
+      const inputColors = ['#111', '#222', '#333'];
+      const mockCtx = { fillStyle: '' } as unknown as CanvasRenderingContext2D;
+
+      // southeast: head at length - 2 (index 3)
+      ms.setColors(mockCtx, 3, inputColors, 'southeast');
+      expect(mockCtx.fillStyle).toBe(COLORS.WHITE);
+
+      // northwest: head at 0
+      ms.setColors(mockCtx, 0, inputColors, 'northwest');
+      expect(mockCtx.fillStyle).toBe(COLORS.WHITE);
+    });
+
+    it('should render with distorted coordinates when wave distortion is enabled', () => {
+      const ms = new MatrixString('ABCDE', 100, 100, 0, 0, 20);
+      ms.show(
+        mockCtx as CanvasRenderingContext2D,
+        colorArray,
+        { ...config, waveDistortion: true },
+        discoCallback,
+      );
+
+      const firstCall = vi.mocked(mockCtx.fillText).mock.calls[0];
+      expect(firstCall[1]).not.toBe(100);
+      expect(firstCall[2]).toBe(100);
+    });
   });
 
   describe('showAlternative', () => {
@@ -149,6 +237,20 @@ describe('MatrixString', () => {
         squareConfig,
       );
       expect(squareConfig.returnAlternativeFadeCondition).toHaveBeenCalled();
+    });
+
+    it('should render alternative mode with distorted coordinates when wave distortion is enabled', () => {
+      const ms = new MatrixString('ABCDE', 100, 100, 0, 0, 20);
+      ms.showAlternative(
+        mockCtx as CanvasRenderingContext2D,
+        colorArray,
+        { ...config, waveDistortion: true },
+        squareConfig,
+      );
+
+      const firstCall = vi.mocked(mockCtx.fillText).mock.calls[0];
+      expect(firstCall[1]).not.toBe(100);
+      expect(firstCall[2]).toBe(100);
     });
   });
 

@@ -46,9 +46,11 @@ export class CoreEngine {
   rapidWordChange: boolean = false;
   hangingWords: boolean = true;
   private _all4Directions: boolean = false;
+  private _all8Directions: boolean = false;
   private _charSet: 'katakana' | 'latin' | 'binary' | 'hex' | 'braille' | 'custom' = 'katakana';
   private _customCharSet: string = '';
   private _perStringColor: boolean = false;
+  waveDistortion: boolean = false;
   drawBackgroundOn: boolean = true;
   drawBackgroundAll4DirectionsCounter: number = 0;
   drawBackgroundAll4DirectionsCounterMax: number = 3;
@@ -111,8 +113,29 @@ export class CoreEngine {
   set all4Directions(value: boolean) {
     const changed = this._all4Directions !== value;
     this._all4Directions = value;
-    if (changed && (this.canvas || this.words.length > 0)) {
-      this.resetWordsArray();
+    if (changed) {
+      if (value) {
+        this._all8Directions = false;
+      }
+      if (this.canvas || this.words.length > 0) {
+        this.resetWordsArray();
+      }
+    }
+  }
+
+  get all8Directions() {
+    return this._all8Directions;
+  }
+  set all8Directions(value: boolean) {
+    const changed = this._all8Directions !== value;
+    this._all8Directions = value;
+    if (changed) {
+      if (value) {
+        this._all4Directions = false;
+      }
+      if (this.canvas || this.words.length > 0) {
+        this.resetWordsArray();
+      }
     }
   }
 
@@ -342,11 +365,72 @@ export class CoreEngine {
 
         this.words.push(word);
       }
+    } else if (
+      inputDirectionMatrix === 'southeast' ||
+      inputDirectionMatrix === 'southwest' ||
+      inputDirectionMatrix === 'northeast' ||
+      inputDirectionMatrix === 'northwest'
+    ) {
+      for (let i = 0; i < columns; i++) {
+        const xInput = this.fontSize * i;
+        const newWord = generateWord(
+          generateWordSizeRand(this.stringSizeMin, this.stringSizeMax),
+          this.resolvedAlphabet,
+        );
+        const newFontSize = generateFontSize(this.fontSize);
+        let yInput: number;
+        let xSpeedInput: number;
+        let ySpeedInput: number;
+
+        switch (inputDirectionMatrix) {
+          case 'southeast':
+            yInput = generateYSouth(newWord.length, newFontSize, this.canvas.height);
+            ySpeedInput = generateSpeed();
+            xSpeedInput = -generateSpeed();
+            break;
+          case 'southwest':
+            yInput = generateYSouth(newWord.length, newFontSize, this.canvas.height);
+            ySpeedInput = generateSpeed();
+            xSpeedInput = generateSpeed();
+            break;
+          case 'northeast':
+            yInput = generateYNorth(this.canvas.height);
+            ySpeedInput = -generateSpeed();
+            xSpeedInput = -generateSpeed();
+            break;
+          case 'northwest':
+            yInput = generateYNorth(this.canvas.height);
+            ySpeedInput = -generateSpeed();
+            xSpeedInput = generateSpeed();
+            break;
+          default:
+            yInput = 0;
+            ySpeedInput = 0;
+            xSpeedInput = 0;
+        }
+
+        const word = new MatrixString(
+          newWord,
+          xInput,
+          yInput,
+          xSpeedInput,
+          ySpeedInput,
+          newFontSize,
+        );
+
+        if (this.perStringColor) {
+          word.colorOffset = Math.floor(Math.random() * 3);
+        }
+
+        this.words.push(word);
+      }
     }
   }
 
   initializeAll4Directions(): void {
-    const directions = ['north', 'south', 'east', 'west'];
+    const directions: Direction[] = this.all8Directions
+      ? ['north', 'south', 'east', 'west', 'northeast', 'northwest', 'southeast', 'southwest']
+      : ['north', 'south', 'east', 'west'];
     this.all4DirectionsArray = directions.map((dir) => {
       this.words = [];
       this.createMatrixArray(dir);
@@ -365,7 +449,7 @@ export class CoreEngine {
       this.discoFrameCounter++;
     }
 
-    if (this.all4Directions && !passThroughToDraw) {
+    if ((this.all4Directions || this.all8Directions) && !passThroughToDraw) {
       this.drawAll4Directions(speedFactor);
       return;
     }
@@ -377,7 +461,7 @@ export class CoreEngine {
     }
 
     if (
-      (this.drawBackgroundOn && !this.all4Directions) ||
+      (this.drawBackgroundOn && !this.all4Directions && !this.all8Directions) ||
       this.shouldDrawBackgroundAll4Directions()
     ) {
       this.drawOpaqueRect();
@@ -401,6 +485,7 @@ export class CoreEngine {
         discoOn: this.colorManager.discoOn,
         direction: this.direction,
         alphabet: this.resolvedAlphabet,
+        waveDistortion: this.waveDistortion,
       };
 
       const discoCallback = (ctx: CanvasRenderingContext2D) => {
@@ -419,7 +504,7 @@ export class CoreEngine {
   }
 
   private shouldDrawBackgroundAll4Directions(): boolean {
-    if (!this.all4Directions || !this.drawBackgroundOn) {
+    if ((!this.all4Directions && !this.all8Directions) || !this.drawBackgroundOn) {
       return false;
     }
     this.drawBackgroundAll4DirectionsCounter++;
@@ -506,11 +591,105 @@ export class CoreEngine {
           word.x += movement;
         }
         break;
+      case 'southeast':
+        if (word.y > this.canvas.height || word.x < 0 - this.canvas.width) {
+          word.y = generateYSouth(word.word.length, word.fontSize, this.canvas.height);
+          word.x = generateXEast(this.canvas.width, this.canvas.height);
+          word.ySpeed = generateSpeed();
+          word.xSpeed = -generateSpeed();
+          word.word = generateWord(
+            generateWordSizeRand(this.stringSizeMin, this.stringSizeMax),
+            this.resolvedAlphabet,
+          );
+          word.fontSize = generateFontSize(this.fontSize);
+          if (this.perStringColor) {
+            word.colorOffset = Math.floor(Math.random() * 3);
+          }
+        } else {
+          word.x -= movement;
+          word.y += movement;
+        }
+        break;
+      case 'southwest':
+        if (word.y > this.canvas.height || word.x > this.canvas.width) {
+          word.y = generateYSouth(word.word.length, word.fontSize, this.canvas.height);
+          word.x = generateXWest(
+            word.word.length,
+            word.fontSize,
+            this.canvas.width,
+            this.canvas.height,
+          );
+          word.ySpeed = generateSpeed();
+          word.xSpeed = generateSpeed();
+          word.word = generateWord(
+            generateWordSizeRand(this.stringSizeMin, this.stringSizeMax),
+            this.resolvedAlphabet,
+          );
+          word.fontSize = generateFontSize(this.fontSize);
+          if (this.perStringColor) {
+            word.colorOffset = Math.floor(Math.random() * 3);
+          }
+        } else {
+          word.x += movement;
+          word.y += movement;
+        }
+        break;
+      case 'northeast':
+        if (
+          word.y < 0 - this.canvas.height * ENGINE_CONSTANTS.Y_NORTH_BOUNDARY_MULTIPLIER ||
+          word.x < 0 - this.canvas.width
+        ) {
+          word.y = generateYNorth(this.canvas.height);
+          word.x = generateXEast(this.canvas.width, this.canvas.height);
+          word.ySpeed = -Math.abs(generateSpeed());
+          word.xSpeed = -generateSpeed();
+          word.word = generateWord(
+            generateWordSizeRand(this.stringSizeMin, this.stringSizeMax),
+            this.resolvedAlphabet,
+          );
+          word.fontSize = generateFontSize(this.fontSize);
+          if (this.perStringColor) {
+            word.colorOffset = Math.floor(Math.random() * 3);
+          }
+        } else {
+          word.x -= movement;
+          word.y -= movement;
+        }
+        break;
+      case 'northwest':
+        if (
+          word.y < 0 - this.canvas.height * ENGINE_CONSTANTS.Y_NORTH_BOUNDARY_MULTIPLIER ||
+          word.x > this.canvas.width
+        ) {
+          word.y = generateYNorth(this.canvas.height);
+          word.x = generateXWest(
+            word.word.length,
+            word.fontSize,
+            this.canvas.width,
+            this.canvas.height,
+          );
+          word.ySpeed = -Math.abs(generateSpeed());
+          word.xSpeed = generateSpeed();
+          word.word = generateWord(
+            generateWordSizeRand(this.stringSizeMin, this.stringSizeMax),
+            this.resolvedAlphabet,
+          );
+          word.fontSize = generateFontSize(this.fontSize);
+          if (this.perStringColor) {
+            word.colorOffset = Math.floor(Math.random() * 3);
+          }
+        } else {
+          word.x += movement;
+          word.y -= movement;
+        }
+        break;
     }
   }
 
   drawAll4Directions(speedFactor: number = 1): void {
-    const directions: Direction[] = ['north', 'south', 'east', 'west'];
+    const directions: Direction[] = this.all8Directions
+      ? ['north', 'south', 'east', 'west', 'northeast', 'northwest', 'southeast', 'southwest']
+      : ['north', 'south', 'east', 'west'];
     const originalDirection = this.direction;
     directions.forEach((dir, i) => {
       this.direction = dir;
@@ -574,8 +753,10 @@ export class CoreEngine {
       getRandomColor: () => getRandomColor(),
     };
 
-    if (this.all4Directions) {
-      const directions: Direction[] = ['north', 'south', 'east', 'west'];
+    if (this.all4Directions || this.all8Directions) {
+      const directions: Direction[] = this.all8Directions
+        ? ['north', 'south', 'east', 'west', 'northeast', 'northwest', 'southeast', 'southwest']
+        : ['north', 'south', 'east', 'west'];
       const originalDirection = this.direction;
       directions.forEach((dir, i) => {
         this.direction = dir;
@@ -591,6 +772,7 @@ export class CoreEngine {
                 discoOn: this.colorManager.discoOn,
                 direction: this.direction,
                 alphabet: this.resolvedAlphabet,
+                waveDistortion: this.waveDistortion,
               },
               squareConfig,
             );
@@ -609,6 +791,7 @@ export class CoreEngine {
             discoOn: this.colorManager.discoOn,
             direction: this.direction,
             alphabet: this.resolvedAlphabet,
+            waveDistortion: this.waveDistortion,
           },
           squareConfig,
         );
@@ -687,7 +870,7 @@ export class CoreEngine {
 
   reset(): void {
     this.words = [];
-    this.all4DirectionsArray = [[], [], [], []];
+    this.all4DirectionsArray = [];
     this.direction = 'south';
     this.discoFrameCounter = 0;
     this.animationManager.intervalSpeed = DEFAULT_CONFIG.SPEED;
@@ -699,6 +882,8 @@ export class CoreEngine {
     this._charSet = 'katakana';
     this._customCharSet = '';
     this._perStringColor = false;
+    this._all4Directions = false;
+    this._all8Directions = false;
   }
 
   pause(): void {
@@ -738,6 +923,32 @@ export class CoreEngine {
           word.x = generateXEast(this.canvas!.width, this.canvas!.height);
           break;
         case 'west':
+          word.x = generateXWest(
+            word.word.length,
+            word.fontSize,
+            this.canvas!.width,
+            this.canvas!.height,
+          );
+          break;
+        case 'southeast':
+          word.y = generateYSouth(word.word.length, word.fontSize, this.canvas!.height);
+          word.x = generateXEast(this.canvas!.width, this.canvas!.height);
+          break;
+        case 'southwest':
+          word.y = generateYSouth(word.word.length, word.fontSize, this.canvas!.height);
+          word.x = generateXWest(
+            word.word.length,
+            word.fontSize,
+            this.canvas!.width,
+            this.canvas!.height,
+          );
+          break;
+        case 'northeast':
+          word.y = generateYNorth(this.canvas!.height);
+          word.x = generateXEast(this.canvas!.width, this.canvas!.height);
+          break;
+        case 'northwest':
+          word.y = generateYNorth(this.canvas!.height);
           word.x = generateXWest(
             word.word.length,
             word.fontSize,
@@ -792,14 +1003,14 @@ export class CoreEngine {
 
   resetWordsArray(): void {
     this.words = [];
-    if (this.all4Directions) {
+    if (this.all4Directions || this.all8Directions) {
       this.initializeAll4Directions();
     } else {
       this.createMatrixArray(this.direction);
     }
 
     if (this.squareAnimationOn) {
-      if (this.all4Directions) {
+      if (this.all4Directions || this.all8Directions) {
         this.all4DirectionsArray.forEach((words) => {
           words.shift();
           words.forEach((word) => {
