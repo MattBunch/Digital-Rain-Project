@@ -10,6 +10,7 @@
     discoOn = $bindable(false),
     chosenColor = $bindable('green'),
     all4Directions = $bindable(false),
+    all8Directions = $bindable(false),
   } = $props<{
     engine: CoreEngine;
     mode: 'normal' | 'square';
@@ -17,6 +18,7 @@
     discoOn: boolean;
     chosenColor: string;
     all4Directions: boolean;
+    all8Directions: boolean;
   }>();
   /* eslint-enable prefer-const, no-useless-assignment */
 
@@ -123,6 +125,27 @@
         break;
       case 't':
         all4Directions = !all4Directions;
+        if (all4Directions) {
+          all8Directions = false;
+        }
+        break;
+      case 'T':
+        all8Directions = !all8Directions;
+        if (all8Directions) {
+          all4Directions = false;
+        }
+        break;
+      case 'y':
+        arrowDirectionControl('northwest', 'southeast');
+        break;
+      case 'u':
+        arrowDirectionControl('northeast', 'southwest');
+        break;
+      case 'b':
+        arrowDirectionControl('southwest', 'northeast');
+        break;
+      case 'n':
+        arrowDirectionControl('southeast', 'northwest');
         break;
       default:
         break;

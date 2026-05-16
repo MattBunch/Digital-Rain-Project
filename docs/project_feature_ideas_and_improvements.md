@@ -57,9 +57,17 @@ Here's a suggested implementation order, working from foundational to complex:
 10. Glitch mode — can be implemented as a periodic `CoreEngine` draw-pass overlay 
 11. Wave distortion — modifies coordinate output in `MatrixString`; safe to isolate
 
-**Phase 4 — Interactivity (requires new event handling)** 12. Click to spawn burst — introduces the concept of "temporary" strings outside the main `words` array; design this carefully as it sets a pattern 13. Mouse repulsion/attraction — builds on the burst work; needs per-frame cursor tracking fed into the draw loop 14. Draw mode — builds on mouse tracking; most complex of the interaction features
+**Phase 4 — Interactivity (requires new event handling)** 
+12. Click to spawn burst — introduces the concept of "temporary" strings outside the main `words` array; design this carefully as it sets a pattern 
+13. Mouse repulsion/attraction — builds on the burst work; needs per-frame cursor tracking fed into the draw loop 
+14. Draw mode — builds on mouse tracking; most complex of the interaction features
 
-**Phase 5 — Advanced Visual (most complex, depends on stable foundation)** 15. Gravity/acceleration mode — touches the core movement math; easier once the codebase is stable and well-tested 16. Collision between strings — needs spatial indexing of `XYCoordinates`; the data structure is already there but querying it at scale needs care 17. Background image/video reveal — significant canvas compositing work; do last because it interacts with nearly every other visual feature 18. Text mode — requires glyph layout logic that touches both coordinate and string systems 19. Performance auto-scaling — do absolutely last; you need all the other features in place to know what you're actually scaling
+**Phase 5 — Advanced Visual (most complex, depends on stable foundation)** 
+15. Gravity/acceleration mode — touches the core movement math; easier once the codebase is stable and well-tested 
+16. Collision between strings — needs spatial indexing of `XYCoordinates`; the data structure is already there but querying it at scale needs care 
+17. Background image/video reveal — significant canvas compositing work; do last because it interacts with nearly every other visual feature 
+18. Text mode — requires glyph layout logic that touches both coordinate and string systems 
+19. Performance auto-scaling — do absolutely last; you need all the other features in place to know what you're actually scaling
 
 **Export (whenever)**
 

@@ -67,6 +67,7 @@
     engine.discoOn = settings.discoOn;
     engine.switchColor(settings.chosenColor);
     engine.all4Directions = settings.all4Directions;
+    engine.all8Directions = settings.all8Directions;
     engine.discoFrameCounterTurnoverPoint = settings.frameCount;
     engine.fontSize = settings.fontSize;
     engine.intervalSpeed = settings.speed;
@@ -79,6 +80,7 @@
     backgroundEngine.switchColor(settings.chosenColor);
     backgroundEngine.discoOn = false; // Background should be subtle
     backgroundEngine.all4Directions = settings.all4Directions;
+    backgroundEngine.all8Directions = settings.all8Directions;
     backgroundEngine.fontSize = settings.fontSize;
     backgroundEngine.intervalSpeed = settings.speed;
     backgroundEngine.intensity = settings.intensity / 100;
@@ -123,6 +125,7 @@
             bind:discoOn={settings.discoOn}
             bind:chosenColor={settings.chosenColor}
             bind:all4Directions={settings.all4Directions}
+            bind:all8Directions={settings.all8Directions}
           />
         {/if}
       </div>
@@ -139,6 +142,7 @@
         bind:discoOn={settings.discoOn}
         bind:chosenColor={settings.chosenColor}
         bind:all4Directions={settings.all4Directions}
+        bind:all8Directions={settings.all8Directions}
       />
     {/if}
   </main>

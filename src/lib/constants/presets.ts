@@ -4,6 +4,7 @@ export const DEFAULT_SETTINGS: IEngineSettings = {
   discoOn: false,
   chosenColor: 'green',
   all4Directions: false,
+  all8Directions: false,
   frameCount: 10,
   mode: 'normal',
   fontSize: 20,

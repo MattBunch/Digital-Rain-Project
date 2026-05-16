@@ -174,7 +174,12 @@ export class MatrixString {
     inputColorArray: string[],
     direction: string,
   ): void {
-    if (direction == 'south' || direction == 'west') {
+    if (
+      direction == 'south' ||
+      direction == 'west' ||
+      direction == 'southeast' ||
+      direction == 'southwest'
+    ) {
       if (i == this.word.length - 2) {
         ctx.fillStyle = COLORS.WHITE;
       } else if (i == this.word.length - 3) {
@@ -184,7 +189,12 @@ export class MatrixString {
       } else {
         ctx.fillStyle = inputColorArray[(2 + this.colorOffset) % 3];
       }
-    } else if (direction == 'north' || direction == 'east') {
+    } else if (
+      direction == 'north' ||
+      direction == 'east' ||
+      direction == 'northeast' ||
+      direction == 'northwest'
+    ) {
       if (i == 0) {
         ctx.fillStyle = COLORS.WHITE;
       } else if (i == 1) {
@@ -211,6 +221,11 @@ export class MatrixString {
         return this.y;
       case 'west':
         return this.y;
+      case 'southeast':
+      case 'southwest':
+      case 'northeast':
+      case 'northwest':
+        return defaultYCoordinate;
       default:
         return defaultYCoordinate;
     }
@@ -229,6 +244,14 @@ export class MatrixString {
         if (!alternative) {
           return defaultXCoordinate;
         }
+        return this.x - i * this.fontSize;
+      case 'southeast':
+        return this.x - i * this.fontSize;
+      case 'southwest':
+        return defaultXCoordinate;
+      case 'northeast':
+        return defaultXCoordinate;
+      case 'northwest':
         return this.x - i * this.fontSize;
       default:
         return defaultXCoordinate;
