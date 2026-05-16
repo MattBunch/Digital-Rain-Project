@@ -47,6 +47,8 @@ npm run test:e2e
 - A: Decrease string length
 - R: Toggle rapid word change
 - M: Switch between modes
+- T: Toggle all 4 directions
+- Y/U/B/N: Diagonal directions
 - PageUp: Speed up
 - PageDown: Slow down
 - 1-7: Change colors
@@ -59,6 +61,7 @@ npm run test:e2e
 
 - see docs/project_feature_ideas_and_improvements.md
   - point 8 - instructions are in docs/phosphor_glow_plan.md - can't do this
+  - point 9 - remove 8 directions functionality from codebase - get Gemini to do this, Codex messes it up.
 - reorganize menu ui - look nicer
   - point 6 - chacter select dropdown - goes over bottom of div
   - ui - number field gets de-focused on input because of effect - needs to stay focused

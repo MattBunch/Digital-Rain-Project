@@ -295,7 +295,6 @@ npm run format     # Prettier write-in-place
 
 ## Known Quirks & Notes
 
-- **`app.js`** is kept as a legacy reference. Do not write tests for it or import from it.
 - **`getMiddleLevel`** in `CoordinateUtils.ts` preserves a quirk from the original JS: it indexes an array using the _value_ of the middle element (works because the array contains sequential integers). This is intentional for bug-compatibility.
 - **`src/lib/constants/matrix.ts`** duplicates some content from `Assets.ts`. `Assets.ts` is the canonical source used throughout the app.
 - The `ScrambleAction` and `FallingLettersAction` are cosmetic Svelte actions and have no effect on animation logic.
