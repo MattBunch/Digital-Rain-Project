@@ -30,12 +30,10 @@ describe('SettingsMenu', () => {
     // Open accordion first
     await fireEvent.click(screen.getByText('SYSTEM_CONFIGURATION'));
 
-    const discoCheckbox = screen.getByRole('checkbox', { name: /DISCO_MODE/i });
-
     // Initially false, color select should be visible
     expect(screen.getByLabelText(/SYSTEM_COLOR/i)).toBeVisible();
 
-    await fireEvent.click(discoCheckbox);
+    await fireEvent.click(screen.getByRole('checkbox', { name: /DISCO_MODE/i }));
 
     // Now true, wait for transitions to finish before checking the DOM
     await waitFor(
@@ -45,6 +43,23 @@ describe('SettingsMenu', () => {
       { timeout: 2000 },
     );
     expect(screen.getByLabelText(/REFRESH_RATE/i)).toBeVisible();
+
+    const refreshRateInput = screen.getByLabelText(/REFRESH_RATE/i);
+    refreshRateInput.focus();
+    await fireEvent.input(refreshRateInput, { target: { value: '11' } });
+
+    expect(screen.getByLabelText(/REFRESH_RATE/i)).toHaveValue(11);
+    expect(document.activeElement).toBe(refreshRateInput);
+
+    await fireEvent.click(screen.getByRole('checkbox', { name: /DISCO_MODE/i }));
+
+    await waitFor(
+      () => {
+        expect(screen.queryByLabelText(/REFRESH_RATE/i)).not.toBeInTheDocument();
+      },
+      { timeout: 2000 },
+    );
+    expect(screen.getByLabelText(/SYSTEM_COLOR/i)).toBeVisible();
   });
 
   it('all4Directions checkbox toggles state', async () => {

@@ -198,9 +198,20 @@
 
           <div class="setting-item">
             <div class="transition-stack">
-              {#if settings.discoOn}
-                {#key settings.frameCount}
-                  <div class="stack-item" transition:signalMorph={{ duration: transitionDuration }}>
+              {#key settings.discoOn}
+                <div
+                  class="stack-item mode-swap"
+                  data-testid="system-mode-swap"
+                  transition:signalMorph={{
+                    duration: transitionDuration === 0 ? 0 : 550,
+                    jitterX: 18,
+                    jitterY: 4,
+                    blur: 6,
+                    brightness: 0.9,
+                    shadowDistance: 14,
+                  }}
+                >
+                  {#if settings.discoOn}
                     <CyberNumericInput
                       id="frame-count"
                       bind:value={settings.frameCount}
@@ -209,11 +220,7 @@
                       color={currentColor}
                       label="REFRESH_RATE:"
                     />
-                  </div>
-                {/key}
-              {:else}
-                {#key settings.chosenColor}
-                  <div class="stack-item" transition:signalMorph={{ duration: transitionDuration }}>
+                  {:else}
                     <CyberSelect
                       id="color-select"
                       bind:value={settings.chosenColor}
@@ -230,9 +237,9 @@
                         'random',
                       ]}
                     />
-                  </div>
-                {/key}
-              {/if}
+                  {/if}
+                </div>
+              {/key}
             </div>
           </div>
 

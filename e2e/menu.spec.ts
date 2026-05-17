@@ -22,16 +22,35 @@ test.describe('Menu', () => {
     // Open accordion first
     await page.getByRole('button', { name: /SYSTEM_CONFIGURATION/i }).click();
 
+    const swapSlot = page.getByTestId('system-mode-swap').last();
+    const slotBox = await page
+      .locator('.setting-item:has([data-testid="system-mode-swap"])')
+      .last()
+      .boundingBox();
     const colorSelect = page.getByLabel(/SYSTEM_COLOR/i).last();
     await expect(colorSelect).toBeVisible();
+    await expect(swapSlot).toBeVisible();
 
     const discoCheckbox = page.getByRole('checkbox', { name: /DISCO_MODE/i }).last();
 
     await discoCheckbox.click();
     await expect(colorSelect).not.toBeVisible();
     await expect(page.getByLabel(/REFRESH_RATE/i).last()).toBeVisible();
+    await expect(swapSlot).toBeVisible();
 
-    await discoCheckbox.click();
+    const slotBoxAfter = await page
+      .locator('.setting-item:has([data-testid="system-mode-swap"])')
+      .last()
+      .boundingBox();
+    if (slotBox && slotBoxAfter) {
+      expect(slotBoxAfter.x).toBeCloseTo(slotBox.x, 1);
+      expect(slotBoxAfter.width).toBeCloseTo(slotBox.width, 1);
+    }
+
+    await page
+      .getByRole('checkbox', { name: /DISCO_MODE/i })
+      .last()
+      .click();
     await expect(colorSelect).toBeVisible();
   });
 

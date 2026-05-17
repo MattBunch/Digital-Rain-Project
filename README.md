@@ -65,9 +65,7 @@ npm run test:e2e
   - point 9 - remove 8 directions functionality from codebase - get Gemini to do this, Codex messes it up.
   - point 10 - can't tell any difference - stashed
 - reorganize menu ui - look nicer
-  - point 6 - chacter select dropdown - goes over bottom of div
-  - ui - number field gets de-focused on input because of effect - needs to stay focused
-  - bug - system color to refresh rate animation - it still doesn't load like the other effects
+  - ui - number field gets de-focused on input because of effect - needs to stay focused if inputting value
 - mobile view
 - Colour wheel selector.
 
