@@ -111,6 +111,56 @@ describe('SettingsMenu', () => {
     });
   });
 
+  it('keeps numeric inputs focused while entering values', async () => {
+    render(SettingsMenuWrapper);
+
+    await fireEvent.click(screen.getByText('SYSTEM_CONFIGURATION'));
+
+    const inputs = [
+      { label: /FONT_SIZE:/i, testId: 'font-size-step-effect', value: '24' },
+      { label: /SPEED:/i, testId: 'speed-step-effect', value: '99' },
+      { label: /RAIN_DENSITY:/i, testId: 'intensity-step-effect', value: '120' },
+    ];
+
+    for (const { label, testId, value } of inputs) {
+      const input = screen.getByLabelText(label) as HTMLInputElement;
+      const wrapper = screen.getByTestId(testId);
+      input.focus();
+
+      await fireEvent.input(input, { target: { value } });
+
+      expect(input.value).toBe(value);
+      expect(document.activeElement).toBe(input);
+      expect(screen.getByTestId(testId)).toBe(wrapper);
+    }
+  });
+
+  it('triggers numeric transition wrappers from step buttons', async () => {
+    render(SettingsMenuWrapper);
+
+    await fireEvent.click(screen.getByText('SYSTEM_CONFIGURATION'));
+
+    const fields = [
+      { label: /FONT_SIZE:/i, testId: 'font-size-step-effect', value: 21 },
+      { label: /SPEED:/i, testId: 'speed-step-effect', value: 51 },
+      { label: /RAIN_DENSITY:/i, testId: 'intensity-step-effect', value: 101 },
+    ];
+
+    for (const { label, testId, value } of fields) {
+      const wrapper = screen.getByTestId(testId);
+      const input = screen.getByLabelText(label);
+      const container = input.closest('.cyber-numeric-container') as HTMLElement;
+      const incrementButton = container.querySelector('[aria-label="Increase"]') as HTMLElement;
+
+      await fireEvent.click(incrementButton);
+
+      await waitFor(() => {
+        expect(screen.getByLabelText(label)).toHaveValue(value);
+        expect(screen.getByTestId(testId)).not.toBe(wrapper);
+      });
+    }
+  });
+
   it('clicking HELP opens the HelpModal', async () => {
     render(SettingsMenuWrapper);
 

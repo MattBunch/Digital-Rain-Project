@@ -64,8 +64,6 @@ npm run test:e2e
   - point 8 - instructions are in docs/phosphor_glow_plan.md - can't do this
   - point 9 - remove 8 directions functionality from codebase - get Gemini to do this, Codex messes it up.
   - point 10 - can't tell any difference - stashed
-- reorganize menu ui - look nicer
-  - ui - number field gets de-focused on input because of effect - needs to stay focused if inputting value
 - mobile view
 - Colour wheel selector.
 

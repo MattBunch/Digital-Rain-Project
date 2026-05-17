@@ -36,6 +36,12 @@
   let isAboutOpen = $state(false);
   let isConfigOpen = $state(false);
   let isSaveModalOpen = $state(false);
+  const numericStepEffectKeys = $state({
+    frameCount: 0,
+    fontSize: 0,
+    speed: 0,
+    intensity: 0,
+  });
 
   // Preset state
   const CUSTOM_PRESET_NAME = 'CUSTOM';
@@ -126,6 +132,10 @@
     isSaveModalOpen = true;
   }
 
+  function triggerNumericStepEffect(field: keyof typeof numericStepEffectKeys) {
+    numericStepEffectKeys[field] += 1;
+  }
+
   function confirmSavePreset(name: string) {
     const newPreset: IPreset = { name, settings: $state.snapshot(settings) };
     saveCustomPreset(newPreset);
@@ -212,14 +222,23 @@
                   }}
                 >
                   {#if settings.discoOn}
-                    <CyberNumericInput
-                      id="frame-count"
-                      bind:value={settings.frameCount}
-                      min={1}
-                      max={100}
-                      color={currentColor}
-                      label="REFRESH_RATE:"
-                    />
+                    {#key numericStepEffectKeys.frameCount}
+                      <div
+                        class="stack-item"
+                        data-testid="frame-count-step-effect"
+                        transition:signalMorph={{ duration: transitionDuration }}
+                      >
+                        <CyberNumericInput
+                          id="frame-count"
+                          bind:value={settings.frameCount}
+                          min={1}
+                          max={100}
+                          color={currentColor}
+                          label="REFRESH_RATE:"
+                          onstep={() => triggerNumericStepEffect('frameCount')}
+                        />
+                      </div>
+                    {/key}
                   {:else}
                     <CyberSelect
                       id="color-select"
@@ -245,8 +264,12 @@
 
           <div class="setting-item">
             <div class="transition-stack">
-              {#key settings.fontSize}
-                <div class="stack-item" transition:signalMorph={{ duration: transitionDuration }}>
+              {#key numericStepEffectKeys.fontSize}
+                <div
+                  class="stack-item"
+                  data-testid="font-size-step-effect"
+                  transition:signalMorph={{ duration: transitionDuration }}
+                >
                   <CyberNumericInput
                     id="font-size"
                     bind:value={settings.fontSize}
@@ -254,6 +277,7 @@
                     max={100}
                     color={currentColor}
                     label="FONT_SIZE:"
+                    onstep={() => triggerNumericStepEffect('fontSize')}
                   />
                 </div>
               {/key}
@@ -262,8 +286,12 @@
 
           <div class="setting-item">
             <div class="transition-stack">
-              {#key settings.speed}
-                <div class="stack-item" transition:signalMorph={{ duration: transitionDuration }}>
+              {#key numericStepEffectKeys.speed}
+                <div
+                  class="stack-item"
+                  data-testid="speed-step-effect"
+                  transition:signalMorph={{ duration: transitionDuration }}
+                >
                   <CyberNumericInput
                     id="speed"
                     bind:value={settings.speed}
@@ -271,6 +299,7 @@
                     max={200}
                     color={currentColor}
                     label="SPEED:"
+                    onstep={() => triggerNumericStepEffect('speed')}
                   />
                 </div>
               {/key}
@@ -279,8 +308,12 @@
 
           <div class="setting-item">
             <div class="transition-stack">
-              {#key settings.intensity}
-                <div class="stack-item" transition:signalMorph={{ duration: transitionDuration }}>
+              {#key numericStepEffectKeys.intensity}
+                <div
+                  class="stack-item"
+                  data-testid="intensity-step-effect"
+                  transition:signalMorph={{ duration: transitionDuration }}
+                >
                   <CyberNumericInput
                     id="intensity"
                     bind:value={settings.intensity}
@@ -288,6 +321,7 @@
                     max={300}
                     color={currentColor}
                     label="RAIN_DENSITY:"
+                    onstep={() => triggerNumericStepEffect('intensity')}
                   />
                 </div>
               {/key}

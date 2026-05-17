@@ -9,20 +9,31 @@
     color?: string;
     label?: string;
     id?: string;
+    onstep?: (direction: 'increment' | 'decrement') => void;
   }
 
   /* eslint-disable prefer-const */
-  let { value = $bindable(10), min = 1, max = 100, color = '#00ff41', label, id }: Props = $props();
+  let {
+    value = $bindable(10),
+    min = 1,
+    max = 100,
+    color = '#00ff41',
+    label,
+    id,
+    onstep,
+  }: Props = $props();
   /* eslint-enable prefer-const */
 
   const colorRgb = $derived(hexToRgb(color));
 
   function increment() {
     value = Math.min(max, value + 1);
+    onstep?.('increment');
   }
 
   function decrement() {
     value = Math.max(min, value - 1);
+    onstep?.('decrement');
   }
 
   function handleInput(event: Event) {
