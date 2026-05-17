@@ -35,7 +35,8 @@
     border: 1px solid var(--theme-color);
     color: var(--theme-color);
     width: 44px;
-    height: 42px;
+    min-width: 44px;
+    min-height: 44px;
     display: flex;
     justify-content: center;
     align-items: center;

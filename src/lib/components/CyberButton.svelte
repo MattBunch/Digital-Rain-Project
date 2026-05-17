@@ -75,9 +75,11 @@
       0 calc(100% - 12px)
     );
     min-width: 140px;
+    min-height: 44px;
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 100%;
   }
 
   .cyber-button.secondary {

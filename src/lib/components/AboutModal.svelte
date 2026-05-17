@@ -82,6 +82,8 @@
 
   .value {
     color: var(--theme-color);
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
 
   .link {
@@ -118,5 +120,29 @@
 
   .cyber-link:hover {
     transform: translateY(-2px);
+  }
+
+  @media (max-width: 599px) {
+    .about-content {
+      gap: 1.5rem;
+    }
+
+    .description {
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .meta-item {
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .label {
+      min-width: 0;
+    }
+
+    .links-grid {
+      gap: 1rem;
+    }
   }
 </style>

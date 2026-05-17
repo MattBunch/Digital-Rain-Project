@@ -56,6 +56,7 @@
     border: none;
     color: var(--theme-color);
     padding: 12px 20px;
+    min-height: 48px;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -88,6 +89,8 @@
   .title {
     font-weight: bold;
     flex-grow: 0;
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
 
   .tech-lines {
@@ -104,5 +107,17 @@
 
   .content-inner {
     padding: 20px;
+  }
+
+  @media (max-width: 599px) {
+    .accordion-header {
+      gap: 8px;
+      padding: 12px;
+      letter-spacing: 1px;
+    }
+
+    .content-inner {
+      padding: 16px 0 4px;
+    }
   }
 </style>

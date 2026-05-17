@@ -72,12 +72,16 @@
     align-items: center;
     gap: 1rem;
     font-family: var(--font-mono);
+    min-height: 44px;
   }
 
   .checkbox-wrapper {
     position: relative;
-    width: 24px;
-    height: 24px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .hidden-input {
@@ -96,36 +100,44 @@
     letter-spacing: 1px;
     cursor: pointer;
     user-select: none;
+    line-height: 1.35;
+    text-align: left;
   }
 
   .cyber-checkbox {
-    width: 24px;
-    height: 24px;
-    background: rgba(0, 0, 0, 0.8);
-    border: 1px solid var(--theme-color);
+    width: 44px;
+    height: 44px;
+    background: transparent;
+    border: none;
     cursor: pointer;
     position: relative;
-    clip-path: polygon(0 0, 100% 0, 100% 70%, 70% 100%, 0 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
     transition: all 0.2s ease;
     outline: none;
   }
 
-  .cyber-checkbox:focus-visible {
+  .cyber-checkbox:focus-visible .inner-box {
     box-shadow: 0 0 10px var(--theme-color);
     transform: scale(1.1);
   }
 
-  .cyber-checkbox.checked {
+  .cyber-checkbox.checked .inner-box {
     background: rgba(var(--theme-color-rgb), 0.1);
     box-shadow: inset 0 0 10px var(--theme-color);
   }
 
   .inner-box {
-    width: 100%;
-    height: 100%;
+    width: 24px;
+    height: 24px;
     display: flex;
     justify-content: center;
     align-items: center;
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid var(--theme-color);
+    clip-path: polygon(0 0, 100% 0, 100% 70%, 70% 100%, 0 100%);
+    transition: all 0.2s ease;
   }
 
   .checkmark {
@@ -152,7 +164,7 @@
     }
   }
 
-  .cyber-checkbox:hover {
+  .cyber-checkbox:hover .inner-box {
     box-shadow: 0 0 15px var(--theme-color);
     border-color: #fff;
   }

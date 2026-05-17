@@ -95,7 +95,8 @@
     flex-direction: column;
     gap: 0.5rem;
     font-family: var(--font-mono);
-    width: 200px;
+    width: 100%;
+    max-width: 200px;
     align-items: flex-start;
     min-height: 65px;
   }
@@ -116,7 +117,7 @@
     align-items: center;
     gap: 8px;
     width: 100%;
-    height: 42px;
+    min-height: 44px;
   }
 
   .input-glow-wrapper {
@@ -168,7 +169,9 @@
     font-family: var(--font-mono);
     cursor: pointer;
     font-size: 1.1rem;
-    padding: 5px;
+    padding: 0 6px;
+    min-width: 44px;
+    min-height: 44px;
     transition: all 0.2s ease;
     user-select: none;
     outline: none;
@@ -205,6 +208,12 @@
     }
     100% {
       transform: translateY(50px);
+    }
+  }
+
+  @media (max-width: 599px) {
+    .cyber-numeric-container {
+      max-width: 200px;
     }
   }
 </style>

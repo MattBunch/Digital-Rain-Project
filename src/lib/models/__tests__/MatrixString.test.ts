@@ -251,7 +251,11 @@ describe('MatrixString', () => {
         discoCallback,
       );
 
-      const firstCall = vi.mocked(mockCtx.fillText).mock.calls[0];
+      const fillText = vi.mocked(mockCtx.fillText as NonNullable<typeof mockCtx.fillText>);
+      const firstCall = fillText.mock.calls[0];
+      if (!firstCall) {
+        throw new Error('Expected fillText to be called');
+      }
       expect(firstCall[1]).not.toBe(100);
       expect(firstCall[2]).toBe(100);
     });
@@ -308,7 +312,11 @@ describe('MatrixString', () => {
         squareConfig,
       );
 
-      const firstCall = vi.mocked(mockCtx.fillText).mock.calls[0];
+      const fillText = vi.mocked(mockCtx.fillText as NonNullable<typeof mockCtx.fillText>);
+      const firstCall = fillText.mock.calls[0];
+      if (!firstCall) {
+        throw new Error('Expected fillText to be called');
+      }
       expect(firstCall[1]).not.toBe(100);
       expect(firstCall[2]).toBe(100);
     });

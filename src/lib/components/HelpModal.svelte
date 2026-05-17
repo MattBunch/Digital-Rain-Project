@@ -69,6 +69,7 @@
     display: flex;
     align-items: center;
     gap: 1rem;
+    min-width: 0;
   }
 
   .key-wrapper {
@@ -82,5 +83,30 @@
     font-family: var(--font-mono);
     font-size: 0.9rem;
     opacity: 0.9;
+    overflow-wrap: anywhere;
+  }
+
+  @media (max-width: 599px) {
+    .groups-container {
+      gap: 1.25rem;
+    }
+
+    .help-group h3 {
+      font-size: 1rem;
+    }
+
+    .help-item {
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .key-wrapper {
+      width: 64px;
+    }
+
+    .description {
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
   }
 </style>

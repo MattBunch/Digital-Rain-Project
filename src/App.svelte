@@ -166,10 +166,16 @@
   :global(body) {
     margin: 0;
     padding: 0;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     background-color: black;
     color: #00ff41;
     font-family: var(--font-mono);
+  }
+
+  main {
+    min-height: 100vh;
+    min-height: 100dvh;
   }
 
   .background-rain {

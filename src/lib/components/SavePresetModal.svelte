@@ -80,4 +80,15 @@
     justify-content: flex-end;
     width: 100%;
   }
+
+  @media (max-width: 599px) {
+    .save-modal-content {
+      gap: 1rem;
+      padding: 0.5rem 0;
+    }
+
+    .modal-actions {
+      flex-direction: column-reverse;
+    }
+  }
 </style>
