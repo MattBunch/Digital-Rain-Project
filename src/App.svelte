@@ -76,6 +76,7 @@
     engine.customCharSet = settings.customCharSet;
     engine.perStringColor = settings.perStringColor;
     engine.waveDistortion = settings.waveDistortion;
+    engine.mouseInteractionMode = settings.mouseInteractionMode;
 
     // Background Engine
     backgroundEngine.switchColor(settings.chosenColor);
@@ -89,6 +90,7 @@
     backgroundEngine.customCharSet = settings.customCharSet;
     backgroundEngine.perStringColor = settings.perStringColor;
     backgroundEngine.waveDistortion = settings.waveDistortion;
+    backgroundEngine.mouseInteractionMode = settings.mouseInteractionMode;
   });
 
   function handleStartNormal() {
@@ -129,6 +131,7 @@
             bind:all4Directions={settings.all4Directions}
             bind:all8Directions={settings.all8Directions}
             bind:waveDistortion={settings.waveDistortion}
+            bind:mouseInteractionMode={settings.mouseInteractionMode}
           />
         {/if}
       </div>
@@ -147,6 +150,7 @@
         bind:all4Directions={settings.all4Directions}
         bind:all8Directions={settings.all8Directions}
         bind:waveDistortion={settings.waveDistortion}
+        bind:mouseInteractionMode={settings.mouseInteractionMode}
       />
     {/if}
   </main>

@@ -1,5 +1,11 @@
 import { MatrixString } from '../models/MatrixString';
-import { Direction, IMatrixStringConfig, ISquareConfig } from '../types/index';
+import type {
+  Direction,
+  IMatrixStringConfig,
+  IMouseInteractionState,
+  ISquareConfig,
+  MouseInteractionMode,
+} from '../types/index';
 import {
   generateWord,
   generateSpeed,
@@ -51,6 +57,12 @@ export class CoreEngine {
   private _customCharSet: string = '';
   private _perStringColor: boolean = false;
   waveDistortion: boolean = false;
+  mouseInteractionMode: MouseInteractionMode = 'off';
+  private mousePosition: Omit<IMouseInteractionState, 'mode'> = {
+    x: 0,
+    y: 0,
+    active: false,
+  };
   drawBackgroundOn: boolean = true;
   drawBackgroundAll4DirectionsCounter: number = 0;
   drawBackgroundAll4DirectionsCounterMax: number = 3;
@@ -275,6 +287,28 @@ export class CoreEngine {
     this.updateBoundaries();
   }
 
+  setMousePosition(x: number, y: number): void {
+    this.mousePosition = {
+      x,
+      y,
+      active: true,
+    };
+  }
+
+  clearMousePosition(): void {
+    this.mousePosition = {
+      ...this.mousePosition,
+      active: false,
+    };
+  }
+
+  getMouseInteractionState(): IMouseInteractionState {
+    return {
+      ...this.mousePosition,
+      mode: this.mouseInteractionMode,
+    };
+  }
+
   updateBoundaries(): void {
     if (!this.canvas) {
       return;
@@ -486,6 +520,7 @@ export class CoreEngine {
         direction: this.direction,
         alphabet: this.resolvedAlphabet,
         waveDistortion: this.waveDistortion,
+        mouseInteraction: this.getMouseInteractionState(),
       };
 
       const discoCallback = (ctx: CanvasRenderingContext2D) => {
@@ -773,6 +808,7 @@ export class CoreEngine {
                 direction: this.direction,
                 alphabet: this.resolvedAlphabet,
                 waveDistortion: this.waveDistortion,
+                mouseInteraction: this.getMouseInteractionState(),
               },
               squareConfig,
             );
@@ -792,6 +828,7 @@ export class CoreEngine {
             direction: this.direction,
             alphabet: this.resolvedAlphabet,
             waveDistortion: this.waveDistortion,
+            mouseInteraction: this.getMouseInteractionState(),
           },
           squareConfig,
         );
@@ -884,6 +921,8 @@ export class CoreEngine {
     this._perStringColor = false;
     this._all4Directions = false;
     this._all8Directions = false;
+    this.mouseInteractionMode = 'off';
+    this.clearMousePosition();
   }
 
   pause(): void {

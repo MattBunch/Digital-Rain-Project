@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { CoreEngine } from '../CoreEngine';
 import { ALPHABET } from '../../constants/matrix';
+import { MatrixString } from '../../models/MatrixString';
 
 describe('CoreEngine', () => {
   let engine: CoreEngine;
@@ -408,6 +409,57 @@ describe('CoreEngine', () => {
       const spy = vi.spyOn(engine, 'resetWordsArray');
       engine.customCharSet = '123';
       expect(spy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Mouse Interaction', () => {
+    it('should store and clear mouse position state', () => {
+      engine.mouseInteractionMode = 'repel';
+      engine.setMousePosition(120, 240);
+
+      expect(engine.getMouseInteractionState()).toEqual({
+        x: 120,
+        y: 240,
+        active: true,
+        mode: 'repel',
+      });
+
+      engine.clearMousePosition();
+
+      expect(engine.getMouseInteractionState()).toEqual({
+        x: 120,
+        y: 240,
+        active: false,
+        mode: 'repel',
+      });
+    });
+
+    it('should pass mouse interaction state into MatrixString rendering', () => {
+      const word = new MatrixString('TEST', 100, 100, 0, 1, 20);
+      const showSpy = vi.spyOn(word, 'show');
+
+      engine.words = [word];
+      engine.mouseInteractionMode = 'attract';
+      engine.setMousePosition(150, 150);
+      engine.draw(engine.words, false, 1);
+
+      expect(showSpy).toHaveBeenCalled();
+      expect(showSpy.mock.calls[0][2].mouseInteraction).toEqual({
+        x: 150,
+        y: 150,
+        active: true,
+        mode: 'attract',
+      });
+    });
+
+    it('should reset mouse interaction mode and activity', () => {
+      engine.mouseInteractionMode = 'repel';
+      engine.setMousePosition(120, 240);
+
+      engine.reset();
+
+      expect(engine.mouseInteractionMode).toBe('off');
+      expect(engine.getMouseInteractionState().active).toBe(false);
     });
   });
 });

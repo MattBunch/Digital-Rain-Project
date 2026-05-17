@@ -124,6 +124,66 @@ describe('MatrixString', () => {
       expect(coords.xCoordinate).not.toBe(initialX - initialFontSize);
       expect(coords.yCoordinate).not.toBe(initialY + initialFontSize);
     });
+
+    it('should return base coordinates when mouse interaction is inactive', () => {
+      const coords = matrixString.getRenderCoordinates(1, 'south', false, {
+        mouseInteraction: { x: 100, y: 100, active: false, mode: 'repel' },
+      });
+      expect(coords.xCoordinate).toBe(initialX);
+      expect(coords.yCoordinate).toBe(initialY + initialFontSize);
+    });
+
+    it('should push coordinates away from the cursor in repel mode', () => {
+      const baseCoords = matrixString.getRenderCoordinates(1, 'south', false);
+      const repelCoords = matrixString.getRenderCoordinates(1, 'south', false, {
+        mouseInteraction: { x: 100, y: 100, active: true, mode: 'repel' },
+      });
+
+      const baseDistance = Math.hypot(baseCoords.xCoordinate - 100, baseCoords.yCoordinate - 100);
+      const repelDistance = Math.hypot(
+        repelCoords.xCoordinate - 100,
+        repelCoords.yCoordinate - 100,
+      );
+
+      expect(repelDistance).toBeGreaterThan(baseDistance);
+    });
+
+    it('should pull coordinates toward the cursor in attract mode', () => {
+      const baseCoords = matrixString.getRenderCoordinates(1, 'south', false);
+      const attractCoords = matrixString.getRenderCoordinates(1, 'south', false, {
+        mouseInteraction: { x: 100, y: 100, active: true, mode: 'attract' },
+      });
+
+      const baseDistance = Math.hypot(baseCoords.xCoordinate - 100, baseCoords.yCoordinate - 100);
+      const attractDistance = Math.hypot(
+        attractCoords.xCoordinate - 100,
+        attractCoords.yCoordinate - 100,
+      );
+
+      expect(attractDistance).toBeLessThan(baseDistance);
+    });
+
+    it('should not change coordinates outside the mouse interaction radius', () => {
+      const coords = matrixString.getRenderCoordinates(1, 'south', false, {
+        mouseInteraction: { x: 1000, y: 1000, active: true, mode: 'repel' },
+      });
+
+      expect(coords.xCoordinate).toBe(initialX);
+      expect(coords.yCoordinate).toBe(initialY + initialFontSize);
+    });
+
+    it('should compose wave distortion and mouse interaction', () => {
+      const waveCoords = matrixString.getRenderCoordinates(1, 'south', false, {
+        waveDistortion: true,
+      });
+      const combinedCoords = matrixString.getRenderCoordinates(1, 'south', false, {
+        waveDistortion: true,
+        mouseInteraction: { x: 100, y: 100, active: true, mode: 'repel' },
+      });
+
+      expect(combinedCoords.xCoordinate).not.toBe(waveCoords.xCoordinate);
+      expect(combinedCoords.yCoordinate).not.toBe(waveCoords.yCoordinate);
+    });
   });
 
   describe('Rendering (show)', () => {

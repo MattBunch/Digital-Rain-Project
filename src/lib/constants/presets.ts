@@ -14,6 +14,7 @@ export const DEFAULT_SETTINGS: IEngineSettings = {
   customCharSet: '',
   perStringColor: false,
   waveDistortion: false,
+  mouseInteractionMode: 'off',
 };
 
 export const PRESETS: IPreset[] = [

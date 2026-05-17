@@ -392,6 +392,25 @@
               {/key}
             </div>
           </div>
+
+          <div
+            class="setting-item"
+            use:fallingLetters={{ value: settings.mouseInteractionMode, color: currentColor }}
+          >
+            <div class="transition-stack">
+              {#key settings.mouseInteractionMode}
+                <div class="stack-item" transition:signalMorph={{ duration: transitionDuration }}>
+                  <CyberSelect
+                    id="mouse-interaction-select"
+                    bind:value={settings.mouseInteractionMode}
+                    color={currentColor}
+                    label="MOUSE_FIELD:"
+                    options={['off', 'repel', 'attract']}
+                  />
+                </div>
+              {/key}
+            </div>
+          </div>
         </div>
       </CyberAccordion>
     </div>

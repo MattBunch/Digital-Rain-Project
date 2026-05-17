@@ -79,6 +79,23 @@ describe('SettingsMenu', () => {
     });
   });
 
+  it('mouse field select changes mode', async () => {
+    render(SettingsMenuWrapper);
+
+    await fireEvent.click(screen.getByText('SYSTEM_CONFIGURATION'));
+
+    const getMouseSelect = () => screen.getByLabelText(/MOUSE_FIELD/i);
+    expect(getMouseSelect()).toHaveTextContent(/off/i);
+
+    await fireEvent.click(getMouseSelect());
+    const repelOption = await screen.findByRole('option', { name: /repel/i });
+    await fireEvent.click(repelOption);
+
+    await waitFor(() => {
+      expect(getMouseSelect()).toHaveTextContent(/repel/i);
+    });
+  });
+
   it('clicking HELP opens the HelpModal', async () => {
     render(SettingsMenuWrapper);
 
