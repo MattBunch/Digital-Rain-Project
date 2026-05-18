@@ -80,9 +80,10 @@
 
     // Background Engine
     backgroundEngine.switchColor(settings.chosenColor);
-    backgroundEngine.discoOn = false; // Background should be subtle
+    backgroundEngine.discoOn = settings.discoOn;
     backgroundEngine.all4Directions = settings.all4Directions;
     backgroundEngine.all8Directions = settings.all8Directions;
+    backgroundEngine.discoFrameCounterTurnoverPoint = settings.frameCount;
     backgroundEngine.fontSize = settings.fontSize;
     backgroundEngine.intervalSpeed = settings.speed;
     backgroundEngine.intensity = settings.intensity / 100;
