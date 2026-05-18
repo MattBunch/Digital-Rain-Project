@@ -93,12 +93,12 @@
   .cyber-numeric-container {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.25rem;
     font-family: var(--font-mono);
     width: 100%;
     max-width: 200px;
     align-items: flex-start;
-    min-height: 65px;
+    min-height: 60px;
   }
 
   .cyber-label {
@@ -106,7 +106,7 @@
     font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 1px;
-    margin-bottom: 2px;
+    margin-bottom: 0;
     height: 16px;
     display: flex;
     align-items: center;
@@ -115,7 +115,7 @@
   .stepper-wrapper {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 4px;
     width: 100%;
     min-height: 44px;
   }
@@ -169,7 +169,7 @@
     font-family: var(--font-mono);
     cursor: pointer;
     font-size: 1.1rem;
-    padding: 0 6px;
+    padding: 0 4px;
     min-width: 44px;
     min-height: 44px;
     transition: all 0.2s ease;

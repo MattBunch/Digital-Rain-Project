@@ -9,8 +9,16 @@
   import { serializeSettings, deserializeSettings } from '$lib/utils/UrlParams';
   import type { IEngineSettings } from '$lib/types';
 
+  function getInitialSettings(): IEngineSettings {
+    if (typeof window === 'undefined') {
+      return { ...DEFAULT_SETTINGS };
+    }
+
+    return { ...DEFAULT_SETTINGS, ...deserializeSettings(window.location.hash) };
+  }
+
   let menuVisible = $state(true);
-  let settings = $state<IEngineSettings>({ ...DEFAULT_SETTINGS });
+  let settings = $state<IEngineSettings>(getInitialSettings());
   let showFps = $state(false);
   let currentFps = $state(0);
 
@@ -18,10 +26,6 @@
   let backgroundEngine = $state<CoreEngine>();
 
   onMount(() => {
-    // Load settings from URL hash
-    const hashSettings = deserializeSettings(window.location.hash);
-    settings = { ...DEFAULT_SETTINGS, ...hashSettings };
-
     engine = new CoreEngine();
     backgroundEngine = new CoreEngine();
 

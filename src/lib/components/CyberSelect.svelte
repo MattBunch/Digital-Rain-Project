@@ -171,7 +171,7 @@
   .cyber-select-container {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.25rem;
     font-family: var(--font-mono);
     width: 100%;
     max-width: 200px;
@@ -183,7 +183,7 @@
     font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 1px;
-    margin-bottom: 2px;
+    margin-bottom: 0;
     height: 16px;
     display: flex;
     align-items: center;
@@ -199,7 +199,7 @@
     background: rgba(0, 0, 0, 0.85);
     border: 1px solid var(--theme-color);
     color: var(--theme-color);
-    padding: 0 15px;
+    padding: 0 12px;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
@@ -245,7 +245,7 @@
     display: none;
     justify-content: flex-start;
     align-items: center;
-    padding-left: 15px;
+    padding-left: 12px;
     z-index: 0;
     opacity: 0.8;
     pointer-events: none;

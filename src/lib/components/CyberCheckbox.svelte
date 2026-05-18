@@ -70,7 +70,7 @@
   .cyber-checkbox-container {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.625rem;
     font-family: var(--font-mono);
     min-height: 44px;
   }
@@ -95,12 +95,12 @@
 
   .cyber-label {
     color: var(--theme-color);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 1px;
     cursor: pointer;
     user-select: none;
-    line-height: 1.35;
+    line-height: 1.25;
     text-align: left;
   }
 
