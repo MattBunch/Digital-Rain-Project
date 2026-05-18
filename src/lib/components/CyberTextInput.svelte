@@ -78,7 +78,7 @@
     position: relative;
     width: 100%;
     overflow: hidden;
-    height: 42px;
+    min-height: 44px;
     clip-path: polygon(0% 0%, 95% 0%, 100% 25%, 100% 100%, 5% 100%, 0% 75%);
   }
 

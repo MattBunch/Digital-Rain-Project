@@ -36,6 +36,12 @@
   let isAboutOpen = $state(false);
   let isConfigOpen = $state(false);
   let isSaveModalOpen = $state(false);
+  const numericStepEffectKeys = $state({
+    frameCount: 0,
+    fontSize: 0,
+    speed: 0,
+    intensity: 0,
+  });
 
   // Preset state
   const CUSTOM_PRESET_NAME = 'CUSTOM';
@@ -126,6 +132,10 @@
     isSaveModalOpen = true;
   }
 
+  function triggerNumericStepEffect(field: keyof typeof numericStepEffectKeys) {
+    numericStepEffectKeys[field] += 1;
+  }
+
   function confirmSavePreset(name: string) {
     const newPreset: IPreset = { name, settings: $state.snapshot(settings) };
     saveCustomPreset(newPreset);
@@ -198,22 +208,38 @@
 
           <div class="setting-item">
             <div class="transition-stack">
-              {#if settings.discoOn}
-                {#key settings.frameCount}
-                  <div class="stack-item" transition:signalMorph={{ duration: transitionDuration }}>
-                    <CyberNumericInput
-                      id="frame-count"
-                      bind:value={settings.frameCount}
-                      min={1}
-                      max={100}
-                      color={currentColor}
-                      label="REFRESH_RATE:"
-                    />
-                  </div>
-                {/key}
-              {:else}
-                {#key settings.chosenColor}
-                  <div class="stack-item" transition:signalMorph={{ duration: transitionDuration }}>
+              {#key settings.discoOn}
+                <div
+                  class="stack-item mode-swap"
+                  data-testid="system-mode-swap"
+                  transition:signalMorph={{
+                    duration: transitionDuration === 0 ? 0 : 550,
+                    jitterX: 18,
+                    jitterY: 4,
+                    blur: 6,
+                    brightness: 0.9,
+                    shadowDistance: 14,
+                  }}
+                >
+                  {#if settings.discoOn}
+                    {#key numericStepEffectKeys.frameCount}
+                      <div
+                        class="stack-item"
+                        data-testid="frame-count-step-effect"
+                        transition:signalMorph={{ duration: transitionDuration }}
+                      >
+                        <CyberNumericInput
+                          id="frame-count"
+                          bind:value={settings.frameCount}
+                          min={1}
+                          max={100}
+                          color={currentColor}
+                          label="REFRESH_RATE:"
+                          onstep={() => triggerNumericStepEffect('frameCount')}
+                        />
+                      </div>
+                    {/key}
+                  {:else}
                     <CyberSelect
                       id="color-select"
                       bind:value={settings.chosenColor}
@@ -230,16 +256,20 @@
                         'random',
                       ]}
                     />
-                  </div>
-                {/key}
-              {/if}
+                  {/if}
+                </div>
+              {/key}
             </div>
           </div>
 
           <div class="setting-item">
             <div class="transition-stack">
-              {#key settings.fontSize}
-                <div class="stack-item" transition:signalMorph={{ duration: transitionDuration }}>
+              {#key numericStepEffectKeys.fontSize}
+                <div
+                  class="stack-item"
+                  data-testid="font-size-step-effect"
+                  transition:signalMorph={{ duration: transitionDuration }}
+                >
                   <CyberNumericInput
                     id="font-size"
                     bind:value={settings.fontSize}
@@ -247,6 +277,7 @@
                     max={100}
                     color={currentColor}
                     label="FONT_SIZE:"
+                    onstep={() => triggerNumericStepEffect('fontSize')}
                   />
                 </div>
               {/key}
@@ -255,8 +286,12 @@
 
           <div class="setting-item">
             <div class="transition-stack">
-              {#key settings.speed}
-                <div class="stack-item" transition:signalMorph={{ duration: transitionDuration }}>
+              {#key numericStepEffectKeys.speed}
+                <div
+                  class="stack-item"
+                  data-testid="speed-step-effect"
+                  transition:signalMorph={{ duration: transitionDuration }}
+                >
                   <CyberNumericInput
                     id="speed"
                     bind:value={settings.speed}
@@ -264,6 +299,7 @@
                     max={200}
                     color={currentColor}
                     label="SPEED:"
+                    onstep={() => triggerNumericStepEffect('speed')}
                   />
                 </div>
               {/key}
@@ -272,8 +308,12 @@
 
           <div class="setting-item">
             <div class="transition-stack">
-              {#key settings.intensity}
-                <div class="stack-item" transition:signalMorph={{ duration: transitionDuration }}>
+              {#key numericStepEffectKeys.intensity}
+                <div
+                  class="stack-item"
+                  data-testid="intensity-step-effect"
+                  transition:signalMorph={{ duration: transitionDuration }}
+                >
                   <CyberNumericInput
                     id="intensity"
                     bind:value={settings.intensity}
@@ -281,6 +321,7 @@
                     max={300}
                     color={currentColor}
                     label="RAIN_DENSITY:"
+                    onstep={() => triggerNumericStepEffect('intensity')}
                   />
                 </div>
               {/key}
@@ -392,6 +433,25 @@
               {/key}
             </div>
           </div>
+
+          <div
+            class="setting-item"
+            use:fallingLetters={{ value: settings.mouseInteractionMode, color: currentColor }}
+          >
+            <div class="transition-stack">
+              {#key settings.mouseInteractionMode}
+                <div class="stack-item" transition:signalMorph={{ duration: transitionDuration }}>
+                  <CyberSelect
+                    id="mouse-interaction-select"
+                    bind:value={settings.mouseInteractionMode}
+                    color={currentColor}
+                    label="MOUSE_FIELD:"
+                    options={['off', 'repel', 'attract']}
+                  />
+                </div>
+              {/key}
+            </div>
+          </div>
         </div>
       </CyberAccordion>
     </div>
@@ -411,12 +471,15 @@
   .menu-container {
     text-align: center;
     background-color: transparent;
-    height: 100vh;
+    min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding: 2rem 1rem;
     color: var(--theme-color);
+    overflow-x: hidden;
   }
 
   .hud-frame {
@@ -427,6 +490,7 @@
     backdrop-filter: blur(5px);
     width: 90%;
     max-width: 800px;
+    box-sizing: border-box;
   }
 
   .hud-frame::before {
@@ -453,9 +517,9 @@
 
   h1 {
     font-family: var(--font-title);
-    font-size: 5rem;
+    font-size: clamp(2.35rem, 12vw, 5rem);
     margin-bottom: 2rem;
-    letter-spacing: 0.5rem;
+    letter-spacing: clamp(0.08rem, 1.1vw, 0.5rem);
     text-shadow:
       2px 0 #ff003c,
       -2px 0 #00e5ff,
@@ -508,7 +572,7 @@
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
-    width: 200px;
+    width: min(100%, 200px);
     height: 70px;
     position: relative;
   }
@@ -551,5 +615,62 @@
   :global(.active) {
     background: var(--theme-color) !important;
     color: black !important;
+  }
+
+  @media (max-width: 599px) {
+    .menu-container {
+      justify-content: flex-start;
+      padding: 1rem 0.75rem 2rem;
+    }
+
+    .hud-frame {
+      width: 100%;
+      padding: 1.25rem;
+    }
+
+    h1 {
+      margin-bottom: 1.25rem;
+      overflow-wrap: anywhere;
+    }
+
+    .menu-controls {
+      gap: 1rem;
+    }
+
+    .main-actions {
+      gap: 0.75rem;
+    }
+
+    .settings-grid {
+      gap: 1rem;
+      font-size: 0.85rem;
+    }
+
+    .setting-item {
+      min-height: 74px;
+    }
+
+    .transition-stack {
+      width: min(100%, 200px);
+      height: 74px;
+    }
+
+    .preset-wrapper {
+      gap: 0.75rem;
+    }
+
+    .save-btn-container {
+      margin-top: 25px;
+    }
+  }
+
+  @media (max-width: 359px) {
+    .hud-frame {
+      padding: 1rem;
+    }
+
+    .main-actions {
+      grid-template-columns: 1fr;
+    }
   }
 </style>

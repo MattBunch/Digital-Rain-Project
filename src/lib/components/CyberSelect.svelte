@@ -173,7 +173,8 @@
     flex-direction: column;
     gap: 0.5rem;
     font-family: var(--font-mono);
-    width: 200px; /* Slightly wider */
+    width: 100%;
+    max-width: 200px;
     position: relative;
   }
 
@@ -194,7 +195,7 @@
 
   .select-trigger {
     width: 100%;
-    height: 42px;
+    min-height: 44px;
     background: rgba(0, 0, 0, 0.85);
     border: 1px solid var(--theme-color);
     color: var(--theme-color);
@@ -381,7 +382,8 @@
   .option-item {
     background: transparent;
     border: none;
-    padding: 12px 15px;
+    padding: 14px 15px;
+    min-height: 44px;
     color: var(--theme-color);
     text-align: left;
     cursor: pointer;
@@ -437,5 +439,11 @@
     background: linear-gradient(transparent, rgba(var(--theme-color-rgb), 0.08));
     pointer-events: none;
     z-index: 1;
+  }
+
+  @media (max-width: 599px) {
+    .cyber-select-container {
+      max-width: 200px;
+    }
   }
 </style>

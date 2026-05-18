@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/svelte';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import CyberNumericInput from '../CyberNumericInput.svelte';
 
 describe('CyberNumericInput', () => {
@@ -43,6 +43,26 @@ describe('CyberNumericInput', () => {
     await fireEvent.click(decrementBtn);
 
     expect(screen.getByRole('spinbutton')).toHaveValue(9);
+  });
+
+  it('reports step button clicks without reporting manual input', async () => {
+    const onstep = vi.fn();
+
+    render(CyberNumericInput, {
+      props: {
+        value: 10,
+        onstep,
+      },
+    });
+
+    await fireEvent.click(screen.getByLabelText(/Increase/i));
+    expect(onstep).toHaveBeenLastCalledWith('increment');
+
+    await fireEvent.click(screen.getByLabelText(/Decrease/i));
+    expect(onstep).toHaveBeenLastCalledWith('decrement');
+
+    await fireEvent.input(screen.getByRole('spinbutton'), { target: { value: '25' } });
+    expect(onstep).toHaveBeenCalledTimes(2);
   });
 
   it('enforces max boundary on increment', async () => {

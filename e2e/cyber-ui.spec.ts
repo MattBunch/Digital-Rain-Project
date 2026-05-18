@@ -65,10 +65,11 @@ test.describe('Cyber UI Effects', () => {
     await page.getByRole('button', { name: /SYSTEM_CONFIGURATION/i }).click();
 
     const checkbox = page.locator('.cyber-checkbox').first();
+    const checkboxVisual = checkbox.locator('.inner-box');
     await expect(checkbox).toBeVisible();
 
     // Check for clip-path styling
-    const clipPath = await checkbox.evaluate((el) => window.getComputedStyle(el).clipPath);
+    const clipPath = await checkboxVisual.evaluate((el) => window.getComputedStyle(el).clipPath);
     expect(clipPath).toContain('polygon');
 
     // Toggle and check aria-checked

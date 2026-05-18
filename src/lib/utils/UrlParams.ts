@@ -13,6 +13,7 @@ const KEY_MAP: Record<string, keyof IEngineSettings> = {
   ccs: 'customCharSet',
   p: 'perStringColor',
   wd: 'waveDistortion',
+  mi: 'mouseInteractionMode',
 };
 
 const REVERSE_KEY_MAP = Object.fromEntries(
@@ -77,6 +78,10 @@ export function deserializeSettings(hash: string): Partial<IEngineSettings> {
           value === 'braille' ||
           value === 'custom'
         ) {
+          settings[fullKey] = value;
+        }
+      } else if (fullKey === 'mouseInteractionMode') {
+        if (value === 'off' || value === 'repel' || value === 'attract') {
           settings[fullKey] = value;
         }
       } else if (fullKey === 'chosenColor' || fullKey === 'customCharSet') {

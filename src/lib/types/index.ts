@@ -24,12 +24,22 @@ export type Direction =
   | 'southeast'
   | 'southwest';
 
+export type MouseInteractionMode = 'off' | 'repel' | 'attract';
+
+export interface IMouseInteractionState {
+  x: number;
+  y: number;
+  active: boolean;
+  mode: MouseInteractionMode;
+}
+
 export interface IMatrixStringConfig {
   rapidWordChange: boolean;
   discoOn: boolean;
   direction: string;
   alphabet?: string;
   waveDistortion?: boolean;
+  mouseInteraction?: IMouseInteractionState;
 }
 
 export interface ISquareConfig {
@@ -63,6 +73,7 @@ export interface IEngineSettings {
   customCharSet: string;
   perStringColor: boolean;
   waveDistortion: boolean;
+  mouseInteractionMode: MouseInteractionMode;
 }
 
 export interface IPreset {

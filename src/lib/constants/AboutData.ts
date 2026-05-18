@@ -1,5 +1,5 @@
 export const aboutLinks = [
-  { label: 'WEBSITE', url: 'https://matt-bunch-dev.com' },
+  { label: 'WEBSITE', url: 'https://mattbunch.dev' },
   { label: 'GITHUB', url: 'https://github.com/MattBunch/Digital-Rain-Project' },
   { label: 'LINKEDIN', url: 'https://www.linkedin.com/in/matt-bunch-dev/' },
 ];

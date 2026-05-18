@@ -20,10 +20,12 @@ describe('UrlParams', () => {
     expect(hash).toContain('ccs=');
     expect(hash).toContain('p=0');
     expect(hash).toContain('wd=0');
+    expect(hash).toContain('mi=off');
   });
 
   it('should deserialize settings correctly', () => {
-    const hash = '#c=blue&d=0&s=25&v=60&m=square&a=1&f=15&i=150&cs=binary&ccs=101010&p=1&wd=1';
+    const hash =
+      '#c=blue&d=0&s=25&v=60&m=square&a=1&f=15&i=150&cs=binary&ccs=101010&p=1&wd=1&mi=attract';
     const settings = deserializeSettings(hash);
     expect(settings.chosenColor).toBe('blue');
     expect(settings.discoOn).toBe(false);
@@ -37,6 +39,7 @@ describe('UrlParams', () => {
     expect(settings.customCharSet).toBe('101010');
     expect(settings.perStringColor).toBe(true);
     expect(settings.waveDistortion).toBe(true);
+    expect(settings.mouseInteractionMode).toBe('attract');
   });
 
   it('should handle malformed hashes gracefully', () => {
@@ -57,5 +60,10 @@ describe('UrlParams', () => {
     const settings = deserializeSettings(hash);
     expect(settings.chosenColor).toBe('green');
     expect(Object.keys(settings)).toHaveLength(1);
+  });
+
+  it('should ignore invalid mouse interaction modes', () => {
+    const settings = deserializeSettings('#mi=invalid');
+    expect(settings.mouseInteractionMode).toBeUndefined();
   });
 });

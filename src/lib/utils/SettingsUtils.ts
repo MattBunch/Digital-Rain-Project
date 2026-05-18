@@ -16,6 +16,7 @@ export function compareSettings(s1: IEngineSettings, s2: IEngineSettings): boole
     s1.charSet === s2.charSet &&
     s1.customCharSet === s2.customCharSet &&
     s1.perStringColor === s2.perStringColor &&
-    s1.waveDistortion === s2.waveDistortion
+    s1.waveDistortion === s2.waveDistortion &&
+    s1.mouseInteractionMode === s2.mouseInteractionMode
   );
 }

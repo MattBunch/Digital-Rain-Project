@@ -6,12 +6,14 @@ import {
   generateWordChangeTurnoverNumber,
 } from '../utils/MathUtils.ts';
 import { COLORS } from '../constants/matrix.ts';
-import { IMatrixStringConfig, ISquareConfig } from '../types/index';
+import type { IMatrixStringConfig, IMouseInteractionState, ISquareConfig } from '../types/index';
 
 const WAVE_AMPLITUDE_FONT_SIZE_MULTIPLIER = 0.35;
 const WAVE_POSITION_FREQUENCY = 0.08;
 const WAVE_CHARACTER_FREQUENCY = 0.7;
 const DIAGONAL_WAVE_MULTIPLIER = 0.5;
+const MOUSE_INTERACTION_RADIUS = 180;
+const MOUSE_INTERACTION_MAX_OFFSET = 80;
 
 export class CoordinateObject {
   xCoordinate: number;
@@ -76,6 +78,7 @@ export class MatrixString {
       let letter = this.word.substring(i, i + 1);
       const { xCoordinate, yCoordinate } = this.getRenderCoordinates(i, config.direction, false, {
         waveDistortion: config.waveDistortion,
+        mouseInteraction: config.mouseInteraction,
       });
 
       if (onePercentChance() && !rapidWordChange) {
@@ -108,6 +111,7 @@ export class MatrixString {
 
       const { xCoordinate, yCoordinate } = this.getRenderCoordinates(i, config.direction, true, {
         waveDistortion: config.waveDistortion,
+        mouseInteraction: config.mouseInteraction,
       });
 
       if (onePercentChance() && !rapidWordChange && i != 0) {
@@ -269,28 +273,61 @@ export class MatrixString {
     i: number,
     direction: string,
     alternative: boolean,
-    config: Pick<IMatrixStringConfig, 'waveDistortion'> = {},
+    config: Pick<IMatrixStringConfig, 'waveDistortion' | 'mouseInteraction'> = {},
   ): CoordinateObject {
     const xCoordinate = this.getXCoordinateFromDirection(i, direction, alternative);
     const yCoordinate = this.getYCoordinateFromDirection(i, direction, alternative);
+    let renderCoordinates = new CoordinateObject(xCoordinate, yCoordinate);
 
-    if (!config.waveDistortion) {
-      return new CoordinateObject(xCoordinate, yCoordinate);
+    if (config.waveDistortion) {
+      const waveOffset = this.getWaveOffset(i, direction);
+
+      if (this.isVerticalDirection(direction)) {
+        renderCoordinates = new CoordinateObject(xCoordinate + waveOffset, yCoordinate);
+      } else if (this.isHorizontalDirection(direction)) {
+        renderCoordinates = new CoordinateObject(xCoordinate, yCoordinate + waveOffset);
+      } else {
+        renderCoordinates = new CoordinateObject(
+          xCoordinate + waveOffset * DIAGONAL_WAVE_MULTIPLIER,
+          yCoordinate - waveOffset * DIAGONAL_WAVE_MULTIPLIER,
+        );
+      }
     }
 
-    const waveOffset = this.getWaveOffset(i, direction);
+    return this.applyMouseInteraction(renderCoordinates, config.mouseInteraction);
+  }
 
-    if (this.isVerticalDirection(direction)) {
-      return new CoordinateObject(xCoordinate + waveOffset, yCoordinate);
+  private applyMouseInteraction(
+    coordinates: CoordinateObject,
+    mouseInteraction?: IMouseInteractionState,
+  ): CoordinateObject {
+    if (
+      !mouseInteraction?.active ||
+      mouseInteraction.mode === 'off' ||
+      !Number.isFinite(mouseInteraction.x) ||
+      !Number.isFinite(mouseInteraction.y)
+    ) {
+      return coordinates;
     }
 
-    if (this.isHorizontalDirection(direction)) {
-      return new CoordinateObject(xCoordinate, yCoordinate + waveOffset);
+    const deltaX = coordinates.xCoordinate - mouseInteraction.x;
+    const deltaY = coordinates.yCoordinate - mouseInteraction.y;
+    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+    if (distance <= 0 || distance >= MOUSE_INTERACTION_RADIUS) {
+      return coordinates;
     }
+
+    const falloff = 1 - distance / MOUSE_INTERACTION_RADIUS;
+    const rawOffset = MOUSE_INTERACTION_MAX_OFFSET * falloff * falloff;
+    const offset = mouseInteraction.mode === 'attract' ? Math.min(rawOffset, distance) : rawOffset;
+    const directionMultiplier = mouseInteraction.mode === 'repel' ? 1 : -1;
+    const normalizedX = deltaX / distance;
+    const normalizedY = deltaY / distance;
 
     return new CoordinateObject(
-      xCoordinate + waveOffset * DIAGONAL_WAVE_MULTIPLIER,
-      yCoordinate - waveOffset * DIAGONAL_WAVE_MULTIPLIER,
+      coordinates.xCoordinate + normalizedX * offset * directionMultiplier,
+      coordinates.yCoordinate + normalizedY * offset * directionMultiplier,
     );
   }
 

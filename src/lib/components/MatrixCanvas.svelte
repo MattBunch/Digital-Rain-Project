@@ -1,6 +1,7 @@
 <script lang="ts">
   import { canvasSetup } from '$lib/utils/CoordinateUtils';
   import type { CoreEngine } from '$lib/engine/CoreEngine';
+  import type { MouseInteractionMode } from '$lib/types';
 
   /* eslint-disable prefer-const, no-useless-assignment */
   let {
@@ -12,6 +13,7 @@
     all4Directions = $bindable(false),
     all8Directions = $bindable(false),
     waveDistortion = $bindable(false),
+    mouseInteractionMode = $bindable('off' as MouseInteractionMode),
   } = $props<{
     engine: CoreEngine;
     mode: 'normal' | 'square';
@@ -21,6 +23,7 @@
     all4Directions: boolean;
     all8Directions: boolean;
     waveDistortion: boolean;
+    mouseInteractionMode: MouseInteractionMode;
   }>();
   /* eslint-enable prefer-const, no-useless-assignment */
 
@@ -111,6 +114,9 @@
       case 'x':
         waveDistortion = !waveDistortion;
         break;
+      case 'g':
+        mouseInteractionMode = getNextMouseInteractionMode(mouseInteractionMode);
+        break;
       case 's':
         engine.controlFontSize(false);
         break;
@@ -170,6 +176,34 @@
     }
   }
 
+  function getNextMouseInteractionMode(currentMode: MouseInteractionMode): MouseInteractionMode {
+    if (currentMode === 'off') {
+      return 'repel';
+    }
+    if (currentMode === 'repel') {
+      return 'attract';
+    }
+    return 'off';
+  }
+
+  function handlePointerMove(event: PointerEvent): void {
+    if (!canvas) {
+      return;
+    }
+
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const rawCanvasX = (event.clientX - rect.left) * scaleX;
+    const rawCanvasY = (event.clientY - rect.top) * scaleY;
+
+    engine.setMousePosition(canvas.width - rawCanvasX, rawCanvasY);
+  }
+
+  function handlePointerLeave(): void {
+    engine.clearMousePosition();
+  }
+
   $effect(() => {
     if (canvas) {
       const ctx = canvas.getContext('2d')!;
@@ -185,6 +219,7 @@
 
       const handleResize = () => {
         setup();
+        engine.clearMousePosition();
         engine.resetWordsArray();
       };
 
@@ -223,6 +258,8 @@
   style:display="block"
   style:background="black"
   style:cursor="pointer"
+  onpointermove={handlePointerMove}
+  onpointerleave={handlePointerLeave}
 ></canvas>
 
 <style>

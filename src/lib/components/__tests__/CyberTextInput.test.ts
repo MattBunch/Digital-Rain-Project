@@ -17,11 +17,9 @@ describe('CyberTextInput', () => {
   });
 
   it('updates value on input', async () => {
-    let value = '';
     render(CyberTextInput, {
       props: {
-        value,
-        'onupdate:value': (v: string) => (value = v),
+        value: '',
       },
     });
 

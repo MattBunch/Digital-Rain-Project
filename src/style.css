@@ -7,8 +7,15 @@
 body {
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   background-color: black;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 @keyframes fadeIn {

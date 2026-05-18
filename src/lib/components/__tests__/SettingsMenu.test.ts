@@ -30,12 +30,10 @@ describe('SettingsMenu', () => {
     // Open accordion first
     await fireEvent.click(screen.getByText('SYSTEM_CONFIGURATION'));
 
-    const discoCheckbox = screen.getByRole('checkbox', { name: /DISCO_MODE/i });
-
     // Initially false, color select should be visible
     expect(screen.getByLabelText(/SYSTEM_COLOR/i)).toBeVisible();
 
-    await fireEvent.click(discoCheckbox);
+    await fireEvent.click(screen.getByRole('checkbox', { name: /DISCO_MODE/i }));
 
     // Now true, wait for transitions to finish before checking the DOM
     await waitFor(
@@ -45,6 +43,23 @@ describe('SettingsMenu', () => {
       { timeout: 2000 },
     );
     expect(screen.getByLabelText(/REFRESH_RATE/i)).toBeVisible();
+
+    const refreshRateInput = screen.getByLabelText(/REFRESH_RATE/i);
+    refreshRateInput.focus();
+    await fireEvent.input(refreshRateInput, { target: { value: '11' } });
+
+    expect(screen.getByLabelText(/REFRESH_RATE/i)).toHaveValue(11);
+    expect(document.activeElement).toBe(refreshRateInput);
+
+    await fireEvent.click(screen.getByRole('checkbox', { name: /DISCO_MODE/i }));
+
+    await waitFor(
+      () => {
+        expect(screen.queryByLabelText(/REFRESH_RATE/i)).not.toBeInTheDocument();
+      },
+      { timeout: 2000 },
+    );
+    expect(screen.getByLabelText(/SYSTEM_COLOR/i)).toBeVisible();
   });
 
   it('all4Directions checkbox toggles state', async () => {
@@ -77,6 +92,73 @@ describe('SettingsMenu', () => {
     await waitFor(() => {
       expect(getWaveCheckbox()).toHaveAttribute('aria-checked', 'true');
     });
+  });
+
+  it('mouse field select changes mode', async () => {
+    render(SettingsMenuWrapper);
+
+    await fireEvent.click(screen.getByText('SYSTEM_CONFIGURATION'));
+
+    const getMouseSelect = () => screen.getByLabelText(/MOUSE_FIELD/i);
+    expect(getMouseSelect()).toHaveTextContent(/off/i);
+
+    await fireEvent.click(getMouseSelect());
+    const repelOption = await screen.findByRole('option', { name: /repel/i });
+    await fireEvent.click(repelOption);
+
+    await waitFor(() => {
+      expect(getMouseSelect()).toHaveTextContent(/repel/i);
+    });
+  });
+
+  it('keeps numeric inputs focused while entering values', async () => {
+    render(SettingsMenuWrapper);
+
+    await fireEvent.click(screen.getByText('SYSTEM_CONFIGURATION'));
+
+    const inputs = [
+      { label: /FONT_SIZE:/i, testId: 'font-size-step-effect', value: '24' },
+      { label: /SPEED:/i, testId: 'speed-step-effect', value: '99' },
+      { label: /RAIN_DENSITY:/i, testId: 'intensity-step-effect', value: '120' },
+    ];
+
+    for (const { label, testId, value } of inputs) {
+      const input = screen.getByLabelText(label) as HTMLInputElement;
+      const wrapper = screen.getByTestId(testId);
+      input.focus();
+
+      await fireEvent.input(input, { target: { value } });
+
+      expect(input.value).toBe(value);
+      expect(document.activeElement).toBe(input);
+      expect(screen.getByTestId(testId)).toBe(wrapper);
+    }
+  });
+
+  it('triggers numeric transition wrappers from step buttons', async () => {
+    render(SettingsMenuWrapper);
+
+    await fireEvent.click(screen.getByText('SYSTEM_CONFIGURATION'));
+
+    const fields = [
+      { label: /FONT_SIZE:/i, testId: 'font-size-step-effect', value: 21 },
+      { label: /SPEED:/i, testId: 'speed-step-effect', value: 51 },
+      { label: /RAIN_DENSITY:/i, testId: 'intensity-step-effect', value: 101 },
+    ];
+
+    for (const { label, testId, value } of fields) {
+      const wrapper = screen.getByTestId(testId);
+      const input = screen.getByLabelText(label);
+      const container = input.closest('.cyber-numeric-container') as HTMLElement;
+      const incrementButton = container.querySelector('[aria-label="Increase"]') as HTMLElement;
+
+      await fireEvent.click(incrementButton);
+
+      await waitFor(() => {
+        expect(screen.getByLabelText(label)).toHaveValue(value);
+        expect(screen.getByTestId(testId)).not.toBe(wrapper);
+      });
+    }
   });
 
   it('clicking HELP opens the HelpModal', async () => {
