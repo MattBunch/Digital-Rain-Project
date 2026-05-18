@@ -74,8 +74,8 @@ npm run test:e2e
 
 ### UI bugfixes, effects
 
-- compact everything in menu - less space between elements.
-- Make the background disco matrix in sync with menu disco
+- Make the background disco matrix in sync with menu disco.
+- Disable changing system colour when cursor is selecting text input
 - move square mode - matrix strings don't "hang" in place.
 - w/s keys, q/r keys - resets screen
 - remove commented out console logging from button & settings menu
