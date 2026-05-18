@@ -68,8 +68,12 @@ describe('App', () => {
     await fireEvent.click(discoCheckbox);
 
     await waitFor(() => {
+      const menuContainer = document.querySelector('.menu-container') as HTMLElement;
+      const themeColor = menuContainer.style.getPropertyValue('--theme-color').trim();
+
       expect(backgroundEngine.discoOn).toBe(true);
       expect(backgroundEngine.discoFrameCounterTurnoverPoint).toBe(10);
+      expect(backgroundEngine.colorManager.discoColorOverride).toBe(themeColor);
     });
   });
 });

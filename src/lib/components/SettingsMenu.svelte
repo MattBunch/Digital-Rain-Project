@@ -20,16 +20,26 @@
 
   interface Props {
     settings: IEngineSettings;
+    discoColors?: string[];
     onStartNormal: () => void;
     onStartSquare: () => void;
   }
 
   /* eslint-disable prefer-const */
-  let { settings = $bindable(), onStartNormal, onStartSquare }: Props = $props();
+  let {
+    settings = $bindable(),
+    discoColors = [
+      COLORS.MATRIX_GREEN,
+      COLORS.RED_VARIANTS[2],
+      COLORS.YELLOW_VARIANTS[2],
+      COLORS.BLUE_VARIANTS[2],
+      COLORS.CYAN_VARIANTS[2],
+    ],
+    onStartNormal,
+    onStartSquare,
+  }: Props = $props();
   /* eslint-enable prefer-const */
 
-  let menuInterval: ReturnType<typeof setInterval> | null = null;
-  let discoColors = $state(getRandomColors());
   let cachedRandomColor = $state(getRandomColor());
   let lastChosenColor = $state(settings.chosenColor);
   let isHelpOpen = $state(false);
@@ -94,29 +104,6 @@
     }
     lastChosenColor = settings.chosenColor;
   });
-
-  $effect(() => {
-    if (settings.discoOn) {
-      menuInterval = setInterval(() => {
-        discoColors = getRandomColors();
-      }, 1000);
-    } else {
-      if (menuInterval) {
-        clearInterval(menuInterval);
-        menuInterval = null;
-      }
-    }
-    return () => {
-      if (menuInterval) {
-        clearInterval(menuInterval);
-        menuInterval = null;
-      }
-    };
-  });
-
-  function getRandomColors(count = 5) {
-    return Array.from({ length: count }, () => getRandomColor());
-  }
 
   function handlePresetChange(name: string) {
     if (name === CUSTOM_PRESET_NAME) {

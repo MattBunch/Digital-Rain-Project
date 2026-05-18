@@ -6,8 +6,13 @@
   import CRTOverlay from '$lib/components/CRTOverlay.svelte';
   import FpsCounter from '$lib/components/FpsCounter.svelte';
   import { DEFAULT_SETTINGS } from '$lib/constants/presets';
+  import { getRandomColor } from '$lib/utils/MathUtils';
   import { serializeSettings, deserializeSettings } from '$lib/utils/UrlParams';
   import type { IEngineSettings } from '$lib/types';
+
+  function getRandomColors(count = 5): string[] {
+    return Array.from({ length: count }, () => getRandomColor());
+  }
 
   function getInitialSettings(): IEngineSettings {
     if (typeof window === 'undefined') {
@@ -19,6 +24,7 @@
 
   let menuVisible = $state(true);
   let settings = $state<IEngineSettings>(getInitialSettings());
+  let discoColors = $state(getRandomColors());
   let showFps = $state(false);
   let currentFps = $state(0);
 
@@ -53,6 +59,20 @@
     };
   });
 
+  $effect(() => {
+    if (settings.discoOn && menuVisible) {
+      const menuInterval = setInterval(() => {
+        discoColors = getRandomColors();
+      }, 1000);
+
+      return () => {
+        clearInterval(menuInterval);
+      };
+    }
+
+    return undefined;
+  });
+
   // Sync state to URL hash
   $effect(() => {
     const hash = serializeSettings(settings);
@@ -85,6 +105,7 @@
     // Background Engine
     backgroundEngine.switchColor(settings.chosenColor);
     backgroundEngine.discoOn = settings.discoOn;
+    backgroundEngine.setDiscoColorOverride(settings.discoOn && menuVisible ? discoColors[0] : null);
     backgroundEngine.all4Directions = settings.all4Directions;
     backgroundEngine.all8Directions = settings.all8Directions;
     backgroundEngine.discoFrameCounterTurnoverPoint = settings.frameCount;
@@ -142,6 +163,7 @@
       </div>
       <SettingsMenu
         bind:settings
+        {discoColors}
         onStartNormal={handleStartNormal}
         onStartSquare={handleStartSquare}
       />

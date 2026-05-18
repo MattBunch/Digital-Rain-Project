@@ -46,4 +46,23 @@ describe('ColorManager', () => {
     expect(result.reset).toBe(true);
     expect(manager.savedColor).toBe(result.color);
   });
+
+  it('uses an external disco color override when one is set', () => {
+    const manager = new ColorManager();
+
+    manager.setDiscoColorOverride('#abcdef');
+
+    expect(manager.savedColor).toBe('#abcdef');
+    expect(manager.handleDiscoFrame(11, 10)).toEqual({
+      color: '#abcdef',
+      reset: false,
+    });
+
+    manager.setDiscoColorOverride(null);
+
+    const result = manager.handleDiscoFrame(11, 10);
+
+    expect(result.color).toMatch(/^#[0-9a-f]{6}$/i);
+    expect(result.reset).toBe(true);
+  });
 });

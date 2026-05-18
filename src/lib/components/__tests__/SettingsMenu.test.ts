@@ -320,4 +320,17 @@ describe('SettingsMenu', () => {
     await fireEvent.click(screen.getByText('SYSTEM_CONFIGURATION'));
     expect(screen.getByLabelText(/RAIN_DENSITY:/i)).toBeInTheDocument();
   });
+
+  it('uses injected disco colors for the menu theme', async () => {
+    const discoColors = ['#112233', '#223344', '#334455', '#445566', '#556677'];
+    const { container } = render(SettingsMenuWrapper, { props: { discoColors } });
+
+    await fireEvent.click(screen.getByText('SYSTEM_CONFIGURATION'));
+    await fireEvent.click(screen.getByRole('checkbox', { name: /DISCO_MODE/i }));
+
+    await waitFor(() => {
+      const menuContainer = container.querySelector('.menu-container') as HTMLElement;
+      expect(menuContainer.style.getPropertyValue('--theme-color').trim()).toBe(discoColors[0]);
+    });
+  });
 });

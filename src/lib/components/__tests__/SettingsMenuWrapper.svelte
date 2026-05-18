@@ -5,13 +5,14 @@
 
   interface Props {
     settings?: IEngineSettings;
+    discoColors?: string[];
     onStartNormal?: () => void;
     onStartSquare?: () => void;
   }
 
-  const { onStartNormal = () => {}, onStartSquare = () => {} }: Props = $props();
+  const { discoColors, onStartNormal = () => {}, onStartSquare = () => {} }: Props = $props();
 
   let settings = $state({ ...DEFAULT_SETTINGS });
 </script>
 
-<SettingsMenu bind:settings {onStartNormal} {onStartSquare} />
+<SettingsMenu bind:settings {discoColors} {onStartNormal} {onStartSquare} />

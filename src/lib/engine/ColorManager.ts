@@ -7,6 +7,7 @@ export class ColorManager {
   discoOn: boolean = false;
   randomColorArray: string[];
   savedColor: string = COLORS.MATRIX_GREEN;
+  discoColorOverride: string | null = null;
 
   constructor() {
     this.randomColorArray = generateRandomColorArray();
@@ -49,10 +50,21 @@ export class ColorManager {
     return this.colorChoiceArray[this.chosenColor];
   }
 
+  setDiscoColorOverride(color: string | null): void {
+    this.discoColorOverride = color;
+    if (color) {
+      this.savedColor = color;
+    }
+  }
+
   handleDiscoFrame(
     discoFrameCounter: number,
     turnoverPoint: number,
   ): { color: string; reset: boolean } {
+    if (this.discoColorOverride) {
+      return { color: this.discoColorOverride, reset: false };
+    }
+
     if (discoFrameCounter > turnoverPoint) {
       const newColor = getRandomColor();
       this.savedColor = newColor;
