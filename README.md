@@ -74,7 +74,6 @@ npm run test:e2e
 
 ### UI bugfixes, effects
 
-- Disable changing system colour when cursor is selecting text input
 - move square mode - matrix strings don't "hang" in place.
 - w/s keys, q/r keys - resets screen
 - remove commented out console logging from button & settings menu

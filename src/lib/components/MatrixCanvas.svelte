@@ -29,7 +29,28 @@
 
   let canvas: HTMLCanvasElement;
 
+  function isEditableTarget(target: EventTarget | null): boolean {
+    if (!(target instanceof HTMLElement)) {
+      return false;
+    }
+
+    return (
+      target instanceof HTMLInputElement ||
+      target instanceof HTMLTextAreaElement ||
+      target instanceof HTMLSelectElement ||
+      target.isContentEditable
+    );
+  }
+
+  function isColorShortcut(key: string): boolean {
+    return /^[1-8]$/.test(key);
+  }
+
   function handleKeyDown(event: KeyboardEvent) {
+    if (isColorShortcut(event.key) && isEditableTarget(event.target)) {
+      return;
+    }
+
     switch (event.key) {
       case 'Escape':
         onReturn();

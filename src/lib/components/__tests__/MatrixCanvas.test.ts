@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/svelte';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { CoreEngine } from '$lib/engine/CoreEngine';
 import MatrixCanvas from '../MatrixCanvas.svelte';
+import MatrixCanvasBindingWrapper from './MatrixCanvasBindingWrapper.svelte';
 
 describe('MatrixCanvas', () => {
   beforeEach(() => {
@@ -117,6 +118,37 @@ describe('MatrixCanvas', () => {
     expect(engine.controlStringSize).toHaveBeenCalledWith(false);
     expect(engine.rapidWordChangeControl).toHaveBeenCalled();
     expect(engine.switchMode).toHaveBeenCalled();
+  });
+
+  it('ignores color keyboard shortcuts from editable inputs', async () => {
+    const engine = createEngine();
+    render(MatrixCanvasBindingWrapper, { props: { engine } });
+    const input = document.createElement('input');
+    document.body.appendChild(input);
+    input.focus();
+
+    const colorKeys = ['1', '2', '3', '4', '5', '6', '7', '8'];
+    for (const key of colorKeys) {
+      await fireEvent.keyDown(input, { key });
+    }
+
+    expect(screen.getByTestId('chosen-color')).toHaveTextContent('green');
+    expect(engine.updateRandomColor).not.toHaveBeenCalled();
+    expect(input).toHaveFocus();
+
+    document.body.removeChild(input);
+  });
+
+  it('changes color from non-editable keyboard shortcut targets', async () => {
+    const engine = createEngine();
+    render(MatrixCanvasBindingWrapper, { props: { engine } });
+
+    await fireEvent.keyDown(window, { key: '2' });
+    expect(screen.getByTestId('chosen-color')).toHaveTextContent('red');
+
+    await fireEvent.keyDown(window, { key: '8' });
+    expect(engine.updateRandomColor).toHaveBeenCalled();
+    expect(screen.getByTestId('chosen-color')).toHaveTextContent('random');
   });
 
   it('changes directions and only resets words for non-opposite turns', async () => {
