@@ -34,6 +34,7 @@ test.describe('Menu', () => {
     const discoCheckbox = page.getByRole('checkbox', { name: /DISCO_MODE/i }).last();
 
     await discoCheckbox.click();
+    await expect(page.locator('.background-rain canvas')).toBeVisible();
     await expect(colorSelect).not.toBeVisible();
     await expect(page.getByLabel(/REFRESH_RATE/i).last()).toBeVisible();
     await expect(swapSlot).toBeVisible();

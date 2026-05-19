@@ -64,7 +64,6 @@ npm run test:e2e
   - point 8 - instructions are in docs/phosphor_glow_plan.md - can't do this
   - point 9 - remove 8 directions functionality from codebase - get Gemini to do this, Codex messes it up.
   - point 10 - can't tell any difference - stashed
-- mobile view
 - Colour wheel selector.
 
 ### deployment
@@ -75,7 +74,6 @@ npm run test:e2e
 
 ### UI bugfixes, effects
 
-- disco effect on menu -> needs to show in the background matrix canvas
 - move square mode - matrix strings don't "hang" in place.
 - w/s keys, q/r keys - resets screen
 - remove commented out console logging from button & settings menu

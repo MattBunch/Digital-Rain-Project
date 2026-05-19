@@ -45,7 +45,7 @@
 <style>
   .cyber-accordion {
     width: 100%;
-    margin: 1rem 0;
+    margin: 0.5rem 0;
     border-top: 1px solid rgba(var(--theme-color-rgb), 0.3);
     border-bottom: 1px solid rgba(var(--theme-color-rgb), 0.3);
   }
@@ -55,11 +55,11 @@
     background: rgba(0, 0, 0, 0.4);
     border: none;
     color: var(--theme-color);
-    padding: 12px 20px;
-    min-height: 48px;
+    padding: 8px 14px;
+    min-height: 44px;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     cursor: pointer;
     font-family: var(--font-ui);
     text-transform: uppercase;
@@ -106,18 +106,18 @@
   }
 
   .content-inner {
-    padding: 20px;
+    padding: 12px;
   }
 
   @media (max-width: 599px) {
     .accordion-header {
       gap: 8px;
-      padding: 12px;
+      padding: 10px;
       letter-spacing: 1px;
     }
 
     .content-inner {
-      padding: 16px 0 4px;
+      padding: 12px 0 2px;
     }
   }
 </style>

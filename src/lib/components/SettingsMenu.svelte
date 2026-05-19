@@ -20,16 +20,26 @@
 
   interface Props {
     settings: IEngineSettings;
+    discoColors?: string[];
     onStartNormal: () => void;
     onStartSquare: () => void;
   }
 
   /* eslint-disable prefer-const */
-  let { settings = $bindable(), onStartNormal, onStartSquare }: Props = $props();
+  let {
+    settings = $bindable(),
+    discoColors = [
+      COLORS.MATRIX_GREEN,
+      COLORS.RED_VARIANTS[2],
+      COLORS.YELLOW_VARIANTS[2],
+      COLORS.BLUE_VARIANTS[2],
+      COLORS.CYAN_VARIANTS[2],
+    ],
+    onStartNormal,
+    onStartSquare,
+  }: Props = $props();
   /* eslint-enable prefer-const */
 
-  let menuInterval: ReturnType<typeof setInterval> | null = null;
-  let discoColors = $state(getRandomColors());
   let cachedRandomColor = $state(getRandomColor());
   let lastChosenColor = $state(settings.chosenColor);
   let isHelpOpen = $state(false);
@@ -94,29 +104,6 @@
     }
     lastChosenColor = settings.chosenColor;
   });
-
-  $effect(() => {
-    if (settings.discoOn) {
-      menuInterval = setInterval(() => {
-        discoColors = getRandomColors();
-      }, 1000);
-    } else {
-      if (menuInterval) {
-        clearInterval(menuInterval);
-        menuInterval = null;
-      }
-    }
-    return () => {
-      if (menuInterval) {
-        clearInterval(menuInterval);
-        menuInterval = null;
-      }
-    };
-  });
-
-  function getRandomColors(count = 5) {
-    return Array.from({ length: count }, () => getRandomColor());
-  }
 
   function handlePresetChange(name: string) {
     if (name === CUSTOM_PRESET_NAME) {
@@ -477,13 +464,13 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 2rem 1rem;
+    padding: 1rem 0.75rem;
     color: var(--theme-color);
     overflow-x: hidden;
   }
 
   .hud-frame {
-    padding: 3rem;
+    padding: 1.5rem;
     border: 1px solid rgba(var(--theme-color-rgb), 0.3);
     background: rgba(0, 0, 0, 0.8);
     position: relative;
@@ -518,7 +505,7 @@
   h1 {
     font-family: var(--font-title);
     font-size: clamp(2.35rem, 12vw, 5rem);
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     letter-spacing: clamp(0.08rem, 1.1vw, 0.5rem);
     text-shadow:
       2px 0 #ff003c,
@@ -529,13 +516,13 @@
   .menu-controls {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 0.75rem;
   }
 
   .main-actions {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
+    gap: 0.75rem;
     justify-content: center;
   }
 
@@ -548,7 +535,7 @@
   .settings-grid {
     display: grid;
     grid-template-columns: repeat(1, 1fr);
-    gap: 2rem;
+    gap: 0.875rem 1rem;
     font-family: var(--font-mono);
     font-size: 0.9rem;
   }
@@ -562,10 +549,10 @@
   .setting-item {
     display: flex;
     align-items: flex-start;
-    gap: 1rem;
+    gap: 0.75rem;
     justify-content: flex-start;
     width: 100%;
-    min-height: 70px;
+    min-height: 60px;
   }
 
   .transition-stack {
@@ -573,7 +560,7 @@
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
     width: min(100%, 200px);
-    height: 70px;
+    height: 60px;
     position: relative;
   }
 
@@ -588,12 +575,12 @@
   .preset-wrapper {
     display: flex;
     align-items: flex-start;
-    gap: 1rem;
+    gap: 0.75rem;
     width: 100%;
   }
 
   .save-btn-container {
-    margin-top: 24px;
+    margin-top: 20px;
     display: flex;
     height: 42px;
     align-items: center;
@@ -634,7 +621,7 @@
     }
 
     .menu-controls {
-      gap: 1rem;
+      gap: 0.75rem;
     }
 
     .main-actions {
@@ -642,17 +629,17 @@
     }
 
     .settings-grid {
-      gap: 1rem;
+      gap: 0.75rem;
       font-size: 0.85rem;
     }
 
     .setting-item {
-      min-height: 74px;
+      min-height: 68px;
     }
 
     .transition-stack {
       width: min(100%, 200px);
-      height: 74px;
+      height: 68px;
     }
 
     .preset-wrapper {
@@ -660,7 +647,7 @@
     }
 
     .save-btn-container {
-      margin-top: 25px;
+      margin-top: 22px;
     }
   }
 

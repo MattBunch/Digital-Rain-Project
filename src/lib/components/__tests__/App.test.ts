@@ -1,12 +1,22 @@
-import { render, screen, fireEvent } from '@testing-library/svelte';
+import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
 import { describe, it, expect, vi } from 'vitest';
+import type { CoreEngine } from '$lib/engine/CoreEngine';
 import App from '../../../App.svelte';
+
 vi.mock('$lib/components/MatrixCanvas.svelte', async () => {
   const Mock = await import('./MockMatrixCanvas.svelte');
   return { default: Mock.default };
 });
 
 describe('App', () => {
+  function getMatrixCanvasInstances() {
+    const testWindow = window as unknown as {
+      __matrixCanvasInstances?: { engine: CoreEngine; mode: 'normal' | 'square' }[];
+    };
+
+    return testWindow.__matrixCanvasInstances ?? [];
+  }
+
   it('renders SettingsMenu on load', () => {
     render(App);
     expect(screen.getByText('DIGITAL RAIN')).toBeInTheDocument();
@@ -39,5 +49,31 @@ describe('App', () => {
     await fireEvent.click(returnBtn);
 
     expect(screen.getByText('DIGITAL RAIN')).toBeInTheDocument();
+  });
+
+  it('syncs disco mode and refresh rate to the menu background canvas engine', async () => {
+    render(App);
+
+    await waitFor(() => {
+      expect(getMatrixCanvasInstances()).toHaveLength(1);
+    });
+
+    const backgroundEngine = getMatrixCanvasInstances()[0].engine;
+    expect(backgroundEngine.discoOn).toBe(false);
+
+    await fireEvent.click(screen.getByRole('button', { name: /SYSTEM_CONFIGURATION/i }));
+
+    const discoCheckboxes = screen.getAllByRole('checkbox', { name: /DISCO_MODE/i });
+    const discoCheckbox = discoCheckboxes[discoCheckboxes.length - 1];
+    await fireEvent.click(discoCheckbox);
+
+    await waitFor(() => {
+      const menuContainer = document.querySelector('.menu-container') as HTMLElement;
+      const themeColor = menuContainer.style.getPropertyValue('--theme-color').trim();
+
+      expect(backgroundEngine.discoOn).toBe(true);
+      expect(backgroundEngine.discoFrameCounterTurnoverPoint).toBe(10);
+      expect(backgroundEngine.colorManager.discoColorOverride).toBe(themeColor);
+    });
   });
 });

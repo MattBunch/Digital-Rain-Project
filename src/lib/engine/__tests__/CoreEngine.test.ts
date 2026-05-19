@@ -462,4 +462,89 @@ describe('CoreEngine', () => {
       expect(engine.getMouseInteractionState().active).toBe(false);
     });
   });
+
+  describe('Additional Engine State Coverage', () => {
+    it('should initialize all 8 directions when all8Directions is enabled', () => {
+      engine.all8Directions = true;
+
+      expect(engine.all4Directions).toBe(false);
+      expect(engine.all4DirectionsArray).toHaveLength(8);
+      expect(engine.words.length).toBeGreaterThan(0);
+    });
+
+    it('should reset runtime settings to defaults', () => {
+      engine.direction = 'west';
+      engine.discoFrameCounter = 9;
+      engine.intervalSpeed = 12;
+      engine.fontSize = 30;
+      engine.intensity = 0.5;
+      engine.charSet = 'custom';
+      engine.customCharSet = 'ABC';
+      engine.perStringColor = true;
+      engine.all8Directions = true;
+      engine.mouseInteractionMode = 'repel';
+      engine.setMousePosition(10, 20);
+
+      engine.reset();
+
+      expect(engine.words).toEqual([]);
+      expect(engine.all4DirectionsArray).toEqual([]);
+      expect(engine.direction).toBe('south');
+      expect(engine.discoFrameCounter).toBe(0);
+      expect(engine.intervalSpeed).toBe(50);
+      expect(engine.fontSize).toBe(20);
+      expect(engine.intensity).toBe(1);
+      expect(engine.charSet).toBe('katakana');
+      expect(engine.customCharSet).toBe('');
+      expect(engine.perStringColor).toBe(false);
+      expect(engine.all4Directions).toBe(false);
+      expect(engine.all8Directions).toBe(false);
+      expect(engine.getMouseInteractionState()).toEqual({
+        x: 10,
+        y: 20,
+        active: false,
+        mode: 'off',
+      });
+    });
+
+    it('should switch mode by resetting and running the previous mode flag', () => {
+      const runSpy = vi.spyOn(engine, 'run');
+      const resetSpy = vi.spyOn(engine, 'reset');
+      engine.squareAnimationOn = true;
+
+      engine.switchMode();
+
+      expect(resetSpy).toHaveBeenCalled();
+      expect(runSpy).toHaveBeenCalledWith(true);
+    });
+
+    it('should clear interval handles when stopped', () => {
+      const intervalId = setInterval(() => {}, 1000);
+      const menuIntervalId = setInterval(() => {}, 1000);
+      engine.intervalValid = intervalId;
+      engine.menuInterval = menuIntervalId;
+
+      engine.stop();
+
+      expect(engine.intervalValid).toBeNull();
+      expect(engine.menuInterval).toBeNull();
+    });
+
+    it('should clear screen positions for diagonal directions', () => {
+      const word = new MatrixString('TEST', 100, 100, 1, 1, 20);
+      engine.words = [word];
+
+      const directions = ['southeast', 'southwest', 'northeast', 'northwest'] as const;
+
+      directions.forEach((direction) => {
+        word.x = 100;
+        word.y = 100;
+        engine.direction = direction;
+
+        engine.clearScreen();
+
+        expect(word.x === 100 && word.y === 100).toBe(false);
+      });
+    });
+  });
 });

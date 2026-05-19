@@ -58,7 +58,7 @@
     background: rgba(0, 0, 0, 0.8);
     border: 1px solid var(--border-color);
     color: var(--border-color);
-    padding: 10px 20px;
+    padding: 8px 14px;
     font-family: var(--font-ui);
     font-size: 1rem;
     font-weight: bold;
@@ -74,7 +74,7 @@
       12px 100%,
       0 calc(100% - 12px)
     );
-    min-width: 140px;
+    min-width: 116px;
     min-height: 44px;
     display: flex;
     justify-content: center;

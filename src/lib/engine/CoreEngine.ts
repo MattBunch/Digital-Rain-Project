@@ -905,6 +905,10 @@ export class CoreEngine {
     this.colorManager.updateRandomColor();
   }
 
+  setDiscoColorOverride(color: string | null): void {
+    this.colorManager.setDiscoColorOverride(color);
+  }
+
   reset(): void {
     this.words = [];
     this.all4DirectionsArray = [];
