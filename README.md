@@ -1,10 +1,44 @@
 # Digital Rain Project
 
-This program displays a digital rain animation within the window browser, as seen in the film The Matrix (1999) or Ghost in the Shell (1995). The user can customize the animation both through the menu and keyboard inputs.
+Animated Matrix/Ghost in the Shell-inspired digital rain built with Svelte, TypeScript, and Canvas.
 
-## Local development setup
+[Live Demo](https://mattbunch.dev/digital-rain)
 
-Install:
+![Digital Rain Project demo](docs/assets/demo.gif)
+
+## Features
+
+- Canvas-rendered digital rain animation with normal and square modes.
+- Menu-driven controls for color, speed, intensity, font size, character set, and direction.
+- Keyboard controls for fast live changes while the animation is running.
+- Disco mode, wave distortion, mouse interaction fields, and per-string color effects.
+- Built-in presets plus saved custom presets in local storage.
+
+## Controls
+
+- Arrow keys: Switch directions or move the box in Square Mode
+- Spacebar: Pause
+- C: Clear screen
+- D: Toggle disco
+- W/S: Increase or decrease font size
+- X: Toggle wave distortion
+- Q/A: Increase or decrease string length
+- R: Toggle rapid word change
+- M: Switch between modes
+- T: Toggle all 4 directions
+- Y/U/B/N: Diagonal directions
+- PageUp/PageDown: Speed up or slow down
+- 1-7: Change colors
+- 8: Random color
+- Escape: Quit to menu
+
+## Presets
+
+Use the `SYSTEM_CONFIGURATION` panel to select built-in presets, adjust settings, and save custom presets. Custom presets are stored locally in the browser.
+
+## Development
+
+Install dependencies:
 
 ```bash
 npm ci
@@ -35,30 +69,13 @@ npm run test
 npm run test:e2e
 ```
 
-## Keyboard inputs:
+Regenerate the README demo:
 
-- Arrowkeys: Switch directions (Move box in Square Mode)
-- Spacebar: Pause
-- C: Clear screen
-- D: Toggle disco
-- W: Increase font size
-- S: Decrease font size
-- X: Toggle wave distortion
-- Q: Increase string length
-- A: Decrease string length
-- R: Toggle rapid word change
-- M: Switch between modes
-- T: Toggle all 4 directions
-- Y/U/B/N: Diagonal directions
-- PageUp: Speed up
-- PageDown: Slow down
-- 1-7: Change colors
-- 8: Random color
-- Escape: Quit to menu
+```bash
+npm run demo:record
+```
 
-## Possible extensions in further versions:
-
-### features
+## Roadmap
 
 - see docs/project_feature_ideas_and_improvements.md
   - point 8 - instructions are in docs/phosphor_glow_plan.md - can't do this
@@ -66,7 +83,7 @@ npm run test:e2e
   - point 10 - can't tell any difference - stashed
 - Colour wheel selector.
 
-### deployment
+### Deployment
 
 - deployment, cicd pipeline, personal website.
   - matt-bunch-dev.com - astro.js landing page, links (typical developer portfolio website, links to projects)
