@@ -90,6 +90,10 @@ export class CoreEngine {
     this.colorManager.discoOn = value;
   }
 
+  get discoColorOverride() {
+    return this.colorManager.discoColorOverride;
+  }
+
   get chosenColor() {
     return this.colorManager.chosenColor;
   }

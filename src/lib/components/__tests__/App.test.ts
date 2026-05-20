@@ -73,7 +73,7 @@ describe('App', () => {
 
       expect(backgroundEngine.discoOn).toBe(true);
       expect(backgroundEngine.discoFrameCounterTurnoverPoint).toBe(10);
-      expect(backgroundEngine.colorManager.discoColorOverride).toBe(themeColor);
+      expect(backgroundEngine.discoColorOverride).toBe(themeColor);
     });
   });
 });
