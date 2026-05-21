@@ -12,10 +12,24 @@ test.describe('Menu', () => {
     await expect(page.locator('h1')).toHaveText('DIGITAL RAIN');
     await expect(page.getByRole('button', { name: 'START' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'SQUARE' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'BACK_HOME' })).toHaveAttribute('href', '/');
 
     // Check for CRT overlay elements
     await expect(page.locator('.scanlines')).toBeVisible();
     await expect(page.locator('.vignette')).toBeVisible();
+  });
+
+  test('back button returns from digital rain route to site root', async ({ page }) => {
+    await page.goto('/digital-rain/');
+
+    const backLink = page.getByRole('link', { name: 'BACK_HOME' });
+    await expect(backLink).toBeVisible();
+    await backLink.hover();
+    await expect(backLink).toHaveCSS('opacity', '1');
+
+    const rootRequest = page.waitForRequest((request) => new URL(request.url()).pathname === '/');
+    await backLink.click();
+    await rootRequest;
   });
 
   test('clicking the disco checkbox toggles UI elements', async ({ page }) => {

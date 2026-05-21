@@ -23,6 +23,13 @@ describe('App', () => {
     expect(screen.getAllByText('START')[0]).toBeInTheDocument();
   });
 
+  it('renders a menu back link to the site root', () => {
+    render(App);
+
+    const backLink = screen.getByRole('link', { name: 'BACK_HOME' });
+    expect(backLink).toHaveAttribute('href', '/');
+  });
+
   it('shows MatrixCanvas and hides menu after onStartNormal', async () => {
     render(App);
     const startBtn = screen.getAllByText('START')[0];

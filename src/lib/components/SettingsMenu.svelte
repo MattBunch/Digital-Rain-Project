@@ -11,6 +11,7 @@
   import AboutModal from '$lib/components/AboutModal.svelte';
   import SavePresetModal from '$lib/components/SavePresetModal.svelte';
   import { fallingLetters } from '$lib/utils/FallingLettersAction';
+  import { glitchClick } from '$lib/utils/GlitchAction';
   import { signalMorph } from '$lib/utils/Transitions';
   import { COLORS } from '$lib/constants/matrix';
   import { PRESETS } from '$lib/constants/presets';
@@ -129,6 +130,11 @@
     customPresets = loadCustomPresets();
   }
 
+  function handleBackHome(event: MouseEvent) {
+    event.preventDefault();
+    window.location.assign('/');
+  }
+
   const transitionDuration =
     (typeof process !== 'undefined' && process.env.NODE_ENV === 'test') ||
     (typeof window !== 'undefined' && (window as unknown as { IS_E2E: boolean }).IS_E2E)
@@ -142,6 +148,19 @@
   style:--theme-color-rgb={currentColorRgb}
 >
   <div class="hud-frame">
+    <a
+      class="back-link"
+      href="/"
+      title="BACK_HOME"
+      aria-label="BACK_HOME"
+      onclick={handleBackHome}
+      use:glitchClick
+    >
+      <span class="back-glitch-layer" aria-hidden="true">‹</span>
+      <span class="back-icon" aria-hidden="true">‹</span>
+      <span class="back-glitch-layer" aria-hidden="true">‹</span>
+    </a>
+
     <h1 class="fade-in">DIGITAL RAIN</h1>
 
     <div class="menu-controls fade-in">
@@ -480,6 +499,123 @@
     box-sizing: border-box;
   }
 
+  .back-link {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    z-index: 2;
+    width: 38px;
+    min-width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 1px solid rgba(var(--theme-color-rgb), 0.45);
+    background:
+      linear-gradient(135deg, rgba(var(--theme-color-rgb), 0.12), transparent 42%),
+      rgba(0, 0, 0, 0.58);
+    color: var(--theme-color);
+    opacity: 0.72;
+    text-decoration: none;
+    font-family: var(--font-mono);
+    font-size: 1.7rem;
+    font-weight: 700;
+    line-height: 1;
+    box-shadow:
+      inset 0 0 8px rgba(var(--theme-color-rgb), 0.12),
+      0 0 0 rgba(var(--theme-color-rgb), 0);
+    transition:
+      border-color 0.16s ease,
+      box-shadow 0.16s ease,
+      color 0.16s ease,
+      opacity 0.16s ease,
+      transform 0.16s ease;
+  }
+
+  .back-link::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 4px,
+      rgba(var(--theme-color-rgb), 0.24) 5px
+    );
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+
+  .back-link:hover,
+  .back-link:focus-visible {
+    border-color: var(--theme-color);
+    color: black;
+    opacity: 1;
+    outline: none;
+    transform: translateY(-1px);
+    box-shadow:
+      0 0 14px rgba(var(--theme-color-rgb), 0.86),
+      inset 0 0 12px rgba(var(--theme-color-rgb), 0.34);
+  }
+
+  .back-link:hover::before,
+  .back-link:focus-visible::before {
+    opacity: 1;
+    animation: backScanline 0.42s steps(5, end) infinite;
+  }
+
+  .back-link:active {
+    transform: translate(1px, 1px) skewX(-7deg);
+    filter: brightness(1.35) contrast(1.15);
+  }
+
+  .back-icon,
+  .back-glitch-layer {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  .back-icon {
+    z-index: 1;
+    text-shadow: 0 0 8px var(--theme-color);
+  }
+
+  .back-glitch-layer {
+    z-index: 0;
+    opacity: 0;
+  }
+
+  .back-glitch-layer:nth-child(1) {
+    color: #ff003c;
+    clip-path: polygon(0 0, 100% 0, 100% 42%, 0 42%);
+  }
+
+  .back-glitch-layer:nth-child(3) {
+    color: #00e5ff;
+    clip-path: polygon(0 58%, 100% 58%, 100% 100%, 0 100%);
+  }
+
+  .back-link:hover .back-glitch-layer,
+  .back-link:focus-visible .back-glitch-layer {
+    opacity: 0.95;
+    animation: backGlitch 0.28s infinite;
+  }
+
+  .back-link:hover .back-glitch-layer:nth-child(1),
+  .back-link:focus-visible .back-glitch-layer:nth-child(1) {
+    transform: translate(-2px, -1px);
+  }
+
+  .back-link:hover .back-glitch-layer:nth-child(3),
+  .back-link:focus-visible .back-glitch-layer:nth-child(3) {
+    transform: translate(2px, 1px);
+  }
+
   .hud-frame::before {
     content: '';
     position: absolute;
@@ -599,6 +735,33 @@
     }
   }
 
+  @keyframes backGlitch {
+    0% {
+      filter: none;
+    }
+    20% {
+      filter: blur(1px) brightness(1.4);
+    }
+    45% {
+      filter: none;
+    }
+    65% {
+      filter: contrast(1.35);
+    }
+    100% {
+      filter: none;
+    }
+  }
+
+  @keyframes backScanline {
+    from {
+      transform: translateY(-100%);
+    }
+    to {
+      transform: translateY(100%);
+    }
+  }
+
   :global(.active) {
     background: var(--theme-color) !important;
     color: black !important;
@@ -612,7 +775,16 @@
 
     .hud-frame {
       width: 100%;
-      padding: 1.25rem;
+      padding: 3.25rem 1.25rem 1.25rem;
+    }
+
+    .back-link {
+      top: 0.875rem;
+      right: 0.875rem;
+      width: 36px;
+      min-width: 36px;
+      height: 36px;
+      font-size: 1.55rem;
     }
 
     h1 {
@@ -653,7 +825,7 @@
 
   @media (max-width: 359px) {
     .hud-frame {
-      padding: 1rem;
+      padding: 3rem 1rem 1rem;
     }
 
     .main-actions {
