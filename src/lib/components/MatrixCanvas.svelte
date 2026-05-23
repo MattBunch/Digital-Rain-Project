@@ -1,7 +1,8 @@
 <script lang="ts">
   import { canvasSetup } from '$lib/utils/CoordinateUtils';
+  import { initTouchControls } from '$lib/input/touchControls';
   import type { CoreEngine } from '$lib/engine/CoreEngine';
-  import type { MouseInteractionMode } from '$lib/types';
+  import type { Direction, MouseInteractionMode } from '$lib/types';
 
   /* eslint-disable prefer-const, no-useless-assignment */
   let {
@@ -56,32 +57,16 @@
         onReturn();
         break;
       case 'ArrowLeft':
-        if (engine.squareAnimationOn) {
-          engine.moveSquareLeft(false);
-        } else {
-          arrowDirectionControl('west', 'east');
-        }
+        handleDirectionInput('west');
         break;
       case 'ArrowUp':
-        if (engine.squareAnimationOn) {
-          engine.moveSquareUp(false);
-        } else {
-          arrowDirectionControl('north', 'south');
-        }
+        handleDirectionInput('north');
         break;
       case 'ArrowRight':
-        if (engine.squareAnimationOn) {
-          engine.moveSquareRight(false);
-        } else {
-          arrowDirectionControl('east', 'west');
-        }
+        handleDirectionInput('east');
         break;
       case 'ArrowDown':
-        if (engine.squareAnimationOn) {
-          engine.moveSquareDown(false);
-        } else {
-          arrowDirectionControl('south', 'north');
-        }
+        handleDirectionInput('south');
         break;
       case ' ':
         if (engine.ctx != null) {
@@ -168,23 +153,53 @@
         }
         break;
       case 'y':
-        arrowDirectionControl('northwest', 'southeast');
+        updateRainDirection('northwest');
         break;
       case 'u':
-        arrowDirectionControl('northeast', 'southwest');
+        updateRainDirection('northeast');
         break;
       case 'b':
-        arrowDirectionControl('southwest', 'northeast');
+        updateRainDirection('southwest');
         break;
       case 'n':
-        arrowDirectionControl('southeast', 'northwest');
+        updateRainDirection('southeast');
         break;
       default:
         break;
     }
   }
 
-  function arrowDirectionControl(newDirection: string, oppositeDirection: string): void {
+  function handleDirectionInput(direction: Direction): void {
+    if (engine.squareAnimationOn) {
+      moveSquare(direction);
+      return;
+    }
+
+    updateRainDirection(direction);
+  }
+
+  function moveSquare(direction: Direction): void {
+    switch (direction) {
+      case 'west':
+        engine.moveSquareLeft(false);
+        break;
+      case 'north':
+        engine.moveSquareUp(false);
+        break;
+      case 'east':
+        engine.moveSquareRight(false);
+        break;
+      case 'south':
+        engine.moveSquareDown(false);
+        break;
+      default:
+        break;
+    }
+  }
+
+  function updateRainDirection(newDirection: Direction): void {
+    const oppositeDirection = getOppositeDirection(newDirection);
+
     if (engine.direction !== newDirection) {
       // We always update the direction if it's new
       const wasOpposite = engine.direction === oppositeDirection;
@@ -194,6 +209,29 @@
       if (!wasOpposite) {
         engine.resetWordsArray();
       }
+    }
+  }
+
+  function getOppositeDirection(direction: Direction): Direction {
+    switch (direction) {
+      case 'north':
+        return 'south';
+      case 'south':
+        return 'north';
+      case 'east':
+        return 'west';
+      case 'west':
+        return 'east';
+      case 'northeast':
+        return 'southwest';
+      case 'northwest':
+        return 'southeast';
+      case 'southeast':
+        return 'northwest';
+      case 'southwest':
+        return 'northeast';
+      default:
+        return 'south';
     }
   }
 
@@ -237,6 +275,10 @@
 
       setup();
       engine.run(mode === 'normal');
+      const cleanupTouchControls = initTouchControls({
+        element: canvas,
+        onDirection: handleDirectionInput,
+      });
 
       const handleResize = () => {
         setup();
@@ -247,6 +289,7 @@
       window.addEventListener('resize', handleResize);
 
       return () => {
+        cleanupTouchControls();
         window.removeEventListener('resize', handleResize);
         engine.stop();
       };
@@ -267,6 +310,7 @@
 
 <canvas
   bind:this={canvas}
+  data-digital-rain-root
   onclick={onReturn}
   onkeydown={(e) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -290,5 +334,10 @@
     position: fixed;
     top: 0;
     left: 0;
+  }
+
+  canvas[data-digital-rain-root] {
+    touch-action: none;
+    overscroll-behavior: contain;
   }
 </style>

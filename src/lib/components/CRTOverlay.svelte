@@ -19,27 +19,27 @@
 <style>
   .crt-container {
     position: fixed;
-    top: 0;
-    left: 0;
+    inset: 0;
     width: 100vw;
-    height: 100vh;
-    overflow: hidden;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    overflow-y: auto;
     background: #000;
     z-index: 9999;
     pointer-events: none;
+    -webkit-overflow-scrolling: touch;
   }
 
   .crt-screen {
     position: relative;
     width: 100%;
-    height: 100%;
+    min-height: 100dvh;
     pointer-events: auto;
   }
 
   .scanlines {
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: fixed;
+    inset: 0;
     width: 100%;
     height: 100%;
     background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
@@ -49,9 +49,8 @@
   }
 
   .vignette {
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: fixed;
+    inset: 0;
     width: 100%;
     height: 100%;
     background: radial-gradient(circle, transparent 50%, rgba(0, 0, 0, 0.5) 100%);
@@ -60,9 +59,8 @@
   }
 
   .flicker {
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: fixed;
+    inset: 0;
     width: 100%;
     height: 100%;
     background: rgba(18, 16, 16, 0.05);
@@ -142,11 +140,8 @@
   .crt-screen::before {
     content: ' ';
     display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
+    position: fixed;
+    inset: 0;
     background:
       linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%),
       linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));

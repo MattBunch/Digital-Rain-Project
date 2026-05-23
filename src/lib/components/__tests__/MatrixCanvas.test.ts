@@ -80,6 +80,19 @@ describe('MatrixCanvas', () => {
     return { ...rendered, engine, onReturn };
   }
 
+  async function swipeCanvas(
+    canvas: HTMLElement,
+    start: Pick<Touch, 'clientX' | 'clientY'>,
+    end: Pick<Touch, 'clientX' | 'clientY'>,
+  ) {
+    await fireEvent.touchStart(canvas, {
+      touches: [start],
+    });
+    await fireEvent.touchEnd(canvas, {
+      changedTouches: [end],
+    });
+  }
+
   it('sets up the canvas, starts the engine, and cleans up on unmount', () => {
     const { engine, unmount } = renderCanvas();
 
@@ -185,6 +198,54 @@ describe('MatrixCanvas', () => {
     expect(engine.moveSquareRight).toHaveBeenCalledWith(false);
     expect(engine.moveSquareUp).toHaveBeenCalledWith(false);
     expect(engine.moveSquareDown).toHaveBeenCalledWith(false);
+  });
+
+  it('changes direction from canvas swipes', async () => {
+    const { engine } = renderCanvas();
+    const canvas = screen.getByRole('button', { name: 'Return to settings' });
+
+    await swipeCanvas(canvas, { clientX: 100, clientY: 100 }, { clientX: 20, clientY: 100 });
+    expect(engine.direction).toBe('west');
+    expect(engine.resetWordsArray).toHaveBeenCalledTimes(1);
+
+    await swipeCanvas(canvas, { clientX: 100, clientY: 100 }, { clientX: 180, clientY: 100 });
+    expect(engine.direction).toBe('east');
+    expect(engine.resetWordsArray).toHaveBeenCalledTimes(1);
+
+    await swipeCanvas(canvas, { clientX: 100, clientY: 100 }, { clientX: 100, clientY: 20 });
+    expect(engine.direction).toBe('north');
+    expect(engine.resetWordsArray).toHaveBeenCalledTimes(2);
+
+    await swipeCanvas(canvas, { clientX: 100, clientY: 100 }, { clientX: 100, clientY: 180 });
+    expect(engine.direction).toBe('south');
+    expect(engine.resetWordsArray).toHaveBeenCalledTimes(2);
+  });
+
+  it('moves the square from canvas swipes in square animation mode', async () => {
+    const engine = createEngine();
+    engine.squareAnimationOn = true;
+    renderCanvas(engine);
+    const canvas = screen.getByRole('button', { name: 'Return to settings' });
+
+    await swipeCanvas(canvas, { clientX: 100, clientY: 100 }, { clientX: 20, clientY: 100 });
+    await swipeCanvas(canvas, { clientX: 100, clientY: 100 }, { clientX: 180, clientY: 100 });
+    await swipeCanvas(canvas, { clientX: 100, clientY: 100 }, { clientX: 100, clientY: 20 });
+    await swipeCanvas(canvas, { clientX: 100, clientY: 100 }, { clientX: 100, clientY: 180 });
+
+    expect(engine.moveSquareLeft).toHaveBeenCalledWith(false);
+    expect(engine.moveSquareRight).toHaveBeenCalledWith(false);
+    expect(engine.moveSquareUp).toHaveBeenCalledWith(false);
+    expect(engine.moveSquareDown).toHaveBeenCalledWith(false);
+  });
+
+  it('ignores tiny canvas swipes', async () => {
+    const { engine } = renderCanvas();
+    const canvas = screen.getByRole('button', { name: 'Return to settings' });
+
+    await swipeCanvas(canvas, { clientX: 100, clientY: 100 }, { clientX: 130, clientY: 100 });
+
+    expect(engine.direction).toBe('south');
+    expect(engine.resetWordsArray).not.toHaveBeenCalled();
   });
 
   it('tracks mirrored pointer coordinates and clears pointer state on leave', async () => {
