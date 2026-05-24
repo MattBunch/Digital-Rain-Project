@@ -38,41 +38,58 @@ Use the `SYSTEM_CONFIGURATION` panel to select built-in presets, adjust settings
 
 ## Development
 
-Install dependencies:
+Requirements:
+
+- Node.js 22 or newer
+- pnpm 11.2.2, via Corepack
+
+This project uses pnpm as the supported package manager. npm may work for some scripts, but pnpm is the expected install/build workflow.
+
+Quick start:
 
 ```bash
-npm ci
+corepack enable
+pnpm install
+pnpm dev
 ```
 
-Run locally:
-
-```bash
-npm run dev
-```
+The local Vite dev server runs at `http://localhost:5173`.
 
 Build:
 
 ```bash
-npm run build
+pnpm build
+```
+
+Preview the production build:
+
+```bash
+pnpm preview
 ```
 
 Linting:
 
 ```bash
-npm run lint
+pnpm lint
 ```
 
 Tests:
 
 ```bash
-npm run test
-npm run test:e2e
+pnpm test
+pnpm run test:e2e
 ```
 
 Regenerate the README demo:
 
 ```bash
-npm run demo:record
+pnpm run demo:record
+```
+
+Install dependencies only:
+
+```bash
+pnpm install
 ```
 
 ## Roadmap

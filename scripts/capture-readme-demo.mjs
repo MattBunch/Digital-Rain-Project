@@ -85,7 +85,7 @@ async function main() {
   await mkdir(join(rootDir, 'docs', 'assets'), { recursive: true });
   frameIndex = 0;
 
-  const server = spawn('npm', ['run', 'dev', '--', '--host', '127.0.0.1'], {
+  const server = spawn('pnpm', ['run', 'dev', '--host', '127.0.0.1'], {
     cwd: rootDir,
     env: { ...process.env, BROWSER: 'none' },
     stdio: ['ignore', 'pipe', 'pipe'],

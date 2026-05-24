@@ -257,10 +257,10 @@ colorChoiceArray index:
 ## Testing
 
 ```bash
-npm test              # Vitest unit tests (watch mode)
-npm run test:coverage # Vitest with v8 coverage report
-npm run test:e2e      # Playwright E2E (requires dev server)
-npm run test:e2e:ui   # Playwright with interactive UI
+pnpm test              # Vitest unit tests (watch mode)
+pnpm run test:coverage # Vitest with v8 coverage report
+pnpm run test:e2e      # Playwright E2E (requires dev server)
+pnpm run test:e2e:ui   # Playwright with interactive UI
 ```
 
 **Unit test targets (100% coverage goal):**
@@ -275,11 +275,11 @@ npm run test:e2e:ui   # Playwright with interactive UI
 ## Development Commands
 
 ```bash
-npm run dev        # Start Vite dev server (http://localhost:5173)
-npm run build      # Production build → dist/
-npm run preview    # Preview production build
-npm run lint       # ESLint + Prettier + svelte-check
-npm run format     # Prettier write-in-place
+pnpm run dev        # Start Vite dev server (http://localhost:5173)
+pnpm run build      # Production build → dist/
+pnpm run preview    # Preview production build
+pnpm run lint       # ESLint + Prettier + svelte-check
+pnpm run format     # Prettier write-in-place
 ```
 
 ---

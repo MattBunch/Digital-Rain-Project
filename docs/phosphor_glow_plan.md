@@ -58,7 +58,7 @@ Enable a "PHOSPHOR_GLOW" setting that adds a soft glow around the characters, ma
 
 ### Automated Tests
 
-- Run `npm test` to verify all unit tests pass.
+- Run `pnpm test` to verify all unit tests pass.
 - Update any snapshots or specific tests if they rely on exact `IEngineSettings` structure.
 
 ### Manual Verification

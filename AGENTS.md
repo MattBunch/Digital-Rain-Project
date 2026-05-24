@@ -17,8 +17,8 @@ Refer to docs/REFERENCE_REPO for project structure.
 Always run the following two commands after completing each implemention to ensure linting/formatting is followed, and no errors in testing:
 
 ```bash
-npx eslint . --fix
-npx prettier --write .
-npm test
-npm run test:e2e
+pnpm exec eslint . --fix
+pnpm exec prettier --write .
+pnpm test
+pnpm run test:e2e
 ```
