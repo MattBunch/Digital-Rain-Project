@@ -25,6 +25,9 @@
   "license": "Apache-2.0",
   "type": "module",
   "packageManager": "pnpm@11.2.2",
+  "engines": {
+    "node": ">=24"
+  },
   "bugs": {
     "url": "https://github.com/MattBunch/Digital-Rain-Project/issues"
   },

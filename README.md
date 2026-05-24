@@ -40,7 +40,7 @@ Use the `SYSTEM_CONFIGURATION` panel to select built-in presets, adjust settings
 
 Requirements:
 
-- Node.js 22 or newer
+- Node.js 24 or newer
 - pnpm 11.2.2, via Corepack
 
 This project uses pnpm as the supported package manager. npm may work for some scripts, but pnpm is the expected install/build workflow.
