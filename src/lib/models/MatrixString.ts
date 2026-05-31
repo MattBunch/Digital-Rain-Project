@@ -86,7 +86,7 @@ export class MatrixString {
       }
 
       if (!discoOn) {
-        this.setColors(ctx, i, inputColorArray, config.direction);
+        this.setColors(ctx, i, inputColorArray, config.direction, config.headColor);
       }
 
       ctx.fillText(letter, xCoordinate, yCoordinate);
@@ -174,7 +174,7 @@ export class MatrixString {
       if (discoOn) {
         ctx.fillStyle = getRandomColor();
       } else {
-        ctx.fillStyle = COLORS.WHITE;
+        ctx.fillStyle = config.squareFillColor ?? COLORS.WHITE;
       }
     }
   }
@@ -184,6 +184,7 @@ export class MatrixString {
     i: number,
     inputColorArray: string[],
     direction: string,
+    headColor: string = COLORS.WHITE,
   ): void {
     if (
       direction == 'south' ||
@@ -192,7 +193,7 @@ export class MatrixString {
       direction == 'southwest'
     ) {
       if (i == this.word.length - 2) {
-        ctx.fillStyle = COLORS.WHITE;
+        ctx.fillStyle = headColor;
       } else if (i == this.word.length - 3) {
         ctx.fillStyle = inputColorArray[(0 + this.colorOffset) % 3];
       } else if (i == this.word.length - 4) {
@@ -207,7 +208,7 @@ export class MatrixString {
       direction == 'northwest'
     ) {
       if (i == 0) {
-        ctx.fillStyle = COLORS.WHITE;
+        ctx.fillStyle = headColor;
       } else if (i == 1) {
         ctx.fillStyle = inputColorArray[(0 + this.colorOffset) % 3];
       } else if (i == 2) {

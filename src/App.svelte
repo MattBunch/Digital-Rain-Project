@@ -8,7 +8,8 @@
   import { DEFAULT_SETTINGS } from '$lib/constants/presets';
   import { getRandomColor } from '$lib/utils/MathUtils';
   import { serializeSettings, deserializeSettings } from '$lib/utils/UrlParams';
-  import type { IEngineSettings } from '$lib/types';
+  import { loadThemeMode, resolveTheme, saveThemeMode } from '$lib/utils/ThemeUtils';
+  import type { IEngineSettings, ResolvedTheme, ThemeMode } from '$lib/types';
 
   function getRandomColors(count = 5): string[] {
     return Array.from({ length: count }, () => getRandomColor());
@@ -22,18 +23,46 @@
     return { ...DEFAULT_SETTINGS, ...deserializeSettings(window.location.hash) };
   }
 
+  function getInitialThemeMode(): ThemeMode {
+    if (typeof window === 'undefined') {
+      return 'system';
+    }
+
+    return loadThemeMode();
+  }
+
+  function getInitialOsPrefersLight(): boolean {
+    if (typeof window === 'undefined') {
+      return false;
+    }
+
+    return window.matchMedia?.('(prefers-color-scheme: light)').matches ?? false;
+  }
+
   let menuVisible = $state(true);
   let settings = $state<IEngineSettings>(getInitialSettings());
   let discoColors = $state(getRandomColors());
   let showFps = $state(false);
   let currentFps = $state(0);
+  let themeMode = $state<ThemeMode>(getInitialThemeMode());
+  let osPrefersLight = $state(getInitialOsPrefersLight());
 
   let engine = $state<CoreEngine>();
   let backgroundEngine = $state<CoreEngine>();
+  const resolvedTheme = $derived<ResolvedTheme>(resolveTheme(themeMode, osPrefersLight));
 
   onMount(() => {
     engine = new CoreEngine();
     backgroundEngine = new CoreEngine();
+
+    const themeQuery = window.matchMedia?.('(prefers-color-scheme: light)');
+    osPrefersLight = themeQuery?.matches ?? false;
+
+    const handleThemeChange = (event: MediaQueryListEvent) => {
+      osPrefersLight = event.matches;
+    };
+
+    themeQuery?.addEventListener('change', handleThemeChange);
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key.toLowerCase() === 'f') {
@@ -54,9 +83,19 @@
     return () => {
       engine?.stop();
       backgroundEngine?.stop();
+      themeQuery?.removeEventListener('change', handleThemeChange);
       window.removeEventListener('keydown', handleKeyDown);
       clearInterval(fpsInterval);
     };
+  });
+
+  $effect(() => {
+    saveThemeMode(themeMode);
+  });
+
+  $effect(() => {
+    document.documentElement.dataset.theme = resolvedTheme;
+    document.documentElement.style.colorScheme = resolvedTheme;
   });
 
   $effect(() => {
@@ -101,6 +140,7 @@
     engine.perStringColor = settings.perStringColor;
     engine.waveDistortion = settings.waveDistortion;
     engine.mouseInteractionMode = settings.mouseInteractionMode;
+    engine.setVisualTheme(resolvedTheme);
 
     // Background Engine
     backgroundEngine.switchColor(settings.chosenColor);
@@ -117,6 +157,7 @@
     backgroundEngine.perStringColor = settings.perStringColor;
     backgroundEngine.waveDistortion = settings.waveDistortion;
     backgroundEngine.mouseInteractionMode = settings.mouseInteractionMode;
+    backgroundEngine.setVisualTheme(resolvedTheme);
   });
 
   function handleStartNormal() {
@@ -133,7 +174,7 @@
     engine?.stop();
 
     if (engine?.ctx && engine?.canvas) {
-      engine.ctx.fillStyle = '#000000';
+      engine.ctx.fillStyle = engine.getCanvasSolidFillStyle();
       engine.ctx.fillRect(0, 0, engine.canvas.width, engine.canvas.height);
     }
 
@@ -163,6 +204,7 @@
       </div>
       <SettingsMenu
         bind:settings
+        bind:themeMode
         {discoColors}
         onStartNormal={handleStartNormal}
         onStartSquare={handleStartSquare}
@@ -195,8 +237,8 @@
     padding: 0;
     overflow-x: hidden;
     overflow-y: auto;
-    background-color: black;
-    color: #00ff41;
+    background-color: var(--page-bg);
+    color: var(--page-text);
     font-family: var(--font-mono);
   }
 
@@ -211,7 +253,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    opacity: 0.15;
+    opacity: var(--background-rain-opacity);
     z-index: -1;
     pointer-events: none;
   }

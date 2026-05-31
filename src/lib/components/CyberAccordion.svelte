@@ -52,9 +52,9 @@
 
   .accordion-header {
     width: 100%;
-    background: rgba(0, 0, 0, 0.4);
+    background: var(--control-bg-muted);
     border: none;
-    color: var(--theme-color);
+    color: var(--control-text);
     padding: 8px 14px;
     min-height: 44px;
     display: flex;
@@ -72,12 +72,12 @@
   }
 
   .accordion-header:hover {
-    background: rgba(var(--theme-color-rgb), 0.1);
+    background: var(--control-hover-overlay);
     text-shadow: 0 0 10px var(--theme-color);
   }
 
   .accordion-header.open {
-    background: rgba(var(--theme-color-rgb), 0.15);
+    background: var(--control-hover-overlay);
     border-bottom: 1px solid var(--theme-color);
   }
 
@@ -101,7 +101,7 @@
   }
 
   .accordion-content {
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--control-bg-muted);
     overflow: hidden;
   }
 

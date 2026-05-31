@@ -17,10 +17,11 @@
   import { PRESETS } from '$lib/constants/presets';
   import { saveCustomPreset, loadCustomPresets } from '$lib/utils/StorageUtils';
   import { compareSettings } from '$lib/utils/SettingsUtils';
-  import type { IEngineSettings, IPreset } from '$lib/types';
+  import type { IEngineSettings, IPreset, ThemeMode } from '$lib/types';
 
   interface Props {
     settings: IEngineSettings;
+    themeMode: ThemeMode;
     discoColors?: string[];
     onStartNormal: () => void;
     onStartSquare: () => void;
@@ -29,6 +30,7 @@
   /* eslint-disable prefer-const */
   let {
     settings = $bindable(),
+    themeMode = $bindable('system'),
     discoColors = [
       COLORS.MATRIX_GREEN,
       COLORS.RED_VARIANTS[2],
@@ -209,6 +211,22 @@
                   S
                 </CyberSquareButton>
               </div>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="transition-stack">
+              {#key themeMode}
+                <div class="stack-item" transition:signalMorph={{ duration: transitionDuration }}>
+                  <CyberSelect
+                    id="theme-mode-select"
+                    bind:value={themeMode}
+                    color={currentColor}
+                    label="DISPLAY_MODE:"
+                    options={['system', 'dark', 'light']}
+                  />
+                </div>
+              {/key}
             </div>
           </div>
 
@@ -484,14 +502,14 @@
     justify-content: center;
     align-items: center;
     padding: 1rem 0.75rem;
-    color: var(--theme-color);
+    color: var(--control-text);
     overflow-x: hidden;
   }
 
   .hud-frame {
     padding: 1.5rem;
-    border: 1px solid rgba(var(--theme-color-rgb), 0.3);
-    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(var(--theme-color-rgb), var(--theme-border-alpha));
+    background-color: var(--panel-bg);
     position: relative;
     backdrop-filter: blur(5px);
     width: 90%;
@@ -511,11 +529,11 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    border: 1px solid rgba(var(--theme-color-rgb), 0.45);
+    border: 1px solid rgba(var(--theme-color-rgb), var(--theme-border-strong-alpha));
     background:
       linear-gradient(135deg, rgba(var(--theme-color-rgb), 0.12), transparent 42%),
-      rgba(0, 0, 0, 0.58);
-    color: var(--theme-color);
+      var(--control-bg);
+    color: var(--control-text);
     opacity: 0.72;
     text-decoration: none;
     font-family: var(--font-mono);
@@ -550,7 +568,7 @@
   .back-link:hover,
   .back-link:focus-visible {
     border-color: var(--theme-color);
-    color: black;
+    color: var(--control-inverse-text);
     opacity: 1;
     outline: none;
     transform: translateY(-1px);
@@ -764,7 +782,27 @@
 
   :global(.active) {
     background: var(--theme-color) !important;
-    color: black !important;
+    color: var(--control-inverse-text) !important;
+  }
+
+  :global(:root[data-theme='light']) .hud-frame {
+    box-shadow:
+      0 18px 48px var(--shadow-color),
+      inset 0 0 28px rgba(42, 94, 84, 0.06);
+  }
+
+  :global(:root[data-theme='light']) h1 {
+    color: #17201d;
+    text-shadow:
+      1px 0 rgba(188, 42, 72, 0.45),
+      -1px 0 rgba(0, 107, 128, 0.38),
+      0 0 14px rgba(var(--theme-color-rgb), 0.28);
+  }
+
+  :global(:root[data-theme='light']) .back-link:hover,
+  :global(:root[data-theme='light']) .back-link:focus-visible {
+    background: rgba(20, 23, 22, 0.08);
+    color: #111514;
   }
 
   @media (max-width: 599px) {

@@ -102,7 +102,7 @@
   }
 
   .cyber-label {
-    color: var(--theme-color);
+    color: var(--control-text);
     font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -130,11 +130,11 @@
   }
 
   .cyber-input {
-    background: rgba(0, 0, 0, 0.85);
+    background: var(--control-bg);
     border: 1px solid var(--theme-color);
     padding: 0 5px;
     height: 100%;
-    color: var(--theme-color);
+    color: var(--control-text);
     font-family: var(--font-mono);
     font-size: 1.1rem;
     outline: none;
@@ -156,7 +156,7 @@
 
   .cyber-input:hover,
   .cyber-input:focus {
-    background: rgba(var(--theme-color-rgb), 0.15);
+    background: var(--control-hover-overlay);
     box-shadow:
       inset 0 0 10px rgba(var(--theme-color-rgb), 0.3),
       0 0 10px var(--theme-color);
@@ -165,7 +165,7 @@
   .step-btn {
     background: transparent;
     border: none;
-    color: var(--theme-color);
+    color: var(--control-text);
     font-family: var(--font-mono);
     cursor: pointer;
     font-size: 1.1rem;

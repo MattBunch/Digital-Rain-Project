@@ -53,7 +53,7 @@
   .help-group h3 {
     font-family: var(--font-ui);
     font-size: 1.2rem;
-    border-bottom: 1px solid rgba(var(--theme-color), 0.2);
+    border-bottom: 1px solid rgba(var(--theme-color-rgb), 0.2);
     padding-bottom: 0.5rem;
     margin-bottom: 1rem;
     opacity: 0.8;

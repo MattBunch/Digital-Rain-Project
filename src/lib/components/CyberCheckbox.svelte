@@ -94,7 +94,7 @@
   }
 
   .cyber-label {
-    color: var(--theme-color);
+    color: var(--control-text);
     font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -134,7 +134,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: rgba(0, 0, 0, 0.8);
+    background: var(--control-bg);
     border: 1px solid var(--theme-color);
     clip-path: polygon(0 0, 100% 0, 100% 70%, 70% 100%, 0 100%);
     transition: all 0.2s ease;
@@ -166,6 +166,6 @@
 
   .cyber-checkbox:hover .inner-box {
     box-shadow: 0 0 15px var(--theme-color);
-    border-color: #fff;
+    border-color: var(--page-text);
   }
 </style>

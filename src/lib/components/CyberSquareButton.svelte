@@ -31,9 +31,9 @@
 <style>
   .cyber-square-button {
     position: relative;
-    background: rgba(0, 0, 0, 0.8);
+    background: var(--control-bg);
     border: 1px solid var(--theme-color);
-    color: var(--theme-color);
+    color: var(--control-text);
     width: 44px;
     min-width: 44px;
     min-height: 44px;
@@ -64,7 +64,7 @@
 
   .cyber-square-button:hover,
   .cyber-square-button:focus-visible {
-    color: black;
+    color: var(--control-inverse-text);
     box-shadow: 0 0 15px var(--theme-color);
     outline: none;
     transform: translateY(-2px);
@@ -73,6 +73,15 @@
   .cyber-square-button:hover::before,
   .cyber-square-button:focus-visible::before {
     opacity: 1;
+  }
+
+  :global(:root[data-theme='light']) .cyber-square-button::before {
+    background: rgba(20, 23, 22, 0.1);
+  }
+
+  :global(:root[data-theme='light']) .cyber-square-button:hover,
+  :global(:root[data-theme='light']) .cyber-square-button:focus-visible {
+    color: #111514;
   }
 
   .content {

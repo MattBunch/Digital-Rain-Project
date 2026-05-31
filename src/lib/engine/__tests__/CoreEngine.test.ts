@@ -217,6 +217,24 @@ describe('CoreEngine', () => {
   });
 
   describe('Initialization Logic', () => {
+    it('uses dark canvas fill styles by default', () => {
+      engine.drawOpaqueRect();
+      expect(mockCtx.fillStyle).toBe('rgba(0, 0, 0, 0.35)');
+
+      engine.drawSolidRect();
+      expect(mockCtx.fillStyle).toBe('rgba(0, 0, 0, 1)');
+    });
+
+    it('uses paper canvas fill styles in light theme', () => {
+      engine.setVisualTheme('light');
+
+      engine.drawOpaqueRect();
+      expect(mockCtx.fillStyle).toBe('rgba(244, 241, 232, 0.44)');
+
+      engine.drawSolidRect();
+      expect(mockCtx.fillStyle).toBe('#f4f1e8');
+    });
+
     it('should NOT have empty words array when all4Directions is set to true', () => {
       const spy = vi.spyOn(engine, 'initializeAll4Directions');
       engine.all4Directions = true;

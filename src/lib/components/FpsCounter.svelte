@@ -19,9 +19,9 @@
     position: fixed;
     top: 10px;
     right: 10px;
-    background: rgba(0, 0, 0, 0.7);
+    background: var(--panel-bg);
     border: 1px solid var(--matrix-color, #00ff41);
-    color: var(--matrix-color, #00ff41);
+    color: var(--control-text);
     padding: 4px 8px;
     font-family: var(--font-mono, monospace);
     font-size: 14px;

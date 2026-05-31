@@ -4,6 +4,51 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      (() => {
+        try {
+          const storedTheme = localStorage.getItem('digital-rain-theme-mode');
+          const themeMode =
+            storedTheme === 'dark' || storedTheme === 'light' || storedTheme === 'system'
+              ? storedTheme
+              : 'system';
+          const prefersLight = window.matchMedia?.('(prefers-color-scheme: light)').matches;
+          const resolvedTheme =
+            themeMode === 'light' || (themeMode === 'system' && prefersLight) ? 'light' : 'dark';
+
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch {
+          document.documentElement.dataset.theme = 'dark';
+          document.documentElement.style.colorScheme = 'dark';
+        }
+      })();
+    </script>
+    <style>
+      html {
+        min-height: 100%;
+        color-scheme: dark;
+        background-color: #000000;
+      }
+
+      html[data-theme='light'] {
+        color-scheme: light;
+        background-color: #f4f1e8;
+      }
+
+      body,
+      #app {
+        min-height: 100%;
+        background-color: var(--page-bg, #000000);
+        color: var(--page-text, #00ff41);
+      }
+
+      html[data-theme='light'] body,
+      html[data-theme='light'] #app {
+        background-color: var(--page-bg, #f4f1e8);
+        color: var(--page-text, #141716);
+      }
+    </style>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { fade, scale } from 'svelte/transition';
+  import { hexToRgb } from '$lib/utils/MathUtils';
 
   interface Props {
     isOpen: boolean;
@@ -11,6 +12,7 @@
   }
 
   const { isOpen, onClose, title, color, children, footer }: Props = $props();
+  const colorRgb = $derived(hexToRgb(color));
 
   let modalElement = $state<HTMLElement | null>(null);
   let previousActiveElement = $state<HTMLElement | null>(null);
@@ -105,6 +107,7 @@
       class="modal-container"
       transition:scale={{ duration: 300, start: 0.95 }}
       style:--theme-color={color}
+      style:--theme-color-rgb={colorRgb}
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-title"
@@ -155,15 +158,15 @@
     max-width: 800px;
     max-height: min(85vh, 760px);
     max-height: min(85dvh, 760px);
-    background: rgba(0, 0, 0, 0.9);
-    color: var(--theme-color);
+    background: var(--panel-bg-strong);
+    color: var(--control-text);
     position: relative;
     box-sizing: border-box;
   }
 
   .hud-frame {
     padding: 2.5rem;
-    border: 1px solid rgba(var(--theme-color), 0.3);
+    border: 1px solid rgba(var(--theme-color-rgb), var(--theme-border-alpha));
     position: relative;
     display: flex;
     flex-direction: column;
@@ -246,7 +249,7 @@
     max-height: 50vh;
     max-height: 50dvh;
     scrollbar-width: thin;
-    scrollbar-color: var(--theme-color) rgba(0, 0, 0, 0.3);
+    scrollbar-color: var(--theme-color) var(--scrollbar-track);
   }
 
   .scroll-area::-webkit-scrollbar {
@@ -254,8 +257,8 @@
   }
 
   .scroll-area::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.4);
-    border-left: 1px dashed rgba(var(--theme-color), 0.2);
+    background: var(--scrollbar-track);
+    border-left: 1px dashed rgba(var(--theme-color-rgb), 0.2);
     margin-block: 10px;
   }
 
@@ -271,7 +274,7 @@
     box-shadow:
       0 0 10px var(--theme-color),
       inset 0 0 2px rgba(255, 255, 255, 0.8);
-    border: 1px solid black;
+    border: 1px solid var(--control-inverse-text);
   }
 
   .scroll-area::-webkit-scrollbar-thumb:hover {
@@ -292,6 +295,14 @@
     height: 1px;
     background: linear-gradient(90deg, transparent, var(--theme-color), transparent);
     opacity: 0.3;
+  }
+
+  :global(:root[data-theme='light']) .modal-backdrop {
+    background: rgba(244, 241, 232, 0.72);
+  }
+
+  :global(:root[data-theme='light']) .modal-container {
+    box-shadow: 0 18px 48px var(--shadow-color);
   }
 
   @media (max-width: 599px) {

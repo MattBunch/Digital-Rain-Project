@@ -55,7 +55,7 @@
 <style>
   .cyber-button {
     position: relative;
-    background: rgba(0, 0, 0, 0.8);
+    background: var(--control-bg);
     border: 1px solid var(--border-color);
     color: var(--border-color);
     padding: 8px 14px;
@@ -138,6 +138,29 @@
   .cyber-button:hover::before,
   .cyber-button:focus-visible::before {
     opacity: 1;
+  }
+
+  :global(:root[data-theme='light']) .cyber-button {
+    color: #141716;
+    border-color: rgba(var(--theme-color-rgb, 0, 255, 65), 0.52);
+    box-shadow: inset 0 0 0 1px rgba(20, 23, 22, 0.03);
+  }
+
+  :global(:root[data-theme='light']) .cyber-button::before {
+    background: rgba(20, 23, 22, 0.1);
+  }
+
+  :global(:root[data-theme='light']) .cyber-button:hover,
+  :global(:root[data-theme='light']) .cyber-button:focus-visible {
+    color: #111514;
+    box-shadow:
+      0 0 0 1px rgba(var(--theme-color-rgb, 0, 255, 65), 0.24),
+      0 12px 24px var(--shadow-color);
+  }
+
+  :global(:root[data-theme='light']) .cyber-button:hover .accent-bar,
+  :global(:root[data-theme='light']) .cyber-button:focus-visible .accent-bar {
+    background: #111514;
   }
 
   .cyber-button:disabled {

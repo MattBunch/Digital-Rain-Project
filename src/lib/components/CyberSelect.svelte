@@ -179,7 +179,7 @@
   }
 
   .cyber-label {
-    color: var(--theme-color);
+    color: var(--control-text);
     font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -196,9 +196,9 @@
   .select-trigger {
     width: 100%;
     min-height: 44px;
-    background: rgba(0, 0, 0, 0.85);
+    background: var(--control-bg);
     border: 1px solid var(--theme-color);
-    color: var(--theme-color);
+    color: var(--control-text);
     padding: 0 12px;
     cursor: pointer;
     display: flex;
@@ -218,7 +218,7 @@
   .select-trigger:hover,
   .select-trigger:focus-visible {
     box-shadow: 0 0 15px var(--theme-color);
-    background: rgba(var(--theme-color-rgb), 0.15);
+    background: var(--control-hover-overlay);
   }
 
   .select-trigger.open {
@@ -305,10 +305,10 @@
     left: 0;
     width: 100%;
     z-index: 10;
-    background: rgba(0, 0, 0, 0.98);
+    background: var(--panel-bg-solid);
     border: 1px solid var(--theme-color);
     border-top: none;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 10px 25px var(--shadow-color);
     backdrop-filter: blur(15px);
     overflow: hidden;
   }
@@ -344,7 +344,7 @@
     display: flex;
     flex-direction: column;
     scrollbar-width: thin;
-    scrollbar-color: var(--theme-color) rgba(0, 0, 0, 0.3);
+    scrollbar-color: var(--theme-color) var(--scrollbar-track);
   }
 
   /* --- Advanced Cyberpunk Scrollbar --- */
@@ -353,8 +353,8 @@
   }
 
   .options-dropdown::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.4);
-    border-left: 1px dashed rgba(var(--theme-color), 0.2);
+    background: var(--scrollbar-track);
+    border-left: 1px dashed rgba(var(--theme-color-rgb), 0.2);
     margin-block: 10px;
   }
 
@@ -370,7 +370,7 @@
     box-shadow:
       0 0 10px var(--theme-color),
       inset 0 0 2px rgba(255, 255, 255, 0.8);
-    border: 1px solid black;
+    border: 1px solid var(--control-inverse-text);
   }
 
   .options-dropdown::-webkit-scrollbar-thumb:hover {
@@ -384,7 +384,7 @@
     border: none;
     padding: 14px 15px;
     min-height: 44px;
-    color: var(--theme-color);
+    color: var(--control-text);
     text-align: left;
     cursor: pointer;
     font-family: inherit;
@@ -401,13 +401,30 @@
   .option-item:focus-visible,
   .option-item.focused {
     background: var(--theme-color);
-    color: #000 !important;
+    color: var(--control-inverse-text) !important;
     outline: none;
   }
 
   .option-item.active {
     background: rgba(var(--theme-color-rgb), 0.2);
     text-decoration: underline;
+  }
+
+  :global(:root[data-theme='light']) .select-trigger,
+  :global(:root[data-theme='light']) .options-container {
+    border-color: rgba(var(--theme-color-rgb), 0.52);
+  }
+
+  :global(:root[data-theme='light']) .option-item:hover,
+  :global(:root[data-theme='light']) .option-item:focus-visible,
+  :global(:root[data-theme='light']) .option-item.focused {
+    background: rgba(20, 23, 22, 0.1);
+    color: #111514 !important;
+  }
+
+  :global(:root[data-theme='light']) .option-item.active {
+    background: rgba(var(--theme-color-rgb), 0.14);
+    color: #111514;
   }
 
   .scanline {

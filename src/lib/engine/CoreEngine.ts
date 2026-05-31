@@ -5,6 +5,7 @@ import type {
   IMouseInteractionState,
   ISquareConfig,
   MouseInteractionMode,
+  ResolvedTheme,
 } from '../types/index';
 import {
   generateWord,
@@ -20,7 +21,13 @@ import {
   generateXEast,
   generateXWest,
 } from '../utils/CoordinateUtils.ts';
-import { ENGINE_CONSTANTS, DEFAULT_CONFIG, CHAR_SETS, ALPHABET } from '../constants/matrix.ts';
+import {
+  ENGINE_CONSTANTS,
+  DEFAULT_CONFIG,
+  CHAR_SETS,
+  ALPHABET,
+  COLORS,
+} from '../constants/matrix.ts';
 import { ColorManager } from './ColorManager';
 import { SquareController } from './SquareController';
 import { AnimationManager } from './AnimationManager';
@@ -75,11 +82,64 @@ export class CoreEngine {
   canvas?: HTMLCanvasElement;
   ctx?: CanvasRenderingContext2D;
   private currentFont: string = '';
+  private visualTheme: ResolvedTheme = 'dark';
 
   constructor() {
     this.colorManager = new ColorManager();
     this.squareController = new SquareController();
     this.animationManager = new AnimationManager(this.loop.bind(this));
+  }
+
+  setVisualTheme(theme: ResolvedTheme): void {
+    this.visualTheme = theme;
+  }
+
+  getCanvasSolidFillStyle(): string {
+    if (this.visualTheme === 'light') {
+      return '#f4f1e8';
+    }
+
+    return `rgba(0, 0, 0, ${ENGINE_CONSTANTS.OPACITY_SOLID})`;
+  }
+
+  getCanvasFadeFillStyle(): string {
+    if (this.visualTheme === 'light') {
+      return 'rgba(244, 241, 232, 0.44)';
+    }
+
+    return `rgba(0, 0, 0, ${ENGINE_CONSTANTS.OPACITY_NORMAL})`;
+  }
+
+  private getMatrixHeadColor(): string {
+    if (this.visualTheme === 'light') {
+      return 'rgba(20, 34, 32, 0.62)';
+    }
+
+    return COLORS.WHITE;
+  }
+
+  private getSquareFillColor(): string {
+    if (this.visualTheme === 'light') {
+      return 'rgba(27, 42, 39, 0.28)';
+    }
+
+    return COLORS.WHITE;
+  }
+
+  private getCurrentColorArray(): string[] {
+    if (this.visualTheme === 'light') {
+      return ['rgba(52, 104, 91, 0.28)', 'rgba(34, 83, 76, 0.22)', 'rgba(39, 59, 64, 0.16)'];
+    }
+
+    return this.colorManager.getCurrentColorArray();
+  }
+
+  private getDiscoColor(color: string): string {
+    if (this.visualTheme === 'light') {
+      return 'rgba(42, 94, 84, 0.26)';
+    }
+
+    return color;
   }
 
   // Proxies for legacy property access
@@ -525,6 +585,8 @@ export class CoreEngine {
         alphabet: this.resolvedAlphabet,
         waveDistortion: this.waveDistortion,
         mouseInteraction: this.getMouseInteractionState(),
+        headColor: this.getMatrixHeadColor(),
+        squareFillColor: this.getSquareFillColor(),
       };
 
       const discoCallback = (ctx: CanvasRenderingContext2D) => {
@@ -532,13 +594,13 @@ export class CoreEngine {
           this.discoFrameCounter,
           this.discoFrameCounterTurnoverPoint,
         );
-        ctx.fillStyle = color;
+        ctx.fillStyle = this.getDiscoColor(color);
         if (reset) {
           this.discoFrameCounter = 0;
         }
       };
 
-      inputWords[i].show(this.ctx, this.colorManager.getCurrentColorArray(), config, discoCallback);
+      inputWords[i].show(this.ctx, this.getCurrentColorArray(), config, discoCallback);
     }
   }
 
@@ -752,7 +814,7 @@ export class CoreEngine {
     if (!this.ctx || !this.canvas) {
       return;
     }
-    this.ctx.fillStyle = `rgba(0, 0, 0, ${ENGINE_CONSTANTS.OPACITY_NORMAL})`;
+    this.ctx.fillStyle = this.getCanvasFadeFillStyle();
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
@@ -760,7 +822,7 @@ export class CoreEngine {
     if (!this.ctx || !this.canvas) {
       return;
     }
-    this.ctx.fillStyle = `rgba(0, 0, 0, ${ENGINE_CONSTANTS.OPACITY_SOLID})`;
+    this.ctx.fillStyle = this.getCanvasSolidFillStyle();
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
@@ -787,7 +849,7 @@ export class CoreEngine {
           this.discoFrameCounter,
           this.discoFrameCounterTurnoverPoint,
         );
-        ctx.fillStyle = color;
+        ctx.fillStyle = this.getDiscoColor(color);
       },
       getRandomColor: () => getRandomColor(),
     };
@@ -805,7 +867,7 @@ export class CoreEngine {
             this.moveWord(word, speedFactor);
             word.showAlternative(
               this.ctx!,
-              this.colorManager.getCurrentColorArray(),
+              this.getCurrentColorArray(),
               {
                 rapidWordChange: this.rapidWordChange,
                 discoOn: this.colorManager.discoOn,
@@ -813,6 +875,8 @@ export class CoreEngine {
                 alphabet: this.resolvedAlphabet,
                 waveDistortion: this.waveDistortion,
                 mouseInteraction: this.getMouseInteractionState(),
+                headColor: this.getMatrixHeadColor(),
+                squareFillColor: this.getSquareFillColor(),
               },
               squareConfig,
             );
@@ -825,7 +889,7 @@ export class CoreEngine {
         this.moveWord(word, speedFactor);
         word.showAlternative(
           this.ctx!,
-          this.colorManager.getCurrentColorArray(),
+          this.getCurrentColorArray(),
           {
             rapidWordChange: this.rapidWordChange,
             discoOn: this.colorManager.discoOn,
@@ -833,6 +897,8 @@ export class CoreEngine {
             alphabet: this.resolvedAlphabet,
             waveDistortion: this.waveDistortion,
             mouseInteraction: this.getMouseInteractionState(),
+            headColor: this.getMatrixHeadColor(),
+            squareFillColor: this.getSquareFillColor(),
           },
           squareConfig,
         );

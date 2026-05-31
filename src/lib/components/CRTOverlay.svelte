@@ -24,7 +24,7 @@
     min-height: 100dvh;
     overflow-x: hidden;
     overflow-y: auto;
-    background: #000;
+    background: var(--page-bg);
     z-index: 9999;
     pointer-events: none;
     -webkit-overflow-scrolling: touch;
@@ -42,7 +42,7 @@
     inset: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+    background: var(--scanline-bg);
     background-size: 100% 4px;
     z-index: 10;
     pointer-events: none;
@@ -53,7 +53,7 @@
     inset: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle, transparent 50%, rgba(0, 0, 0, 0.5) 100%);
+    background: var(--crt-vignette-bg);
     z-index: 11;
     pointer-events: none;
   }
@@ -63,7 +63,7 @@
     inset: 0;
     width: 100%;
     height: 100%;
-    background: rgba(18, 16, 16, 0.05);
+    background: var(--crt-flicker-bg);
     opacity: 0;
     z-index: 12;
     pointer-events: none;
@@ -142,9 +142,7 @@
     display: block;
     position: fixed;
     inset: 0;
-    background:
-      linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%),
-      linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+    background: var(--crt-curve-bg);
     z-index: 13;
     background-size:
       100% 2px,

@@ -25,6 +25,8 @@ export type Direction =
   | 'southwest';
 
 export type MouseInteractionMode = 'off' | 'repel' | 'attract';
+export type ThemeMode = 'system' | 'dark' | 'light';
+export type ResolvedTheme = 'dark' | 'light';
 
 export interface IMouseInteractionState {
   x: number;
@@ -40,6 +42,8 @@ export interface IMatrixStringConfig {
   alphabet?: string;
   waveDistortion?: boolean;
   mouseInteraction?: IMouseInteractionState;
+  headColor?: string;
+  squareFillColor?: string;
 }
 
 export interface ISquareConfig {

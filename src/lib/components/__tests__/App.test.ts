@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
-import { describe, it, expect, vi } from 'vitest';
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import type { CoreEngine } from '$lib/engine/CoreEngine';
 import App from '../../../App.svelte';
 
@@ -9,6 +9,12 @@ vi.mock('$lib/components/MatrixCanvas.svelte', async () => {
 });
 
 describe('App', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    document.documentElement.removeAttribute('data-theme');
+    document.documentElement.style.colorScheme = '';
+  });
+
   function getMatrixCanvasInstances() {
     const testWindow = window as unknown as {
       __matrixCanvasInstances?: { engine: CoreEngine; mode: 'normal' | 'square' }[];
@@ -81,6 +87,27 @@ describe('App', () => {
       expect(backgroundEngine.discoOn).toBe(true);
       expect(backgroundEngine.discoFrameCounterTurnoverPoint).toBe(10);
       expect(backgroundEngine.discoColorOverride).toBe(themeColor);
+    });
+  });
+
+  it('defaults system mode to dark when the OS does not prefer light', async () => {
+    render(App);
+
+    await waitFor(() => {
+      expect(document.documentElement.dataset.theme).toBe('dark');
+    });
+  });
+
+  it('switches to light mode and persists the user selection', async () => {
+    render(App);
+
+    await fireEvent.click(screen.getByRole('button', { name: /SYSTEM_CONFIGURATION/i }));
+    await fireEvent.click(screen.getByLabelText(/DISPLAY_MODE/i));
+    await fireEvent.click(await screen.findByRole('option', { name: /LIGHT/i }));
+
+    await waitFor(() => {
+      expect(document.documentElement.dataset.theme).toBe('light');
+      expect(localStorage.getItem('digital-rain-theme-mode')).toBe('light');
     });
   });
 });

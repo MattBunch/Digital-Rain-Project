@@ -321,7 +321,7 @@
   tabindex="0"
   aria-label="Return to settings"
   style:display="block"
-  style:background="black"
+  style:background="var(--canvas-bg)"
   style:cursor="pointer"
   onpointermove={handlePointerMove}
   onpointerleave={handlePointerLeave}

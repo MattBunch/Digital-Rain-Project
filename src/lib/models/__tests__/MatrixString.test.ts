@@ -214,6 +214,18 @@ describe('MatrixString', () => {
       expect(mockCtx.fillStyle).toBe(COLORS.WHITE);
     });
 
+    it('should use configured head color', () => {
+      const ms = new MatrixString('ABCDE', 0, 0, 0, 0, 20);
+      ms.show(
+        mockCtx as CanvasRenderingContext2D,
+        colorArray,
+        { ...config, headColor: 'rgba(20, 34, 32, 0.62)' },
+        discoCallback,
+      );
+
+      expect(mockCtx.fillStyle).toBe('rgba(20, 34, 32, 0.62)');
+    });
+
     it('should respect colorOffset in setColors', () => {
       const ms = new MatrixString('ABCDE', 0, 0, 0, 0, 20);
       ms.colorOffset = 1;
@@ -240,6 +252,31 @@ describe('MatrixString', () => {
       // northwest: head at 0
       ms.setColors(mockCtx, 0, inputColors, 'northwest');
       expect(mockCtx.fillStyle).toBe(COLORS.WHITE);
+    });
+
+    it('should use configured square fill color', () => {
+      const ms = new MatrixString('ABCDE', 0, 0, 0, 0, 20);
+      const squareConfig = {
+        x1: -10,
+        x2: 50,
+        y1: -10,
+        y2: 50,
+        alternativeFontSize: 20,
+        returnAlternativeFadeCondition: vi.fn().mockReturnValue(false),
+        discoColorCounterCheck: vi.fn(),
+        getRandomColor: vi.fn(),
+      };
+
+      ms.drawSquare(
+        mockCtx as CanvasRenderingContext2D,
+        0,
+        0,
+        colorArray,
+        { ...config, squareFillColor: 'rgba(27, 42, 39, 0.28)' },
+        squareConfig,
+      );
+
+      expect(mockCtx.fillStyle).toBe('rgba(27, 42, 39, 0.28)');
     });
 
     it('should render with distorted coordinates when wave distortion is enabled', () => {

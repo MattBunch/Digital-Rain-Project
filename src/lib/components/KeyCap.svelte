@@ -22,7 +22,7 @@
     min-width: 2.5rem;
     height: 1.8rem;
     padding: 0 0.5rem;
-    background: rgba(0, 0, 0, 0.8);
+    background: var(--control-bg);
     border: 1px solid var(--key-color);
     border-radius: 4px;
     font-family: var(--font-mono);

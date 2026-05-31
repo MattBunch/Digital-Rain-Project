@@ -111,6 +111,23 @@ describe('SettingsMenu', () => {
     });
   });
 
+  it('theme mode select changes display mode', async () => {
+    render(SettingsMenuWrapper);
+
+    await fireEvent.click(screen.getByText('SYSTEM_CONFIGURATION'));
+
+    const getThemeSelect = () => screen.getByLabelText(/DISPLAY_MODE/i);
+    expect(getThemeSelect()).toHaveTextContent(/system/i);
+
+    await fireEvent.click(getThemeSelect());
+    const lightOption = await screen.findByRole('option', { name: /light/i });
+    await fireEvent.click(lightOption);
+
+    await waitFor(() => {
+      expect(getThemeSelect()).toHaveTextContent(/light/i);
+    });
+  });
+
   it('keeps numeric inputs focused while entering values', async () => {
     render(SettingsMenuWrapper);
 
