@@ -26,6 +26,8 @@ describe('MatrixCanvas', () => {
       configurable: true,
       value: 600,
     });
+
+    mockCoarsePointer(false);
   });
 
   afterEach(() => {
@@ -61,7 +63,38 @@ describe('MatrixCanvas', () => {
     } as unknown as CoreEngine;
   }
 
-  function renderCanvas(engine = createEngine(), mode: 'normal' | 'square' = 'normal') {
+  function mockCoarsePointer(matches: boolean) {
+    Object.defineProperty(window, 'matchMedia', {
+      configurable: true,
+      writable: true,
+      value: vi.fn().mockImplementation((query: string) => ({
+        matches: query === '(hover: none) and (pointer: coarse)' ? matches : false,
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    });
+  }
+
+  function getCanvas(container: HTMLElement): HTMLElement {
+    const canvas = container.querySelector('canvas');
+
+    if (!(canvas instanceof HTMLElement)) {
+      throw new Error('Expected MatrixCanvas to render a canvas element');
+    }
+
+    return canvas;
+  }
+
+  function renderCanvas(
+    engine = createEngine(),
+    mode: 'normal' | 'square' = 'normal',
+    showMobileControls = true,
+  ) {
     const onReturn = vi.fn();
     const rendered = render(MatrixCanvas, {
       props: {
@@ -74,6 +107,7 @@ describe('MatrixCanvas', () => {
         all8Directions: false,
         waveDistortion: false,
         mouseInteractionMode: 'off',
+        showMobileControls,
       },
     });
 
@@ -201,8 +235,8 @@ describe('MatrixCanvas', () => {
   });
 
   it('changes direction from canvas swipes', async () => {
-    const { engine } = renderCanvas();
-    const canvas = screen.getByRole('button', { name: 'Return to settings' });
+    const { container, engine } = renderCanvas();
+    const canvas = getCanvas(container);
 
     await swipeCanvas(canvas, { clientX: 100, clientY: 100 }, { clientX: 20, clientY: 100 });
     expect(engine.direction).toBe('west');
@@ -224,8 +258,8 @@ describe('MatrixCanvas', () => {
   it('moves the square from canvas swipes in square animation mode', async () => {
     const engine = createEngine();
     engine.squareAnimationOn = true;
-    renderCanvas(engine);
-    const canvas = screen.getByRole('button', { name: 'Return to settings' });
+    const { container } = renderCanvas(engine);
+    const canvas = getCanvas(container);
 
     await swipeCanvas(canvas, { clientX: 100, clientY: 100 }, { clientX: 20, clientY: 100 });
     await swipeCanvas(canvas, { clientX: 100, clientY: 100 }, { clientX: 180, clientY: 100 });
@@ -239,8 +273,8 @@ describe('MatrixCanvas', () => {
   });
 
   it('ignores tiny canvas swipes', async () => {
-    const { engine } = renderCanvas();
-    const canvas = screen.getByRole('button', { name: 'Return to settings' });
+    const { container, engine } = renderCanvas();
+    const canvas = getCanvas(container);
 
     await swipeCanvas(canvas, { clientX: 100, clientY: 100 }, { clientX: 130, clientY: 100 });
 
@@ -249,8 +283,8 @@ describe('MatrixCanvas', () => {
   });
 
   it('tracks mirrored pointer coordinates and clears pointer state on leave', async () => {
-    const { engine } = renderCanvas();
-    const canvas = screen.getByRole('button', { name: 'Return to settings' });
+    const { container, engine } = renderCanvas();
+    const canvas = getCanvas(container);
 
     vi.spyOn(canvas, 'getBoundingClientRect').mockReturnValue({
       x: 0,
@@ -298,5 +332,84 @@ describe('MatrixCanvas', () => {
     await fireEvent.keyDown(canvas, { key: 'Enter' });
 
     expect(onReturn).toHaveBeenCalledTimes(2);
+  });
+
+  it('does not return to settings on coarse-pointer canvas taps', async () => {
+    mockCoarsePointer(true);
+    const { container, onReturn } = renderCanvas();
+    const canvas = getCanvas(container);
+
+    await screen.findByRole('button', { name: 'Return to settings' });
+
+    await fireEvent.click(canvas);
+    await fireEvent.keyDown(canvas, { key: 'Enter' });
+
+    expect(onReturn).not.toHaveBeenCalled();
+    expect(canvas).not.toHaveAttribute('role');
+    expect(canvas).not.toHaveAttribute('aria-label');
+  });
+
+  it('returns to settings from the coarse-pointer mobile menu button', async () => {
+    mockCoarsePointer(true);
+    const { onReturn } = renderCanvas();
+    const menuButton = await screen.findByRole('button', { name: 'Return to settings' });
+
+    await fireEvent.click(menuButton);
+
+    expect(onReturn).toHaveBeenCalledTimes(1);
+  });
+
+  it('hides coarse-pointer mobile controls when disabled', async () => {
+    mockCoarsePointer(true);
+    renderCanvas(createEngine(), 'normal', false);
+
+    expect(screen.queryByRole('button', { name: 'Return to settings' })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Pause or play animation' }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('runs shared actions from coarse-pointer mobile controls', async () => {
+    mockCoarsePointer(true);
+    const engine = createEngine();
+    render(MatrixCanvasBindingWrapper, { props: { engine } });
+
+    await fireEvent.click(await screen.findByRole('button', { name: 'Pause or play animation' }));
+    await fireEvent.click(screen.getByRole('button', { name: 'Clear screen' }));
+    await fireEvent.click(screen.getByRole('button', { name: 'Toggle disco mode' }));
+    await fireEvent.click(screen.getByRole('button', { name: 'Switch animation mode' }));
+    await fireEvent.click(screen.getByRole('button', { name: 'Decrease speed' }));
+    await fireEvent.click(screen.getByRole('button', { name: 'Increase speed' }));
+    await fireEvent.click(screen.getByRole('button', { name: 'Decrease font size' }));
+    await fireEvent.click(screen.getByRole('button', { name: 'Increase font size' }));
+    await fireEvent.click(screen.getByRole('button', { name: 'Move west' }));
+    await fireEvent.click(screen.getByRole('button', { name: 'Move north' }));
+
+    expect(engine.pause).toHaveBeenCalled();
+    expect(engine.clearScreen).toHaveBeenCalled();
+    expect(screen.getByTestId('disco-on')).toHaveTextContent('true');
+    expect(engine.switchMode).toHaveBeenCalled();
+    expect(engine.speedController).toHaveBeenCalledWith(false);
+    expect(engine.speedController).toHaveBeenCalledWith(true);
+    expect(engine.controlFontSize).toHaveBeenCalledWith(false);
+    expect(engine.controlFontSize).toHaveBeenCalledWith(true);
+    expect(engine.direction).toBe('north');
+  });
+
+  it('moves the square from coarse-pointer direction controls in square animation mode', async () => {
+    mockCoarsePointer(true);
+    const engine = createEngine();
+    engine.squareAnimationOn = true;
+    renderCanvas(engine);
+
+    await fireEvent.click(await screen.findByRole('button', { name: 'Move west' }));
+    await fireEvent.click(screen.getByRole('button', { name: 'Move east' }));
+    await fireEvent.click(screen.getByRole('button', { name: 'Move north' }));
+    await fireEvent.click(screen.getByRole('button', { name: 'Move south' }));
+
+    expect(engine.moveSquareLeft).toHaveBeenCalledWith(false);
+    expect(engine.moveSquareRight).toHaveBeenCalledWith(false);
+    expect(engine.moveSquareUp).toHaveBeenCalledWith(false);
+    expect(engine.moveSquareDown).toHaveBeenCalledWith(false);
   });
 });

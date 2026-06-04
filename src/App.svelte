@@ -199,6 +199,7 @@
             bind:all8Directions={settings.all8Directions}
             bind:waveDistortion={settings.waveDistortion}
             bind:mouseInteractionMode={settings.mouseInteractionMode}
+            showMobileControls={false}
           />
         {/if}
       </div>

@@ -7,9 +7,15 @@
     engine: CoreEngine;
     mode?: 'normal' | 'square';
     onReturn?: () => void;
+    showMobileControls?: boolean;
   }
 
-  const { engine, mode = 'normal', onReturn = () => {} }: Props = $props();
+  const {
+    engine,
+    mode = 'normal',
+    onReturn = () => {},
+    showMobileControls = true,
+  }: Props = $props();
 
   let discoOn = $state(false);
   let chosenColor = $state('green');
@@ -29,6 +35,8 @@
   bind:all8Directions
   bind:waveDistortion
   bind:mouseInteractionMode
+  {showMobileControls}
 />
 
 <output data-testid="chosen-color">{chosenColor}</output>
+<output data-testid="disco-on">{String(discoOn)}</output>
