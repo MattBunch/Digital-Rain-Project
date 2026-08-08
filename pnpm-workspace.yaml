@@ -1,0 +1,3 @@
+minimumReleaseAgeExclude:
+  - '@sveltejs/vite-plugin-svelte@7.3.0'
+  - eslint@10.8.1

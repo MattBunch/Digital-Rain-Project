@@ -15,14 +15,7 @@ export interface IMatrixStringOptions {
 }
 
 export type Direction =
-  | 'north'
-  | 'south'
-  | 'east'
-  | 'west'
-  | 'northeast'
-  | 'northwest'
-  | 'southeast'
-  | 'southwest';
+  'north' | 'south' | 'east' | 'west' | 'northeast' | 'northwest' | 'southeast' | 'southwest';
 
 export type MouseInteractionMode = 'off' | 'repel' | 'attract';
 export type ThemeMode = 'system' | 'dark' | 'light';
