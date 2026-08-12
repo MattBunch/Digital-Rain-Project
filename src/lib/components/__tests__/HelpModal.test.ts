@@ -55,6 +55,15 @@ describe('HelpModal', () => {
     expect(screen.getByText(/All 4 Directions/i)).toBeInTheDocument();
   });
 
+  it('lists mobile controls separately from keyboard controls', () => {
+    render(HelpModal, { props: { isOpen: true, onClose: vi.fn() } });
+
+    expect(screen.getByText('MOBILE CONTROLS')).toBeInTheDocument();
+    expect(screen.getByText('Swipe')).toBeInTheDocument();
+    expect(screen.getByText('Return to settings')).toBeInTheDocument();
+    expect(screen.getByText('Direction controls')).toBeInTheDocument();
+  });
+
   it('traps focus when open', async () => {
     const onClose = vi.fn();
     render(HelpModal, { props: { isOpen: true, onClose } });

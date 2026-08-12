@@ -31,4 +31,18 @@ export const helpGroups: HelpGroup[] = [
       { key: 'Esc', description: 'Quit to menu' },
     ],
   },
+  {
+    title: 'MOBILE CONTROLS',
+    items: [
+      { key: 'Swipe', description: 'Change rain direction / Move box' },
+      { key: 'Menu', description: 'Return to settings' },
+      { key: 'Pause', description: 'Pause or play animation' },
+      { key: 'Clear', description: 'Clear screen' },
+      { key: 'Disco', description: 'Toggle disco' },
+      { key: 'Mode', description: 'Switch mode' },
+      { key: 'Speed', description: 'Adjust speed' },
+      { key: 'Font', description: 'Adjust font size' },
+      { key: 'D-pad', description: 'Direction controls' },
+    ],
+  },
 ];

@@ -6,6 +6,7 @@
     onReturn: () => void;
     engine: CoreEngine;
     mode: 'normal' | 'square';
+    showMobileControls?: boolean;
   }>();
 
   onMount(() => {

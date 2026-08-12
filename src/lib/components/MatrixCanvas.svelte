@@ -15,6 +15,7 @@
     all8Directions = $bindable(false),
     waveDistortion = $bindable(false),
     mouseInteractionMode = $bindable('off' as MouseInteractionMode),
+    showMobileControls = true,
   } = $props<{
     engine: CoreEngine;
     mode: 'normal' | 'square';
@@ -25,10 +26,16 @@
     all8Directions: boolean;
     waveDistortion: boolean;
     mouseInteractionMode: MouseInteractionMode;
+    showMobileControls?: boolean;
   }>();
   /* eslint-enable prefer-const, no-useless-assignment */
 
+  const coarsePointerQuery = '(hover: none) and (pointer: coarse)';
+
   let canvas: HTMLCanvasElement;
+  let isCoarsePointer = $state(false);
+
+  const shouldShowMobileControls = $derived(showMobileControls && isCoarsePointer);
 
   function isEditableTarget(target: EventTarget | null): boolean {
     if (!(target instanceof HTMLElement)) {
@@ -39,22 +46,19 @@
       target instanceof HTMLInputElement ||
       target instanceof HTMLTextAreaElement ||
       target instanceof HTMLSelectElement ||
+      target instanceof HTMLButtonElement ||
       target.isContentEditable
     );
   }
 
-  function isColorShortcut(key: string): boolean {
-    return /^[1-8]$/.test(key);
-  }
-
   function handleKeyDown(event: KeyboardEvent) {
-    if (isColorShortcut(event.key) && isEditableTarget(event.target)) {
+    if (isEditableTarget(event.target)) {
       return;
     }
 
     switch (event.key) {
       case 'Escape':
-        onReturn();
+        returnToMenu();
         break;
       case 'ArrowLeft':
         handleDirectionInput('west');
@@ -69,25 +73,19 @@
         handleDirectionInput('south');
         break;
       case ' ':
-        if (engine.ctx != null) {
-          engine.pause();
-        }
+        togglePause();
         break;
       case 'c':
-        engine.clearScreen();
+        clearCanvas();
         break;
       case 'd':
-        discoOn = !discoOn;
+        toggleDisco();
         break;
       case 'PageUp':
-        if (engine.ctx != null || !engine.squareAnimationOn) {
-          engine.speedController(true);
-        }
+        increaseSpeed();
         break;
       case 'PageDown':
-        if (engine.ctx != null || !engine.squareAnimationOn) {
-          engine.speedController(false);
-        }
+        decreaseSpeed();
         break;
       case '1':
         chosenColor = 'green';
@@ -115,7 +113,7 @@
         chosenColor = 'random';
         break;
       case 'w':
-        engine.controlFontSize(true);
+        increaseFontSize();
         break;
       case 'x':
         waveDistortion = !waveDistortion;
@@ -124,7 +122,7 @@
         mouseInteractionMode = getNextMouseInteractionMode(mouseInteractionMode);
         break;
       case 's':
-        engine.controlFontSize(false);
+        decreaseFontSize();
         break;
       case 'q':
         engine.controlStringSize(true);
@@ -136,9 +134,7 @@
         engine.rapidWordChangeControl();
         break;
       case 'm':
-        if (engine.ctx) {
-          engine.switchMode();
-        }
+        switchMode();
         break;
       case 't':
         all4Directions = !all4Directions;
@@ -167,6 +163,71 @@
       default:
         break;
     }
+  }
+
+  function returnToMenu(): void {
+    onReturn();
+  }
+
+  function togglePause(): void {
+    if (engine.ctx != null) {
+      engine.pause();
+    }
+  }
+
+  function clearCanvas(): void {
+    engine.clearScreen();
+  }
+
+  function toggleDisco(): void {
+    discoOn = !discoOn;
+  }
+
+  function increaseSpeed(): void {
+    if (engine.ctx != null || !engine.squareAnimationOn) {
+      engine.speedController(true);
+    }
+  }
+
+  function decreaseSpeed(): void {
+    if (engine.ctx != null || !engine.squareAnimationOn) {
+      engine.speedController(false);
+    }
+  }
+
+  function increaseFontSize(): void {
+    engine.controlFontSize(true);
+  }
+
+  function decreaseFontSize(): void {
+    engine.controlFontSize(false);
+  }
+
+  function switchMode(): void {
+    if (engine.ctx) {
+      engine.switchMode();
+    }
+  }
+
+  function handleCanvasClick(): void {
+    if (!isCoarsePointer) {
+      returnToMenu();
+    }
+  }
+
+  function handleCanvasKeyDown(event: KeyboardEvent): void {
+    if (isCoarsePointer) {
+      return;
+    }
+
+    if (event.key === 'Enter' || event.key === ' ') {
+      returnToMenu();
+    }
+  }
+
+  function runMobileAction(event: MouseEvent, action: () => void): void {
+    event.stopPropagation();
+    action();
   }
 
   function handleDirectionInput(direction: Direction): void {
@@ -299,6 +360,30 @@
     return undefined;
   });
 
+  $effect(() => {
+    if (typeof window === 'undefined') {
+      return undefined;
+    }
+
+    const mediaQuery = window.matchMedia?.(coarsePointerQuery);
+
+    if (!mediaQuery) {
+      isCoarsePointer = false;
+      return undefined;
+    }
+
+    const updateCoarsePointer = (event?: MediaQueryListEvent) => {
+      isCoarsePointer = event?.matches ?? mediaQuery.matches;
+    };
+
+    updateCoarsePointer();
+    mediaQuery.addEventListener('change', updateCoarsePointer);
+
+    return () => {
+      mediaQuery.removeEventListener('change', updateCoarsePointer);
+    };
+  });
+
   // Secondary effect to handle state changes that might happen from App.svelte
   $effect(() => {
     // These values are synced in App.svelte already, but we might want to trigger resetWordsArray
@@ -311,21 +396,127 @@
 <canvas
   bind:this={canvas}
   data-digital-rain-root
-  onclick={onReturn}
-  onkeydown={(e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      onReturn();
-    }
-  }}
-  role="button"
-  tabindex="0"
-  aria-label="Return to settings"
+  onclick={handleCanvasClick}
+  onkeydown={handleCanvasKeyDown}
+  role={isCoarsePointer ? undefined : 'button'}
+  tabindex={isCoarsePointer ? undefined : 0}
+  aria-label={isCoarsePointer ? undefined : 'Return to settings'}
   style:display="block"
   style:background="var(--canvas-bg)"
-  style:cursor="pointer"
+  style:cursor={isCoarsePointer ? 'default' : 'pointer'}
   onpointermove={handlePointerMove}
   onpointerleave={handlePointerLeave}
 ></canvas>
+
+{#if shouldShowMobileControls}
+  <button
+    type="button"
+    class="mobile-menu-button"
+    aria-label="Return to settings"
+    onclick={(event) => runMobileAction(event, returnToMenu)}
+  >
+    MENU
+  </button>
+
+  <div class="mobile-controls" aria-label="Mobile controls">
+    <div class="mobile-control-row">
+      <button
+        type="button"
+        aria-label="Pause or play animation"
+        onclick={(event) => runMobileAction(event, togglePause)}
+      >
+        PAUSE
+      </button>
+      <button
+        type="button"
+        aria-label="Clear screen"
+        onclick={(event) => runMobileAction(event, clearCanvas)}
+      >
+        CLR
+      </button>
+      <button
+        type="button"
+        aria-label="Toggle disco mode"
+        onclick={(event) => runMobileAction(event, toggleDisco)}
+      >
+        DSC
+      </button>
+      <button
+        type="button"
+        aria-label="Switch animation mode"
+        onclick={(event) => runMobileAction(event, switchMode)}
+      >
+        MODE
+      </button>
+    </div>
+
+    <div class="mobile-control-row">
+      <button
+        type="button"
+        aria-label="Decrease speed"
+        onclick={(event) => runMobileAction(event, decreaseSpeed)}
+      >
+        SPD-
+      </button>
+      <button
+        type="button"
+        aria-label="Increase speed"
+        onclick={(event) => runMobileAction(event, increaseSpeed)}
+      >
+        SPD+
+      </button>
+      <button
+        type="button"
+        aria-label="Decrease font size"
+        onclick={(event) => runMobileAction(event, decreaseFontSize)}
+      >
+        FNT-
+      </button>
+      <button
+        type="button"
+        aria-label="Increase font size"
+        onclick={(event) => runMobileAction(event, increaseFontSize)}
+      >
+        FNT+
+      </button>
+    </div>
+
+    <div class="mobile-direction-pad" aria-label="Direction controls">
+      <button
+        type="button"
+        class="direction-button north"
+        aria-label="Move north"
+        onclick={(event) => runMobileAction(event, () => handleDirectionInput('north'))}
+      >
+        N
+      </button>
+      <button
+        type="button"
+        class="direction-button west"
+        aria-label="Move west"
+        onclick={(event) => runMobileAction(event, () => handleDirectionInput('west'))}
+      >
+        W
+      </button>
+      <button
+        type="button"
+        class="direction-button east"
+        aria-label="Move east"
+        onclick={(event) => runMobileAction(event, () => handleDirectionInput('east'))}
+      >
+        E
+      </button>
+      <button
+        type="button"
+        class="direction-button south"
+        aria-label="Move south"
+        onclick={(event) => runMobileAction(event, () => handleDirectionInput('south'))}
+      >
+        S
+      </button>
+    </div>
+  </div>
+{/if}
 
 <style>
   canvas {
@@ -339,5 +530,98 @@
   canvas[data-digital-rain-root] {
     touch-action: none;
     overscroll-behavior: contain;
+  }
+
+  .mobile-menu-button,
+  .mobile-controls button {
+    min-width: 44px;
+    min-height: 44px;
+    border: 1px solid rgba(var(--theme-color-rgb, 0, 255, 65), 0.8);
+    background: rgba(0, 0, 0, 0.72);
+    color: var(--control-text);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    box-shadow:
+      inset 0 0 6px rgba(var(--theme-color-rgb, 0, 255, 65), 0.22),
+      0 0 12px rgba(var(--theme-color-rgb, 0, 255, 65), 0.16);
+    cursor: pointer;
+  }
+
+  .mobile-menu-button:focus-visible,
+  .mobile-controls button:focus-visible {
+    outline: 2px solid var(--control-text);
+    outline-offset: 2px;
+  }
+
+  .mobile-menu-button:active,
+  .mobile-controls button:active {
+    background: rgba(var(--theme-color-rgb, 0, 255, 65), 0.2);
+  }
+
+  .mobile-menu-button {
+    position: fixed;
+    z-index: 5;
+    top: calc(env(safe-area-inset-top, 0px) + 0.75rem);
+    right: calc(env(safe-area-inset-right, 0px) + 0.75rem);
+    padding: 0 0.85rem;
+  }
+
+  .mobile-controls {
+    position: fixed;
+    z-index: 5;
+    left: 50%;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 0.75rem);
+    transform: translateX(-50%);
+    width: min(calc(100vw - 1rem), 23rem);
+    display: grid;
+    gap: 0.45rem;
+    padding: 0.55rem;
+    background: rgba(0, 0, 0, 0.52);
+    border: 1px solid rgba(var(--theme-color-rgb, 0, 255, 65), 0.35);
+    backdrop-filter: blur(6px);
+  }
+
+  .mobile-control-row {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.4rem;
+  }
+
+  .mobile-direction-pad {
+    display: grid;
+    grid-template-columns: repeat(3, 44px);
+    grid-template-areas:
+      '. north .'
+      'west . east'
+      '. south .';
+    justify-content: center;
+    gap: 0.35rem;
+  }
+
+  .direction-button.north {
+    grid-area: north;
+  }
+
+  .direction-button.west {
+    grid-area: west;
+  }
+
+  .direction-button.east {
+    grid-area: east;
+  }
+
+  .direction-button.south {
+    grid-area: south;
+  }
+
+  :global(:root[data-theme='light']) .mobile-menu-button,
+  :global(:root[data-theme='light']) .mobile-controls button {
+    background: rgba(255, 255, 255, 0.78);
+  }
+
+  :global(:root[data-theme='light']) .mobile-controls {
+    background: rgba(255, 255, 255, 0.55);
   }
 </style>
