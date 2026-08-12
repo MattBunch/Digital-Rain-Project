@@ -61,3 +61,30 @@ test.describe('Mobile layout', () => {
     await expectNoHorizontalOverflow(page);
   });
 });
+
+test.describe('Mobile controls', () => {
+  test.use({
+    hasTouch: true,
+    isMobile: true,
+    viewport: { width: 390, height: 844 },
+  });
+
+  test('show on a coarse pointer and return to the menu without overflow', async ({ page }) => {
+    await page.goto('/');
+
+    await expect
+      .poll(() =>
+        page.evaluate(() => window.matchMedia('(hover: none) and (pointer: coarse)').matches),
+      )
+      .toBe(true);
+
+    await page.getByRole('button', { name: 'START' }).first().click();
+    await expect(page.getByRole('button', { name: 'Return to settings' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Pause or play animation' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Move north' })).toBeVisible();
+    await expectNoHorizontalOverflow(page);
+
+    await page.getByRole('button', { name: 'Return to settings' }).click();
+    await expect(page.locator('h1')).toHaveText('DIGITAL RAIN');
+  });
+});

@@ -46,16 +46,13 @@
       target instanceof HTMLInputElement ||
       target instanceof HTMLTextAreaElement ||
       target instanceof HTMLSelectElement ||
+      target instanceof HTMLButtonElement ||
       target.isContentEditable
     );
   }
 
-  function isColorShortcut(key: string): boolean {
-    return /^[1-8]$/.test(key);
-  }
-
   function handleKeyDown(event: KeyboardEvent) {
-    if (isColorShortcut(event.key) && isEditableTarget(event.target)) {
+    if (isEditableTarget(event.target)) {
       return;
     }
 

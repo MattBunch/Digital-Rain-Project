@@ -396,6 +396,19 @@ describe('MatrixCanvas', () => {
     expect(engine.direction).toBe('north');
   });
 
+  it('does not run global shortcuts when a mobile control has focus', async () => {
+    mockCoarsePointer(true);
+    const engine = createEngine();
+    renderCanvas(engine);
+    const pauseButton = await screen.findByRole('button', { name: 'Pause or play animation' });
+
+    await fireEvent.keyDown(pauseButton, { key: ' ' });
+    expect(engine.pause).not.toHaveBeenCalled();
+
+    await fireEvent.click(pauseButton);
+    expect(engine.pause).toHaveBeenCalledTimes(1);
+  });
+
   it('moves the square from coarse-pointer direction controls in square animation mode', async () => {
     mockCoarsePointer(true);
     const engine = createEngine();
