@@ -36,6 +36,7 @@ export const helpGroups: HelpGroup[] = [
     items: [
       { key: 'Swipe', description: 'Change rain direction / Move box' },
       { key: 'Menu', description: 'Return to settings' },
+      { key: 'Hide/Show', description: 'Toggle the control panel' },
       { key: 'Pause', description: 'Pause or play animation' },
       { key: 'Clear', description: 'Clear screen' },
       { key: 'Disco', description: 'Toggle disco' },

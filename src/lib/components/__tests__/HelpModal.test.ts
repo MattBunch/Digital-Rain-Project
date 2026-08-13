@@ -61,6 +61,7 @@ describe('HelpModal', () => {
     expect(screen.getByText('MOBILE CONTROLS')).toBeInTheDocument();
     expect(screen.getByText('Swipe')).toBeInTheDocument();
     expect(screen.getByText('Return to settings')).toBeInTheDocument();
+    expect(screen.getByText('Toggle the control panel')).toBeInTheDocument();
     expect(screen.getByText('Direction controls')).toBeInTheDocument();
   });
 

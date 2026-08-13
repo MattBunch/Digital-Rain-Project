@@ -34,6 +34,7 @@
 
   let canvas: HTMLCanvasElement;
   let isCoarsePointer = $state(false);
+  let areMobileControlsVisible = $state(true);
 
   const shouldShowMobileControls = $derived(showMobileControls && isCoarsePointer);
 
@@ -230,6 +231,10 @@
     action();
   }
 
+  function toggleMobileControls(): void {
+    areMobileControlsVisible = !areMobileControlsVisible;
+  }
+
   function handleDirectionInput(direction: Direction): void {
     if (engine.squareAnimationOn) {
       moveSquare(direction);
@@ -418,7 +423,23 @@
     MENU
   </button>
 
-  <div class="mobile-controls" aria-label="Mobile controls">
+  <button
+    type="button"
+    class="mobile-controls-toggle"
+    aria-label={areMobileControlsVisible ? 'Hide mobile controls' : 'Show mobile controls'}
+    aria-controls="mobile-controls"
+    aria-expanded={areMobileControlsVisible}
+    onclick={(event) => runMobileAction(event, toggleMobileControls)}
+  >
+    {areMobileControlsVisible ? 'HIDE' : 'SHOW'}
+  </button>
+
+  <div
+    id="mobile-controls"
+    class="mobile-controls"
+    aria-label="Mobile controls"
+    hidden={!areMobileControlsVisible}
+  >
     <div class="mobile-control-row">
       <button
         type="button"
@@ -533,6 +554,7 @@
   }
 
   .mobile-menu-button,
+  .mobile-controls-toggle,
   .mobile-controls button {
     min-width: 44px;
     min-height: 44px;
@@ -550,12 +572,14 @@
   }
 
   .mobile-menu-button:focus-visible,
+  .mobile-controls-toggle:focus-visible,
   .mobile-controls button:focus-visible {
     outline: 2px solid var(--control-text);
     outline-offset: 2px;
   }
 
   .mobile-menu-button:active,
+  .mobile-controls-toggle:active,
   .mobile-controls button:active {
     background: rgba(var(--theme-color-rgb, 0, 255, 65), 0.2);
   }
@@ -564,6 +588,14 @@
     position: fixed;
     z-index: 5;
     top: calc(env(safe-area-inset-top, 0px) + 0.75rem);
+    right: calc(env(safe-area-inset-right, 0px) + 0.75rem);
+    padding: 0 0.85rem;
+  }
+
+  .mobile-controls-toggle {
+    position: fixed;
+    z-index: 5;
+    top: calc(env(safe-area-inset-top, 0px) + 4.25rem);
     right: calc(env(safe-area-inset-right, 0px) + 0.75rem);
     padding: 0 0.85rem;
   }
@@ -581,6 +613,10 @@
     background: rgba(0, 0, 0, 0.52);
     border: 1px solid rgba(var(--theme-color-rgb, 0, 255, 65), 0.35);
     backdrop-filter: blur(6px);
+  }
+
+  .mobile-controls[hidden] {
+    display: none;
   }
 
   .mobile-control-row {
@@ -617,6 +653,7 @@
   }
 
   :global(:root[data-theme='light']) .mobile-menu-button,
+  :global(:root[data-theme='light']) .mobile-controls-toggle,
   :global(:root[data-theme='light']) .mobile-controls button {
     background: rgba(255, 255, 255, 0.78);
   }
