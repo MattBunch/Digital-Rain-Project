@@ -359,6 +359,31 @@ describe('MatrixCanvas', () => {
     expect(onReturn).toHaveBeenCalledTimes(1);
   });
 
+  it('toggles coarse-pointer mobile controls without hiding the menu', async () => {
+    mockCoarsePointer(true);
+    renderCanvas();
+    const toggleButton = await screen.findByRole('button', { name: 'Hide mobile controls' });
+
+    expect(toggleButton).toHaveAttribute('aria-controls', 'mobile-controls');
+    expect(toggleButton).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByRole('button', { name: 'Pause or play animation' })).toBeVisible();
+
+    await fireEvent.click(toggleButton);
+
+    expect(screen.getByRole('button', { name: 'Show mobile controls' })).toHaveAttribute(
+      'aria-expanded',
+      'false',
+    );
+    expect(
+      screen.queryByRole('button', { name: 'Pause or play animation' }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Return to settings' })).toBeVisible();
+
+    await fireEvent.click(screen.getByRole('button', { name: 'Show mobile controls' }));
+
+    expect(screen.getByRole('button', { name: 'Pause or play animation' })).toBeVisible();
+  });
+
   it('hides coarse-pointer mobile controls when disabled', async () => {
     mockCoarsePointer(true);
     renderCanvas(createEngine(), 'normal', false);
@@ -367,6 +392,7 @@ describe('MatrixCanvas', () => {
     expect(
       screen.queryByRole('button', { name: 'Pause or play animation' }),
     ).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Hide mobile controls' })).not.toBeInTheDocument();
   });
 
   it('runs shared actions from coarse-pointer mobile controls', async () => {

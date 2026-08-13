@@ -80,9 +80,22 @@ test.describe('Mobile controls', () => {
 
     await page.getByRole('button', { name: 'START' }).first().click();
     await expect(page.getByRole('button', { name: 'Return to settings' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Hide mobile controls' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Pause or play animation' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Move north' })).toBeVisible();
     await expectNoHorizontalOverflow(page);
+
+    await page.getByRole('button', { name: 'Hide mobile controls' }).click();
+    await expect(page.getByRole('button', { name: 'Show mobile controls' })).toHaveAttribute(
+      'aria-expanded',
+      'false',
+    );
+    await expect(page.getByRole('button', { name: 'Pause or play animation' })).toBeHidden();
+    await expect(page.getByRole('button', { name: 'Return to settings' })).toBeVisible();
+    await expectNoHorizontalOverflow(page);
+
+    await page.getByRole('button', { name: 'Show mobile controls' }).click();
+    await expect(page.getByRole('button', { name: 'Pause or play animation' })).toBeVisible();
 
     await page.getByRole('button', { name: 'Return to settings' }).click();
     await expect(page.locator('h1')).toHaveText('DIGITAL RAIN');
